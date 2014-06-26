@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 
+#include <string>
 
 using namespace std;
 using namespace sdsl;
@@ -76,15 +77,15 @@ int main(){
 
 int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 	int p = 0; 							// Aktuelle Stelle in d
-	int j = 0; 							// Laufvariable für die maximale Distanz
-	int j1 = 0;							// Varible für das Rücksetzen von j
-	int neuerFaktor = 0;				// Speicher für Faktor an neuer Stelle
+	int j = 0; 							// Laufvariable fï¿½r die maximale Distanz
+	int j1 = 0;							// Varible fï¿½r das Rï¿½cksetzen von j
+	int neuerFaktor = 0;				// Speicher fï¿½r Faktor an neuer Stelle
 
-	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = Länge von G, bzw IS und IE
-		d[p] = ie[j]-p+1; 				// Berechnung des Faktors an der ersten neuen Stellen, zwingend für den Vergleich
-		j++;							// j = Zählvariable in IS, erhöhen, da erste neue Stelle bereits berechnet
+	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = Lï¿½nge von G, bzw IS und IE
+		d[p] = ie[j]-p+1; 				// Berechnung des Faktors an der ersten neuen Stellen, zwingend fï¿½r den Vergleich
+		j++;							// j = Zï¿½hlvariable in IS, erhï¿½hen, da erste neue Stelle bereits berechnet
 		while(is[j]<=p && j<size_is){ 				// solange Startposition des Strings kkleiner p, p = aktuelle Stelle in d
-			neuerFaktor = ie[j]-p+1; 	// Berechnung des Faktors an der neuen Stelle, zwingend für den Vergleich
+			neuerFaktor = ie[j]-p+1; 	// Berechnung des Faktors an der neuen Stelle, zwingend fï¿½r den Vergleich
 			if(d[p] < neuerFaktor){  	// Abfrage ob der aktuelle Wert keliner ist als der neu Berechnete	
 			d[p] = neuerFaktor;			// Falls ja, neuen Wert speichern
 			j1 = j;						// aktuelles j Abspeichern, damit nicht jedesmal von Beginn an getestet wird in der while Schleife
@@ -104,7 +105,7 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]){
 	int_vector<> d_1(size_d);
 	for(int i = 0; i < size_d;i++){
-		d_1[i] = d[sa[i+1]];				// Berechnung von d', Länge des längsten Intervalls an der Position SAr[i]
+		d_1[i] = d[sa[i+1]];				// Berechnung von d', Lï¿½nge des lï¿½ngsten Intervalls an der Position SAr[i]
 	}
 	
 	return d_1;
@@ -119,7 +120,7 @@ int g_Array(int_vector<> t, int g[], int is[], int ie[]){
 		g[i] = minPosition+1;				// g[i] = j wenn t[j] linkester Faktor
 		is[i] = t[minPosition]-1;		
 	//	ie[i] = t[minPosition];
-		t[minPosition] = 10;				// Anfangspos von Faktor in T ersetzen mit Wert > Länge Referenzstring, damit RMQ keine falschen Werte leifert
+		t[minPosition] = 10;				// Anfangspos von Faktor in T ersetzen mit Wert > Lï¿½nge Referenzstring, damit RMQ keine falschen Werte leifert
 	}
 	cout << t << endl;
 }
@@ -141,7 +142,7 @@ int g_Array_Sort(int t_array[], int size_t,int g[], int is[], int ie[]){
 	cout << "----" << endl;
 		for(int i=0; i<size_t; ++i)
 	{
-		g[i] = r[i].second;								// da der index über den Schleifenindex erzeugt wird muss er noch in g geschrieben werden
+		g[i] = r[i].second;								// da der index ï¿½ber den Schleifenindex erzeugt wird muss er noch in g geschrieben werden
 		cout << is[i] << ", " << ie[i] << ", " << g[i] << endl;	// Ausgabe is,ie,g
 	}
 }
@@ -158,7 +159,7 @@ int g_Array_Sort(int t_array[], int size_t,int g[], int is[], int ie[]){
 void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_wt<> sa, int g[], int is[], int size_is, int ie[]){
   rmq_succinct_sct<false> rmaxq(&dStrich);
   int maxPosition = rmaxq(st,ed);
-  if(dStrich[maxPosition] >= patternLength){ //Abbruch, wenn Faktorlänge < Patternlänge
+  if(dStrich[maxPosition] >= patternLength){ //Abbruch, wenn Faktorlï¿½nge < Patternlï¿½nge
 	getFactors(sa[maxPosition+1], patternLength, g, is, size_is, ie);
     if(st < maxPosition) 
       searchPattern(st, maxPosition-1, dStrich, patternLength, sa, g, is, size_is, ie);
@@ -181,4 +182,37 @@ void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_w
 }
 
 //ToDo: Faktor -> Startposition im String
+
+// Harry
+
+static vector<string> getLempelZivFactors(string R, vector<string> S){
+	vector<string> factors;
+	string tempFactor;
+	for (int i = 0; i < S.size(); i++){
+		tempFactor = "";
+		for (int z = 0; z < S[i].size(); z++){
+			tempFactor += S[i][z];// mache prÃ¤fix immer lÃ¤nger
+			if (R.find(tempFactor) != string::npos){
+				//cout << tempFactor << R.find(tempFactor) << endl;
+			}
+			else{
+				z--;
+				tempFactor.erase(tempFactor.size() - 1, 1);
+				factors.push_back(tempFactor);
+				tempFactor = "";
+			}
+		}
+
+		// Muss gemacht werden, da der letzte substring sonst nicht mitgenommen wird...
+		factors.push_back(tempFactor);
+	}
+
+	// so einfach geht es
+	sort(factors.begin(), factors.end());
+	factors.erase(unique(factors.begin(), factors.end()), factors.end());
+
+
+
+	return factors;
+}
 
