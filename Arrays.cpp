@@ -73,7 +73,7 @@ int main(){
   int_vector<> dStrich = {4,2,4,3,1,5,2,3,6};
   int g[] = {1,2,3,6,8,5,7,4};
   int is[] = {0,0,0,2,3,4,6,7};
-  int size_is = sizeof(is)/sizeof(is[0]);
+  //int size_is = sizeof(is)/sizeof(is[0]);
   int ie[] = {1,2,3,3,8,5,7,8};
   
   csa_wt<> sa;
