@@ -3,24 +3,24 @@
 #include <iostream>
 #include <utility>
 #include <cstring>
-/*
+
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/int_vector.hpp>
 #include <sdsl/suffix_arrays.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/rmq_support.hpp>
-*/
+
 
 
 using namespace std;
-//using namespace sdsl;
+using namespace sdsl;
 
 
 /*
  * OLI
 */
-int d_Array(int d[], int size_d,int is[], int ie[]);
-int d_Strich(int_vector<> d_1,int size_d,int SAr[], int d[]);
+int d_Array(int d[], int size_d,int is[],int size_is, int ie[]);
+int_vector<> d_Strich(int size_d,int SAr[], int d[]);
 
 /* 
  * SANDRA
@@ -33,10 +33,9 @@ int main(){
  * OLI
  */
 	int d[9];
-	int_vector<> d_1(9);
 	int SAr[9];
 	
-	
+	int_vector<> d_1;
 	int is[8];	
 	int ie[8];	
 
@@ -60,8 +59,9 @@ int main(){
 	SAr[8] = 3;
 	
 	int size_d = sizeof(d) / sizeof(int);
-	d_Array(d,size_d,is,ie);
-	d_Strich(d_1,size_d,SAr,d);
+	int size_is = sizeof(is) / sizeof(int);
+	d_Array(d,size_d,is,size_is,ie);
+	d_1 = d_Strich(size_d,SAr,d);
 	for(int i = 0; i< size_d; i++){
 	cout << "d: " << d[i]<< " SAr: " << SAr[i]+1 << " d_1: " << d_1[i] << endl;
 }
@@ -91,13 +91,13 @@ int main(){
 	
 }
 
-
-
+*/
+/*
  * OLI
  */
 
 
-int d_Array(int d[],int size_d,int is[], int ie[]){
+int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 	int p = 0; 							// Aktuelle Stelle in d
 	int j = 0; 							// Laufvariable für die maximale Distanz
 	int j1 = 0;							// Varible für das Rücksetzen von j
@@ -106,7 +106,7 @@ int d_Array(int d[],int size_d,int is[], int ie[]){
 	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = Länge von G, bzw IS und IE
 		d[p] = ie[j]-p+1; 				// Berechnung des Faktors an der ersten neuen Stellen, zwingend für den Vergleich
 		j++;							// j = Zählvariable in IS, erhöhen, da erste neue Stelle bereits berechnet
-		while(is[j]<=p){ 				// solange Startposition des Strings kkleiner p, p = aktuelle Stelle in d
+		while(is[j]<=p && j<size_is){ 				// solange Startposition des Strings kkleiner p, p = aktuelle Stelle in d
 			neuerFaktor = ie[j]-p+1; 	// Berechnung des Faktors an der neuen Stelle, zwingend für den Vergleich
 			if(d[p] < neuerFaktor){  	// Abfrage ob der aktuelle Wert keliner ist als der neu Berechnete	
 			d[p] = neuerFaktor;			// Falls ja, neuen Wert speichern
@@ -115,8 +115,8 @@ int d_Array(int d[],int size_d,int is[], int ie[]){
 			j++;			
 		}
 		j = j1;				
-
 		p++;
+	
 	}
 	d[p] = 1;							// An letzter Stelle 1 schreiben, da D nur bis zum vorletzten Element berechnet
 										// wird und das letzte immer 1 sein muss, da der letzte String zu Ende ist
@@ -124,12 +124,13 @@ int d_Array(int d[],int size_d,int is[], int ie[]){
 }
 
 
-int d_Strich(int_vector<> d_1 ,int size_d,int SAr[], int d[]){
+int_vector<> d_Strich(int size_d,int SAr[], int d[]){
+	int_vector<> d_1(size_d);
 	for(int i = 0; i < size_d;i++){
 		d_1[i] = d[SAr[i]];				// Berechnung von d', Länge des längsten Intervalls an der Position SAr[i]
 	}
 	
-	return 0;
+	return d_1;
 }
 
 
