@@ -1,0 +1,8 @@
+Commiten:
+$ git add .
+$ git commit -m "USERNAME"
+$ git push origin master
+
+Pullen:
+
+$git pull origin master

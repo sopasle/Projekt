@@ -1,5 +1,3 @@
-#include <vector>
-#include <cmath>
 #include <iostream>
 #include <utility>
 #include <cstring>
@@ -20,70 +18,47 @@ using namespace sdsl;
  * OLI
 */
 int d_Array(int d[], int size_d,int is[],int size_is, int ie[]);
-int_vector<> d_Strich(int size_d,int SAr[], int d[]);
+int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]);
+int g_Array(int_vector<> t,int g[], int is[], int ie[]);
 
 /* 
  * SANDRA
- *
+ */
 void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_wt<> sa, int g[], int is[], int size_is, int ie[]);
 void getFactors(int startIndex, int patternLength, int g[], int is[], int size_is, int ie[]);
-*/
+
 int main(){
 /*
  * OLI
  */
 	int d[9];
-	int SAr[9];
-	
 	int_vector<> d_1;
-	int is[8];	
-	int ie[8];	
+	int_vector<> t = {1,1,1,8,5,3,7,4};
+	int g[8];// = {1,2,3,6,8,5,7,4};
+	int is[8];// = {0,0,0,2,3,4,6,7};
+	int ie[] = {1,2,3,3,8,5,7,8};
+  
+	csa_wt<> sa;
+	construct_im(sa, "acgtgatag", 1);	//Eingabe: Referenzstring
 
-	is[0] = 0;	ie[0] = 1;
-	is[1] = 0;	ie[1] = 2;
-	is[2] = 0;	ie[2] = 3;
-	is[3] = 2;	ie[3] = 3;
-	is[4] = 3;	ie[4] = 8;
-	is[5] = 4;	ie[5] = 5;
-	is[6] = 6;	ie[6] = 7;
-	is[7] = 7;	ie[7] = 8;
-	
-	SAr[0] = 0;
-	SAr[1] = 7;
-	SAr[2] = 5;
-	SAr[3] = 1;
-	SAr[4] = 8;
-	SAr[5] = 4;
-	SAr[6] = 2;
-	SAr[7] = 6;
-	SAr[8] = 3;
-	
 	int size_d = sizeof(d) / sizeof(int);
 	int size_is = sizeof(is) / sizeof(int);
 	d_Array(d,size_d,is,size_is,ie);
-	d_1 = d_Strich(size_d,SAr,d);
-	for(int i = 0; i< size_d; i++){
-	cout << "d: " << d[i]<< " SAr: " << SAr[i]+1 << " d_1: " << d_1[i] << endl;
-}
-}
-
+	g_Array(t,g,is,ie);
+	//d_1 = d_Strich(size_d,SAr,d);
+//	for(int i = 0; i< 8; i++){
+//	cout << "g: " << is[i] << endl;
+//	}
 /*
  * SANDRA 
- *
-  int_vector<> dStrich = {4,2,4,3,1,5,2,3,6};
-  int g[] = {1,2,3,6,8,5,7,4};
-  int is[] = {0,0,0,2,3,4,6,7};
-  //int size_is = sizeof(is)/sizeof(is[0]);
-  int ie[] = {1,2,3,3,8,5,7,8};
-  
-  csa_wt<> sa;
-  construct_im(sa, "acgtgatag", 1);	//Eingabe: Referenzstring
+ */
+
 
   string pattern = "a";	//Eingabe: Pattern
   
   uint64_t i=0, j=sa.size()-1, startIndex=0, endIndex=0;
   backward_search(sa, i, j, pattern.begin(), pattern.end(), startIndex, endIndex); // Rueckwaertssuche => startIndex, endIndex
-  searchPattern(startIndex-1, endIndex-1, dStrich,pattern.size(), sa, g, is, size_is, ie);
+  searchPattern(startIndex-1, endIndex-1, d_Strich(size_d,sa,d),pattern.size(), sa, g, is, size_is, ie);
 
 
 
@@ -91,7 +66,7 @@ int main(){
 	
 }
 
-*/
+
 /*
  * OLI
  */
@@ -124,19 +99,32 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 }
 
 
-int_vector<> d_Strich(int size_d,int SAr[], int d[]){
+int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]){
 	int_vector<> d_1(size_d);
 	for(int i = 0; i < size_d;i++){
-		d_1[i] = d[SAr[i]];				// Berechnung von d', Länge des längsten Intervalls an der Position SAr[i]
+		d_1[i] = d[sa[i+1]];				// Berechnung von d', Länge des längsten Intervalls an der Position SAr[i]
 	}
 	
 	return d_1;
 }
 
+int g_Array(int_vector<> t, int g[], int is[], int ie[]){
+	
+	int minPosition;
+	for(int i = 0; i < t.size();i++){ 
+		rmq_succinct_sct<> rminq(&t); 		// RMQ von t
+		minPosition = rminq(0,t.size()-1);	// start bis endposition
+		g[i] = minPosition+1;				// g[i] = j wenn t[j] linkester Faktor
+		is[i] = t[minPosition]-1;		
+	//	ie[i] = t[minPosition];
+		t[minPosition] = 10;				// Anfangspos von Faktor in T ersetzen mit Wert > Länge Referenzstring, damit RMQ keine falschen Werte leifert
+	}
+	cout << t << endl;
+}
 
 /*
  * SANDRA
- *
+ */
 
 void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_wt<> sa, int g[], int is[], int size_is, int ie[]){
   rmq_succinct_sct<false> rmaxq(&dStrich);
@@ -165,4 +153,3 @@ void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_w
 
 //ToDo: Faktor -> Startposition im String
 
-*/
