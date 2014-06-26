@@ -21,6 +21,7 @@ using namespace sdsl;
 int d_Array(int d[], int size_d,int is[],int size_is, int ie[]);
 int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]);
 int g_Array(int_vector<> t,int g[], int is[], int ie[]);
+int g_Array_Sort(int t_array[], int size_t,int g[], int is[], int ie[]);
 
 /* 
  * SANDRA
@@ -125,14 +126,23 @@ int g_Array(int_vector<> t, int g[], int is[], int ie[]){
 
 
 int g_Array_Sort(int t_array[], int size_t,int g[], int is[], int ie[]){	
-	vector<pair<int, pair<int,int> > > r(size_t); 	
-	for(int i = 0; i<size_t;i++){
-		r[i] = {is[i],{ie[i],i}};
+	vector<pair<pair<int,int>,int > > r(size_t); 		// Vektor als ((is,ie),g)
+	vector<pair<int,int> > r1(size_t); 					// Vektor (is,ie)
+	for(int i = 0; i<size_t;i++){						
+		r1[i] = {is[i],ie[i]};							// r1 wird aus is,ie zusammengesetzt, entspricht nacher dem r Vektor, der aus der Faktorensuche entsteht
+		r[i] = {r1[i],i+1};								// r wird aus r1,g zusammengesetzt, inhalt in g entspricht dem index des t arrays, das aus der Faktorensuche entsteht
 	}
-	sort(r.begin(), r.end());
+	sort(r.begin(), r.end());							// r wird nach dem ersten Faktor sortiert, der erste Faktor ist r1, da es wieder ein pair ist wird nach is stabil sortiert
 	for(int i=0; i<size_t; ++i)
 	{
-		cout << r[i].first << ", " << r[i].second.first << ", " << r[i].second.second << endl;
+		cout << r[i].first.first << ", " << r[i].first.second << ", " << r[i].second << endl; // Ausgabe r
+	}
+	
+	cout << "----" << endl;
+		for(int i=0; i<size_t; ++i)
+	{
+		g[i] = r[i].second;								// da der index über den Schleifenindex erzeugt wird muss er noch in g geschrieben werden
+		cout << is[i] << ", " << ie[i] << ", " << g[i] << endl;	// Ausgabe is,ie,g
 	}
 }
 
