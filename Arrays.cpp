@@ -20,7 +20,7 @@ using namespace std;
  * OLI
 */
 int d_Array(int d[], int size_d,int is[], int ie[]);
-int d_Strich(int d_1[],int size_d,int SAr[], int d[]);
+int d_Strich(int_vector<> d_1,int size_d,int SAr[], int d[]);
 
 /* 
  * SANDRA
@@ -33,7 +33,7 @@ int main(){
  * OLI
  */
 	int d[9];
-	int d_1[9];
+	int_vector<> d_1(9);
 	int SAr[9];
 	
 	
@@ -62,7 +62,7 @@ int main(){
 	int size_d = sizeof(d) / sizeof(int);
 	d_Array(d,size_d,is,ie);
 	d_Strich(d_1,size_d,SAr,d);
-	for(int i = 0; i<sizeof(d) / sizeof(int); i++){
+	for(int i = 0; i< size_d; i++){
 	cout << "d: " << d[i]<< " SAr: " << SAr[i]+1 << " d_1: " << d_1[i] << endl;
 }
 }
@@ -92,7 +92,7 @@ int main(){
 }
 
 
-/*
+
  * OLI
  */
 
@@ -120,11 +120,11 @@ int d_Array(int d[],int size_d,int is[], int ie[]){
 	}
 	d[p] = 1;							// An letzter Stelle 1 schreiben, da D nur bis zum vorletzten Element berechnet
 										// wird und das letzte immer 1 sein muss, da der letzte String zu Ende ist
-
+	return 0;
 }
 
 
-int d_Strich(int d_1[] ,int size_d,int SAr[], int d[]){
+int d_Strich(int_vector<> d_1 ,int size_d,int SAr[], int d[]){
 	for(int i = 0; i < size_d;i++){
 		d_1[i] = d[SAr[i]];				// Berechnung von d', Länge des längsten Intervalls an der Position SAr[i]
 	}
