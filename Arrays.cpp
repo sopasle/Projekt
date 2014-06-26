@@ -7,7 +7,8 @@
 #include <sdsl/suffix_arrays.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/rmq_support.hpp>
-
+#include <vector>
+#include <algorithm>
 
 
 using namespace std;
@@ -120,6 +121,24 @@ int g_Array(int_vector<> t, int g[], int is[], int ie[]){
 		t[minPosition] = 10;				// Anfangspos von Faktor in T ersetzen mit Wert > Länge Referenzstring, damit RMQ keine falschen Werte leifert
 	}
 	cout << t << endl;
+}
+
+
+int g_Array_Sort(int t_array[], int size_t,int g[], int is[], int ie[]){	
+	vector<pair<int, pair<int,int> > > r(size_t); 	
+	for(int i = 0; i<size_t;i++){
+		r[i] = {is[i],{ie[i],i}};
+	}
+	sort(r.begin(), r.end());
+	for(int i=0; i<size_t; ++i)
+	{
+		cout << r[i].first << ", " << r[i].second.first << ", " << r[i].second.second << endl;
+	}
+}
+
+
+
+	
 }
 
 /*
