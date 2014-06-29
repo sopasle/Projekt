@@ -206,7 +206,7 @@ void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_w
 			}
 			else{
 				break;
-			}
+			}s
 		}
 }
 
