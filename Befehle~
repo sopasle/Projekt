@@ -1,5 +1,6 @@
 Config:
 git config --global user.name "USERNAME"
+git config --global user.email "EMAIL ADRESSE"
 
 Clonen:
 git clone https://github.com/sopasle/Projekt.git

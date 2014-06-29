@@ -1,9 +1,11 @@
 Config:
-git config --global user.name "USERNAME"
-git config --global user.email "EMAIL ADRESSE"
+$ git config --global user.name "USERNAME"
+$ git config --global user.email "EMAIL ADRESSE"
+$ git config --global credential.helper cache
+$ git config --global credential.helper 'cache --timeout=3600'
 
 Clonen:
-git clone https://github.com/sopasle/Projekt.git
+$ git clone https://github.com/sopasle/Projekt.git
 
 Commiten:
 $ git add .
@@ -12,4 +14,4 @@ $ git push origin master
 
 Pullen:
 
-$git pull origin master
+$ git pull origin master
