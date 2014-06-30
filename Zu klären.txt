@@ -1,0 +1,4 @@
+- Was wird gespeichert
+- Übergabe vector - array
+- Laufzeiten/Speicherbedarf
+- alte Daten verwerfen
