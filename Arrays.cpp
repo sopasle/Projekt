@@ -11,6 +11,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <tuple>
 
 using namespace std;
 using namespace sdsl;
