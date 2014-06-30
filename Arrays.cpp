@@ -34,7 +34,7 @@ void getFactors(int startIndex, int patternLength, int g[], int is[], int size_i
  * HARRY
 */
 static vector<string> getLempelZivFactors(string R, vector<string> S);
-
+static vector<tuple<int,int>> getFactorPosInR(string R, vector<string> factors);
 
 int main(){
 /*
@@ -76,22 +76,34 @@ int main(){
  * HARRY
 */
 
-	string R = "ABCDAB"; // Eingabestring
-	vector<string> S; // hat alle S-Strings	
-	S.push_back("ABAB");
-	S.push_back("BCABCD");
-	S.push_back("AB");
+	string R = "ACGTGATAG"; // Eingabestring
+	vector<string> S; // hat alle S-Strings
+	
+	S.push_back("TGATAGACG");// hier mal mit richtiger Eingabe
+	S.push_back("GAGTACTA");
+	S.push_back("GTACGT");
+	S.push_back("AGGA");
 	vector<string> factors = getLempelZivFactors(R, S);
-	cout << factors[0] << endl;
+	
+	// Junge, mach ne for schleife rein :-)
+	// sonst kann es zu fehlern kommen 
+	/* cout << factors[0] << endl;
 	cout << factors[1] << endl;
 	cout << factors[2] << endl;
 	cout << factors[3] << endl;
 	cout << factors[4] << endl;
 	cout << factors[5] << endl;
 	cout << factors[6] << endl;
-	cout << factors[7] << endl;
+	cout << factors[7] << endl; */
+	
+	// mit nem Debugger sieht man die Werte auch :-)
 	//cout << factors[8] << endl;
-	return 0;
+	
+	
+	
+	vector<tuple<int, int>> pos = getFactorPosInR(R, factors);
+	
+	return EXIT_SUCCESS; // So macht man das Heute richtig
 
 
 
@@ -126,7 +138,8 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 	
 	}
 	d[p] = 1;							// An letzter Stelle 1 schreiben, da D nur bis zum vorletzten Element berechnet
-										// wird und das letzte immer 1 sein muss, da der letzte String zu Ende ist
+			
+								// wird und das letzte immer 1 sein muss, da der letzte String zu Ende ist
 	return 0;
 }
 
@@ -210,10 +223,41 @@ void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_w
 		}
 }
 
-//ToDo: Faktor -> Startposition im String
+
+// Harry done
+static vector<tuple<int,int>> getFactorPosInR(string R, vector<string> factors){
+	vector < tuple<int, int> >  posInR;
+	// da mir keiner gesagt hat, wie ihr das Gericht haben wollt,
+	// habe ich mich für Tupel entschieden,
+	// der erste Wert gibt die startposition
+	// der zweite Wert die Länge
+	// Aupassen muss man, da meine Werte bei 0 anfangen
+	// nicht wie im Paper bei 1, aber sonst stimmen die Werte
+	
+	// Verwendendungsbeispiel
+	/*
+	
+	
+	vector<string> factors = getLempelZivFactors(R, S);
+	vector<tuple<int, int>> positionen = getFactorPosInR(R, factors);	
+	
+	
+	*/
+	
+	int startpos = -1;
+	int length = -1;
+
+	for (int i = 0; i < factors.size(); i++){
+		startpos = R.find(factors[i]);
+		length = factors[i].length;
+		posInR.push_back(make_tuple(startpos, length));
+	}
+	return posInR;
+}
 
 // Harry
 
+// Achtung, wird noch optimiert, hatte gerade einen guten Einfall :-)
 static vector<string> getLempelZivFactors(string R, vector<string> S){
 	vector<string> factors;
 	string tempFactor;
@@ -240,6 +284,11 @@ static vector<string> getLempelZivFactors(string R, vector<string> S){
 	sort(factors.begin(), factors.end());
 	factors.erase(unique(factors.begin(), factors.end()), factors.end());
 
+	// ich schmeiße die duplette raus
+	// da wir die ja nicht brauchen
+	// erst danach ermittle ich die Positionen
+	// so werden ein paar durchläufe bei der positionsermittelung
+	// gespart
 
 
 	return factors;
