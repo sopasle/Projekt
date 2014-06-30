@@ -23,7 +23,7 @@ using namespace sdsl;
 int d_Array(int d[], int size_d,int is[],int size_is, int ie[]);
 int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]);
 int g_Array(int_vector<> t,int g[], int is[], int ie[]);
-int g_Array_Sort(int t_array[], int size_t,int g[], int is[], int ie[]);
+int g_Array_Sort(vector<pair<int,int> > t_array, int size_t,int g[], int is[], int ie[]);
 
 /* 
  * SANDRA
@@ -35,7 +35,7 @@ void getFactors(int startIndex, int patternLength, int g[], int is[], int size_i
  * HARRY
 */
 static vector<string> getLempelZivFactors(string R, vector<string> S);
-static vector<tuple<int,int>> getFactorPosInR(string R, vector<string> factors);
+static vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors);
 
 int main(){
 /*
@@ -85,7 +85,7 @@ int main(){
 	S.push_back("GTACGT");
 	S.push_back("AGGA");
 	vector<string> factors = getLempelZivFactors(R, S);
-	
+	vector<pair<int, int>> positionen = getFactorPosInR(R, factors);
 	// Junge, mach ne for schleife rein :-)
 	// sonst kann es zu fehlern kommen 
 	/* cout << factors[0] << endl;
@@ -99,10 +99,30 @@ int main(){
 	
 	// mit nem Debugger sieht man die Werte auch :-)
 	//cout << factors[8] << endl;
-	
-	
-	
-	vector<tuple<int, int>> pos = getFactorPosInR(R, factors);
+
+	/*std::cout << std::get<0>(positionen[0]) << "\n";
+	std::cout << std::get<0>(positionen[1]) << "\n";
+	std::cout << std::get<0>(positionen[2]) << "\n";
+	std::cout << std::get<0>(positionen[3]) << "\n";
+	std::cout << std::get<0>(positionen[4]) << "\n";
+	std::cout << std::get<0>(positionen[5]) << "\n";
+	std::cout << std::get<0>(positionen[6]) << "\n";
+	std::cout << std::get<0>(positionen[7]) << "\n";
+	std::cout << std::get<0>(positionen[8]) << "\n";
+	std::cout << std::get<0>(positionen[9]) << "\n";	
+*/
+/*
+ / Test g_array
+*/	int g[8];
+	int is[8];
+	int ie[8];
+
+	/*vector<pair<int,int>> pos(8); 
+	for(int i = 0; i<8;i++){
+	pos[i] = {std::get<0>(positionen[i]),std::get<1>(positionen[i])}; // tupel in pair umwandeln
+	}*/
+
+	g_Array_Sort(positionen,8,g,is,ie);
 	
 	return EXIT_SUCCESS; // So macht man das Heute richtig
 
@@ -154,7 +174,7 @@ int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]){
 	return d_1;
 }
 
-int g_Array(int_vector<> t, int g[], int is[], int ie[]){
+/*int g_Array(int_vector<> t, int g[], int is[], int ie[]){
 	
 	int minPosition;
 	for(int i = 0; i < t.size();i++){ 
@@ -166,14 +186,14 @@ int g_Array(int_vector<> t, int g[], int is[], int ie[]){
 		t[minPosition] = 10;				// Anfangspos von Faktor in T ersetzen mit Wert > L�nge Referenzstring, damit RMQ keine falschen Werte leifert
 	}
 	cout << t << endl;
-}
+}*/
 
 
-int g_Array_Sort(int t_array[], int size_t,int g[], int is[], int ie[]){	
+int g_Array_Sort(vector <pair<int,int>> t_array, int size_t,int g[], int is[], int ie[]){	
 	vector<pair<pair<int,int>,int > > r(size_t); 		// Vektor als ((is,ie),g)
 	vector<pair<int,int> > r1(size_t); 					// Vektor (is,ie)
 	for(int i = 0; i<size_t;i++){						
-		r1[i] = {is[i],ie[i]};							// r1 wird aus is,ie zusammengesetzt, entspricht nacher dem r Vektor, der aus der Faktorensuche entsteht
+		r1[i] = {t_array[i].first, t_array[i].second};							// r1 wird aus is,ie zusammengesetzt, entspricht nacher dem r Vektor, der aus der Faktorensuche entsteht
 		r[i] = {r1[i],i+1};								// r wird aus r1,g zusammengesetzt, inhalt in g entspricht dem index des t arrays, das aus der Faktorensuche entsteht
 	}
 	sort(r.begin(), r.end());							// r wird nach dem ersten Faktor sortiert, der erste Faktor ist r1, da es wieder ein pair ist wird nach is stabil sortiert
@@ -220,38 +240,38 @@ void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_w
 			}
 			else{
 				break;
-			}s
+			}
 		}
 }
 
 
 // Harry done
-static vector<tuple<int,int>> getFactorPosInR(string R, vector<string> factors){
-	vector < tuple<int, int> >  posInR;
-	// da mir keiner gesagt hat, wie ihr das Gericht haben wollt,
-	// habe ich mich für Tupel entschieden,
-	// der erste Wert gibt die startposition
-	// der zweite Wert die Länge
-	// Aupassen muss man, da meine Werte bei 0 anfangen
-	// nicht wie im Paper bei 1, aber sonst stimmen die Werte
-	
-	// Verwendendungsbeispiel
-	/*
-	
-	
-	vector<string> factors = getLempelZivFactors(R, S);
-	vector<tuple<int, int>> positionen = getFactorPosInR(R, factors);	
-	
-	
-	*/
-	
+static vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors){
+	vector < pair<int, int> > posInR(8);
+// da mir keiner gesagt hat, wie ihr das Gericht haben wollt,
+// habe ich mich für Tupel entschieden,
+// der erste Wert gibt die startposition
+// der zweite Wert die Länge
+// Aupassen muss man, da meine Werte bei 0 anfangen
+// nicht wie im Paper bei 1, aber sonst stimmen die Werte
+
+// Verwendendungsbeispiel
+/*
+vector<string> factors = getLempelZivFactors(R, S);
+vector<tuple<int, int>> positionen = getFactorPosInR(R, factors);
+*/
+
+
+/*
+ / Edit: abgeändert von tuple zu pair
+*/
+
 	int startpos = -1;
 	int length = -1;
-
 	for (int i = 0; i < factors.size(); i++){
 		startpos = R.find(factors[i]);
-		length = factors[i].length;
-		posInR.push_back(make_tuple(startpos, length));
+		//length = factors[i].length;
+		posInR[i] = {startpos, length};
 	}
 	return posInR;
 }
