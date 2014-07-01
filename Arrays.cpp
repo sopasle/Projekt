@@ -148,13 +148,14 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 			d[p] = 0;					// evtl unnötig, da mit 0 initialisiert
 			p++;
 		}
-		neuerFaktor = ie[j]; 					// Berechnung des Faktors an der ersten neuen Stellen, zwingend fï¿½r den Vergleich		
-												// j = Zï¿½hlvariable in IS, erhï¿½hen, da erste neue Stelle bereits berechnet
+		if(neuerFaktor < p){
+		neuerFaktor = 0; 					// Berechnung des Faktors an der ersten neuen Stellen, zwingend fï¿½r den Vergleich		
+		};										// j = Zï¿½hlvariable in IS, erhï¿½hen, da erste neue Stelle bereits berechnet
 		while(is[j]<=p && j<size_is){ 			// solange Startposition des Strings kkleiner p, p = aktuelle Stelle in d
 			neuerFaktor2 = ie[j];	 			// Berechnung des Faktors an der neuen Stelle, zwingend fï¿½r den Vergleich
 			if(neuerFaktor2 > neuerFaktor){  	// Abfrage ob der aktuelle Wert keliner ist als der neu Berechnete	
 			neuerFaktor = neuerFaktor2;			// Falls ja, neuen Wert speichern
-			j1 = j;									// aktuelles j Abspeichern, damit nicht jedesmal von Beginn an getestet wird in der while Schleife
+			//j1 = j;									// aktuelles j Abspeichern, damit nicht jedesmal von Beginn an getestet wird in der while Schleife
 			}			
 			j++;			
 		}
@@ -162,7 +163,7 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 		d[p] = neuerFaktor-p+1;			
 		p++;
 		}
-		j = j1;
+		//j = j1;
 	
 	}
 	d[p] = 1;							// An letzter Stelle 1 schreiben, da D nur bis zum vorletzten Element berechnet
