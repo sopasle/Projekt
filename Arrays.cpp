@@ -33,8 +33,8 @@ void getFactors(int startIndex, int patternLength, int g[], int is[], int size_i
 /*
  * HARRY
 */
-static vector<string> getLempelZivFactors(string R, vector<string> S);
-static vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors);
+vector<string> getLempelZivFactors(string R, vector<string> S);
+vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors);
 
 int main(){
 /*
@@ -140,6 +140,7 @@ int main(){
  */
 
 
+<<<<<<< HEAD
 int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 
 	/*
@@ -155,6 +156,17 @@ int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 	while(p<d.size()){ 						
 		while(p<is[j]){					// solange die Position in d echt kleiner ist als der erste Inhalt in is, f�lle d mit 0
 			d[p] = 0;					
+=======
+int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
+	int p = 0; 							// Aktuelle Stelle in d
+	int j = 0; 							// Laufvariable f�r die maximale Distanz
+	int j1 = 0;							// Varible f�r das R�cksetzen von j
+	int neuerFaktor = 0;				// Speicher f�r Faktor an neuer Stelle
+	int neuerFaktor2 = 0;
+	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = L�nge von G, bzw IS und IE
+		while(p<is[j]){					// Falls der erste String nicht an erster Stelle anf�ngt, schreibe 0 in d
+			d[p] = 0;					// evtl unn�tig, da mit 0 initialisiert
+>>>>>>> 25283eaafa7583828da6861fbb31f8ae14a19dc3
 			p++;
 		}
 		if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell L�ngste Faktor zu ende
@@ -259,16 +271,9 @@ void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_w
 
 
 // Harry done
-static vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors){
+vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors){
 	vector < pair<int, int> > posInR(8);
-// da mir keiner gesagt hat, wie ihr das Gericht haben wollt,
-// habe ich mich für Tupel entschieden,
-// der erste Wert gibt die startposition
-// der zweite Wert die Länge
-// Aupassen muss man, da meine Werte bei 0 anfangen
-// nicht wie im Paper bei 1, aber sonst stimmen die Werte
 
-// Verwendendungsbeispiel
 /*
 vector<string> factors = getLempelZivFactors(R, S);
 vector<tuple<int, int>> positionen = getFactorPosInR(R, factors);
@@ -291,8 +296,7 @@ vector<tuple<int, int>> positionen = getFactorPosInR(R, factors);
 
 // Harry
 
-// Achtung, wird noch optimiert, hatte gerade einen guten Einfall :-)
-static vector<string> getLempelZivFactors(string R, vector<string> S){
+vector<string> getLempelZivFactors(string R, vector<string> S){
 	vector<string> factors;
 	string tempFactor;
 	for (int i = 0; i < S.size(); i++){
@@ -318,13 +322,30 @@ static vector<string> getLempelZivFactors(string R, vector<string> S){
 	sort(factors.begin(), factors.end());
 	factors.erase(unique(factors.begin(), factors.end()), factors.end());
 
-	// ich schmeiße die duplette raus
-	// da wir die ja nicht brauchen
-	// erst danach ermittle ich die Positionen
-	// so werden ein paar durchläufe bei der positionsermittelung
-	// gespart
-
-
 	return factors;
+}
+
+
+// So, hier mal alles in einer Methode
+// 
+vector<pair<int,int>> getFactorsN(string s, string vgl){
+	vector<pair<int, int>> values;
+	//string sear = "";
+	int startpos = 0;
+	int stringLength = 1;
+	for (int i = 0; i < vgl.length(); i++){
+		//sear = vgl.substr(startpos, stringLength);
+		if (s.find(vgl.substr(startpos, stringLength)) != string::npos){
+			stringLength++;
+		}
+		else{
+			stringLength--;
+			values.push_back(make_pair(startpos, stringLength));
+			startpos = stringLength;
+			stringLength = 1;
+		}
+	}
+	values.push_back(make_pair(startpos, stringLength));
+	return values;
 }
 
