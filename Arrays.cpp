@@ -20,10 +20,9 @@ using namespace sdsl;
 /*
  * OLI
 */
-int d_Array(int d[], int size_d,int is[],int size_is, int ie[]);
-int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]);
-int g_Array(int_vector<> t,int g[], int is[], int ie[]);
-int g_Array_Sort(vector<pair<int,int> > t_array, int size_t,int g[], int is[], int ie[]);
+int_vector<> d_Array(int_vector<> is,int_vector<> ie);
+int_vector<> d_Strich(csa_wt<> sa, int_vector<> d);
+int_vector<> g_Array_Sort(vector <pair<int,int>> t_array, int size_t);
 
 /* 
  * SANDRA
@@ -41,24 +40,28 @@ int main(){
 /*
  * OLI
  */
-	int d[9];
+	int_vector<> d;
 	int_vector<> d_1;
 	int_vector<> t = {1,1,1,8,5,3,7,4};
-	int g[8];// = {1,2,3,6,8,5,7,4};
-	int is[8] = {0,0,0,2,3,4,6,7};
-	int ie[] = {1,2,3,3,8,5,7,8};
-  
-	//csa_wt<> sa;
-	//construct_im(sa, "acgtgatag", 1);	//Eingabe: Referenzstring
+	int_vector<> g(8);// = {1,2,3,6,8,5,7,4};
+	int_vector<> is = {0,0,0,2,3,4,6,7};
+	int_vector<> ie = {1,2,3,3,8,5,7,8};
+	vector<pair<int,int> > t_array(8);
+	for(int i = 0; i<8;i++){
+	t_array[i] ={is[i],ie[i]};
+	}	
+	
+	csa_wt<> sa;
+	construct_im(sa, "acgtgatag", 1);	//Eingabe: Referenzstring
 
-	int size_d = sizeof(d) / sizeof(int);
-	int size_is = sizeof(is) / sizeof(int);
-	d_Array(d,size_d,is,size_is,ie);
-	//g_Array(t,g,is,ie);
+	//int size_d = 9; //sizeof(d) / sizeof(int);
+	//int size_is = sizeof(is) / sizeof(int);
+	d = d_Array(is,ie);
+	g = g_Array_Sort(t_array,8);
 
-	//d_1 = d_Strich(size_d,SAr,d);
-	for(int i = 0; i< 9; i++){
-	cout << "d: " << d[i] << endl;
+	d_1 = d_Strich(sa,d);
+	for(int i = 0; i< 8; i++){
+	cout << "d: " << g[i] << endl;
 	}
 /*
  * SANDRA 
@@ -137,46 +140,46 @@ int main(){
  */
 
 
-int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
-	int p = 0; 							// Aktuelle Stelle in d
-	int j = 0; 							// Laufvariable fï¿½r die maximale Distanz
-	int j1 = 0;							// Varible fï¿½r das Rï¿½cksetzen von j
-	int neuerFaktor = 0;				// Speicher fï¿½r Faktor an neuer Stelle
-	int neuerFaktor2 = 0;
-	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = Lï¿½nge von G, bzw IS und IE
-		while(p<is[j]){					// Falls der erste String nicht an erster Stelle anfängt, schreibe 0 in d
-			d[p] = 0;					// evtl unnötig, da mit 0 initialisiert
+int_vector<> d_Array(int_vector<> is,int_vector<> ie){
+
+	/*
+	 * Erwartet is und ie
+	 * leifert d zurück
+	*/
+
+	int p = 0; 						// Aktuelle Stelle in d
+	int j = 0; 						// Laufvariable fuer die maximale Distanz
+	int_vector<> d(9);						
+	uint64_t neuerFaktor = 0;				// max aus ie[j], bei is[j] <= p
+	uint64_t neuerFaktor2 = 0;
+	while(p<d.size()){ 						
+		while(p<is[j]){					// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
+			d[p] = 0;					
 			p++;
 		}
-		if(neuerFaktor < p){
-		neuerFaktor = 0; 					// Berechnung des Faktors an der ersten neuen Stellen, zwingend fï¿½r den Vergleich		
-		};										// j = Zï¿½hlvariable in IS, erhï¿½hen, da erste neue Stelle bereits berechnet
-		while(is[j]<=p && j<size_is){ 			// solange Startposition des Strings kkleiner p, p = aktuelle Stelle in d
-			neuerFaktor2 = ie[j];	 			// Berechnung des Faktors an der neuen Stelle, zwingend fï¿½r den Vergleich
-			if(neuerFaktor2 > neuerFaktor){  	// Abfrage ob der aktuelle Wert keliner ist als der neu Berechnete	
-			neuerFaktor = neuerFaktor2;			// Falls ja, neuen Wert speichern
-			//j1 = j;									// aktuelles j Abspeichern, damit nicht jedesmal von Beginn an getestet wird in der while Schleife
+		if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
+		neuerFaktor = 0; 							
+		};										
+		while(is[j]<=p && j<=is.size()){		// solange der Start des Faktors kleiner gleich der Stelle in d und j in is
+			neuerFaktor2 =ie[j];
+			if(neuerFaktor2 > neuerFaktor){  	// wenn die Endposition des aktuellen Faktors größer ist als das bisherige Maximum, verwende diesen als neues Maximum
+			neuerFaktor = neuerFaktor2;												
 			}			
 			j++;			
 		}
-		while(p<j){
+		while(p<j){					// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
 		d[p] = neuerFaktor-p+1;			
 		p++;
-		}
-		//j = j1;
-	
+		}	
 	}
-	d[p] = 1;							// An letzter Stelle 1 schreiben, da D nur bis zum vorletzten Element berechnet
-			
-								// wird und das letzte immer 1 sein muss, da der letzte String zu Ende ist
-	return 0;
+	return d;							
 }
 
 
-int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]){
-	int_vector<> d_1(size_d);
-	for(int i = 0; i < size_d;i++){
-		d_1[i] = d[sa[i+1]];				// Berechnung von d', Lï¿½nge des lï¿½ngsten Intervalls an der Position SAr[i]
+int_vector<> d_Strich(csa_wt<> sa, int_vector<> d){
+	int_vector<> d_1(d.size());
+	for(int i = 0; i < d.size();i++){
+		d_1[i]=(d[sa[i+1]]);				// Berechnung von d', Lï¿½nge des lï¿½ngsten Intervalls an der Position SAr[i]
 	}
 	
 	return d_1;
@@ -197,9 +200,10 @@ int_vector<> d_Strich(int size_d,csa_wt<> sa, int d[]){
 }*/
 
 
-int g_Array_Sort(vector <pair<int,int>> t_array, int size_t,int g[], int is[], int ie[]){	
+int_vector<> g_Array_Sort(vector <pair<int,int>> t_array, int size_t){	
 	vector<pair<pair<int,int>,int > > r(size_t); 		// Vektor als ((is,ie),g)
 	vector<pair<int,int> > r1(size_t); 					// Vektor (is,ie)
+	int_vector<> g(size_t);
 	for(int i = 0; i<size_t;i++){						
 		r1[i] = {t_array[i].first, t_array[i].second};							// r1 wird aus is,ie zusammengesetzt, entspricht nacher dem r Vektor, der aus der Faktorensuche entsteht
 		r[i] = {r1[i],i+1};								// r wird aus r1,g zusammengesetzt, inhalt in g entspricht dem index des t arrays, das aus der Faktorensuche entsteht
@@ -214,8 +218,9 @@ int g_Array_Sort(vector <pair<int,int>> t_array, int size_t,int g[], int is[], i
 		for(int i=0; i<size_t; ++i)
 	{
 		g[i] = r[i].second;								// da der index ï¿½ber den Schleifenindex erzeugt wird muss er noch in g geschrieben werden
-		cout << is[i] << ", " << ie[i] << ", " << g[i] << endl;	// Ausgabe is,ie,g
+		cout << g[i] << endl;	// Ausgabe g
 	}
+	return g;
 }
 
 
