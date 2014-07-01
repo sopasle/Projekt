@@ -41,25 +41,25 @@ int main(){
 /*
  * OLI
  */
-/*	int d[9];
+	int d[9];
 	int_vector<> d_1;
 	int_vector<> t = {1,1,1,8,5,3,7,4};
 	int g[8];// = {1,2,3,6,8,5,7,4};
-	int is[8];// = {0,0,0,2,3,4,6,7};
+	int is[8] = {0,0,0,2,3,4,6,7};
 	int ie[] = {1,2,3,3,8,5,7,8};
   
-	csa_wt<> sa;
-	construct_im(sa, "acgtgatag", 1);	//Eingabe: Referenzstring
+	//csa_wt<> sa;
+	//construct_im(sa, "acgtgatag", 1);	//Eingabe: Referenzstring
 
 	int size_d = sizeof(d) / sizeof(int);
 	int size_is = sizeof(is) / sizeof(int);
 	d_Array(d,size_d,is,size_is,ie);
-	g_Array(t,g,is,ie);
-*/
+	//g_Array(t,g,is,ie);
+
 	//d_1 = d_Strich(size_d,SAr,d);
-//	for(int i = 0; i< 8; i++){
-//	cout << "g: " << is[i] << endl;
-//	}
+	for(int i = 0; i< 9; i++){
+	cout << "d: " << d[i] << endl;
+	}
 /*
  * SANDRA 
  */
@@ -76,7 +76,7 @@ int main(){
 /*
  * HARRY
 */
-
+/*
 	string R = "ACGTGATAG"; // Eingabestring
 	vector<string> S; // hat alle S-Strings
 	
@@ -113,16 +113,16 @@ int main(){
 */
 /*
  / Test g_array
-*/	int g[8];
+	int g[8];
 	int is[8];
 	int ie[8];
 
-	/*vector<pair<int,int>> pos(8); 
+	vector<pair<int,int>> pos(8); 
 	for(int i = 0; i<8;i++){
 	pos[i] = {std::get<0>(positionen[i]),std::get<1>(positionen[i])}; // tupel in pair umwandeln
 	}*/
 
-	g_Array_Sort(positionen,8,g,is,ie);
+	//g_Array_Sort(positionen,8,g,is,ie);
 	
 	return EXIT_SUCCESS; // So macht man das Heute richtig
 
@@ -142,20 +142,27 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 	int j = 0; 							// Laufvariable fï¿½r die maximale Distanz
 	int j1 = 0;							// Varible fï¿½r das Rï¿½cksetzen von j
 	int neuerFaktor = 0;				// Speicher fï¿½r Faktor an neuer Stelle
-
+	int neuerFaktor2 = 0;
 	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = Lï¿½nge von G, bzw IS und IE
-		d[p] = ie[j]-p+1; 				// Berechnung des Faktors an der ersten neuen Stellen, zwingend fï¿½r den Vergleich
-		j++;							// j = Zï¿½hlvariable in IS, erhï¿½hen, da erste neue Stelle bereits berechnet
-		while(is[j]<=p && j<size_is){ 				// solange Startposition des Strings kkleiner p, p = aktuelle Stelle in d
-			neuerFaktor = ie[j]-p+1; 	// Berechnung des Faktors an der neuen Stelle, zwingend fï¿½r den Vergleich
-			if(d[p] < neuerFaktor){  	// Abfrage ob der aktuelle Wert keliner ist als der neu Berechnete	
-			d[p] = neuerFaktor;			// Falls ja, neuen Wert speichern
-			j1 = j;						// aktuelles j Abspeichern, damit nicht jedesmal von Beginn an getestet wird in der while Schleife
+		while(p<is[j]){					// Falls der erste String nicht an erster Stelle anfängt, schreibe 0 in d
+			d[p] = 0;					// evtl unnötig, da mit 0 initialisiert
+			p++;
+		}
+		neuerFaktor = ie[j]; 					// Berechnung des Faktors an der ersten neuen Stellen, zwingend fï¿½r den Vergleich		
+												// j = Zï¿½hlvariable in IS, erhï¿½hen, da erste neue Stelle bereits berechnet
+		while(is[j]<=p && j<size_is){ 			// solange Startposition des Strings kkleiner p, p = aktuelle Stelle in d
+			neuerFaktor2 = ie[j];	 			// Berechnung des Faktors an der neuen Stelle, zwingend fï¿½r den Vergleich
+			if(neuerFaktor2 > neuerFaktor){  	// Abfrage ob der aktuelle Wert keliner ist als der neu Berechnete	
+			neuerFaktor = neuerFaktor2;			// Falls ja, neuen Wert speichern
+			j1 = j;									// aktuelles j Abspeichern, damit nicht jedesmal von Beginn an getestet wird in der while Schleife
 			}			
 			j++;			
 		}
-		j = j1;				
+		while(p<j){
+		d[p] = neuerFaktor-p+1;			
 		p++;
+		}
+		j = j1;
 	
 	}
 	d[p] = 1;							// An letzter Stelle 1 schreiben, da D nur bis zum vorletzten Element berechnet
