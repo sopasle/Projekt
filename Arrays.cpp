@@ -27,8 +27,8 @@ int_vector<> g_Array_Sort(vector <pair<int,int>> t_array, int size_t);
 /* 
  * SANDRA
  */
-void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_wt<> sa, int g[], int is[], int size_is, int ie[]);
-void getFactors(int startIndex, int patternLength, int g[], int is[], int size_is, int ie[]);
+void searchPattern(uint64_t st,uint64_t ed, int_vector<>& dStrich, uint64_t patternLength, csa_wt<>& sa, int_vector<>& g, int_vector<>& is, int_vector<>& ie);
+void getFactors(uint64_t startIndex, uint64_t patternLength, int_vector<>& g, int_vector<>& is, int_vector<>& ie, uint64_t ieStartIndex, uint64_t ieEndIndex);
 
 /*
  * HARRY
@@ -40,6 +40,7 @@ int main(){
 /*
  * OLI
  */
+/*
 	int_vector<> d;
 	int_vector<> d_1;
 	int_vector<> t = {1,1,1,8,5,3,7,4};
@@ -63,17 +64,25 @@ int main(){
 	for(int i = 0; i< 8; i++){
 	cout << "d: " << g[i] << endl;
 	}
+*/
+
 /*
  * SANDRA 
  */
 
-/*
-  string pattern = "a";	//Eingabe: Pattern
+  int_vector<> dStrich = {4,2,4,3,1,5,2,3,6};
+  int_vector<> g = {1,2,3,6,8,5,7,4};
+  int_vector<> is = {0,0,0,2,3,4,6,7};
+  int_vector<> ie = {1,2,3,3,8,5,7,8};
+  
+  csa_wt<> sa;
+  construct_im(sa, "acgtgatag", 1);
+  string pattern = "a";
   
   uint64_t i=0, j=sa.size()-1, startIndex=0, endIndex=0;
   backward_search(sa, i, j, pattern.begin(), pattern.end(), startIndex, endIndex); // Rueckwaertssuche => startIndex, endIndex
-  searchPattern(startIndex-1, endIndex-1, d_Strich(size_d,sa,d),pattern.size(), sa, g, is, size_is, ie);
-*/
+  searchPattern(startIndex-1, endIndex-1, dStrich,pattern.size(), sa, g, is, ie);
+
 
 
 /*
@@ -139,8 +148,10 @@ int main(){
  * OLI
  */
 
-
+/*
 <<<<<<< HEAD
+
+
 int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 
 	/*
@@ -148,7 +159,7 @@ int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 	 * leifert d zurück
 	*/
 
-	int p = 0; 						// Aktuelle Stelle in d
+/*	int p = 0; 						// Aktuelle Stelle in d
 	int j = 0; 						// Laufvariable fuer die maximale Distanz
 	int_vector<> d(9);						
 	uint64_t neuerFaktor = 0;				// max aus ie[j], bei is[j] <= p
@@ -186,7 +197,7 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 	}
 	return d;							
 }
-
+*/
 
 int_vector<> d_Strich(csa_wt<> sa, int_vector<> d){
 	int_vector<> d_1(d.size());
@@ -244,29 +255,34 @@ int_vector<> g_Array_Sort(vector <pair<int,int>> t_array, int size_t){
  * SANDRA
  */
 
-void searchPattern(int st,int ed, int_vector<> dStrich, int patternLength, csa_wt<> sa, int g[], int is[], int size_is, int ie[]){
+/* sucht solange das Maximum in dStrich bis die Faktorlaenge < Patternlaenge ist und berechnet jeweils die Faktoren mittels getFactors.*/
+void searchPattern(uint64_t st,uint64_t ed, int_vector<>& dStrich, uint64_t patternLength, csa_wt<>& sa, int_vector<>& g, int_vector<>& is, int_vector<>& ie){
   rmq_succinct_sct<false> rmaxq(&dStrich);
-  int maxPosition = rmaxq(st,ed);
-  if(dStrich[maxPosition] >= patternLength){ //Abbruch, wenn Faktorlï¿½nge < Patternlï¿½nge
-	getFactors(sa[maxPosition+1], patternLength, g, is, size_is, ie);
+  uint64_t maxPosition = rmaxq(st,ed); //Maximum in dStrich
+  if(dStrich[maxPosition] >= patternLength){ //Abbruch, wenn Faktorlaenge < Patternlaenge
+	int_vector<>::iterator up;
+	up = upper_bound(is.begin(), is.end(), sa[maxPosition+1]);	//endIndex für rmq in ie
+	getFactors(sa[maxPosition+1], patternLength, g, is, ie, 0, up-is.begin()-1);
     if(st < maxPosition) 
-      searchPattern(st, maxPosition-1, dStrich, patternLength, sa, g, is, size_is, ie);
+      searchPattern(st, maxPosition-1, dStrich, patternLength, sa, g, is, ie);
     if(ed > maxPosition)
-      searchPattern(maxPosition+1, ed, dStrich, patternLength, sa, g, is, size_is, ie);
+      searchPattern(maxPosition+1, ed, dStrich, patternLength, sa, g, is, ie);
   }
  }
-  
- void getFactors(int startIndex, int patternLength, int g[], int is[], int size_is, int ie[]){	//ToDo: O(1+occ)????
-		for(int i = 0; i<size_is; i++){
-			if(is[i] <= startIndex){
-				if(ie[i] >= startIndex+patternLength-1){
-					cout << "Faktor: " << g[i] << endl;
-				}
-			}
-			else{
-				break;
-			}
-		}
+ 
+/* sucht das Maximum in ie und gibt den Faktor aus, falls ie-Wert >= startIndex+Patternlaenge-1*/
+void getFactors(uint64_t startIndex, uint64_t patternLength, int_vector<>& g, int_vector<>& is, int_vector<>& ie, uint64_t ieStartIndex, uint64_t ieEndIndex){
+   rmq_succinct_sct<false> rmaxq(&ie);
+   uint64_t factorPosition = rmaxq(ieStartIndex,ieEndIndex); //naechster moeglicher Faktor beim Maximum in ie
+   if(ie[factorPosition] >= startIndex+patternLength-1){ //Abbruch falls Pattern nicht mehr im Faktor liegt
+     cout << "Faktor: " << g[factorPosition] << endl;
+    if(factorPosition < ieEndIndex){
+	getFactors(startIndex, patternLength, g, is, ie, factorPosition+1, ieEndIndex);
+     }
+     if(factorPosition > ieStartIndex){
+	getFactors(startIndex, patternLength, g, is, ie, ieStartIndex, factorPosition-1);
+     }
+   }
 }
 
 
