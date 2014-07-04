@@ -40,7 +40,7 @@ int main(){
 /*
  * OLI
  */
-/*
+
 	int_vector<> d;
 	int_vector<> d_1;
 	int_vector<> t = {1,1,1,8,5,3,7,4};
@@ -61,15 +61,15 @@ int main(){
 	g = g_Array_Sort(t_array,8);
 
 	d_1 = d_Strich(sa,d);
-	for(int i = 0; i< 8; i++){
-	cout << "d: " << g[i] << endl;
+	for(int i = 0; i< 9; i++){
+	cout << "d: " << d[i] << endl;
 	}
-*/
+
 
 /*
  * SANDRA 
  */
-
+/*
   int_vector<> dStrich = {4,2,4,3,1,5,2,3,6};
   int_vector<> g = {1,2,3,6,8,5,7,4};
   int_vector<> is = {0,0,0,2,3,4,6,7};
@@ -83,7 +83,7 @@ int main(){
   backward_search(sa, i, j, pattern.begin(), pattern.end(), startIndex, endIndex); // Rueckwaertssuche => startIndex, endIndex
   searchPattern(startIndex-1, endIndex-1, dStrich,pattern.size(), sa, g, is, ie);
 
-
+*/
 
 /*
  * HARRY
@@ -148,8 +148,7 @@ int main(){
  * OLI
  */
 
-/*
-<<<<<<< HEAD
+
 
 
 int_vector<> d_Array(int_vector<> is,int_vector<> ie){
@@ -159,7 +158,7 @@ int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 	 * leifert d zurück
 	*/
 
-/*	int p = 0; 						// Aktuelle Stelle in d
+	int p = 0; 						// Aktuelle Stelle in d
 	int j = 0; 						// Laufvariable fuer die maximale Distanz
 	int_vector<> d(9);						
 	uint64_t neuerFaktor = 0;				// max aus ie[j], bei is[j] <= p
@@ -167,17 +166,6 @@ int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 	while(p<d.size()){ 						
 		while(p<is[j]){					// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
 			d[p] = 0;					
-=======
-int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
-	int p = 0; 							// Aktuelle Stelle in d
-	int j = 0; 							// Laufvariable fï¿½r die maximale Distanz
-	int j1 = 0;							// Varible fï¿½r das Rï¿½cksetzen von j
-	int neuerFaktor = 0;				// Speicher fï¿½r Faktor an neuer Stelle
-	int neuerFaktor2 = 0;
-	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = Lï¿½nge von G, bzw IS und IE
-		while(p<is[j]){					// Falls der erste String nicht an erster Stelle anfï¿½ngt, schreibe 0 in d
-			d[p] = 0;					// evtl unnï¿½tig, da mit 0 initialisiert
->>>>>>> 25283eaafa7583828da6861fbb31f8ae14a19dc3
 			p++;
 		}
 		if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
@@ -197,7 +185,7 @@ int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
 	}
 	return d;							
 }
-*/
+
 
 int_vector<> d_Strich(csa_wt<> sa, int_vector<> d){
 	int_vector<> d_1(d.size());
