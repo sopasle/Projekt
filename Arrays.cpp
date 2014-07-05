@@ -36,11 +36,23 @@ void getFactors(uint64_t startIndex, uint64_t patternLength, int_vector<>& g, in
 vector<string> getLempelZivFactors(string R, vector<string> S);
 vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors);
 
+
+
+/*
+ * Testmethoden
+ */
+
+void test_dArray();
+
+
 int main(){
 /*
  * OLI
  */
-
+ 
+ 
+ test_dArray();
+/*
 	int_vector<> d;
 	int_vector<> d_1;
 	int_vector<> t = {1,1,1,8,5,3,7,4};
@@ -65,7 +77,7 @@ int main(){
 	cout << "d: " << d[i] << endl;
 	}
 
-
+*/
 /*
  * SANDRA 
  */
@@ -160,26 +172,33 @@ int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 
 	int p = 0; 						// Aktuelle Stelle in d
 	int j = 0; 						// Laufvariable fuer die maximale Distanz
-	int_vector<> d(9);						
+	int_vector<> d(ie[ie.size()-1]);	
+				
 	uint64_t neuerFaktor = 0;				// max aus ie[j], bei is[j] <= p
 	uint64_t neuerFaktor2 = 0;
-	while(p<d.size()){ 						
-		while(p<is[j]){					// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
-			d[p] = 0;					
-			p++;
+	while(p<d.size()){ 	
+		
+				if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
+		neuerFaktor = 0; 
+								
+		};					
+		while(p<is[j] && neuerFaktor == 0){					// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
+			d[p] = 0;			
+		
+			p++;		
 		}
-		if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
-		neuerFaktor = 0; 							
-		};										
+									
 		while(is[j]<=p && j<=is.size()){		// solange der Start des Faktors kleiner gleich der Stelle in d und j in is
 			neuerFaktor2 =ie[j];
 			if(neuerFaktor2 > neuerFaktor){  	// wenn die Endposition des aktuellen Faktors größer ist als das bisherige Maximum, verwende diesen als neues Maximum
 			neuerFaktor = neuerFaktor2;												
-			}			
+			}		
+								cout << p << " " << j << " " << neuerFaktor<< endl;				
 			j++;			
 		}
-		while(p<j){					// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
-		d[p] = neuerFaktor-p+1;			
+		while(p<=j){					// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
+		d[p] = neuerFaktor-p+1;		
+	
 		p++;
 		}	
 	}
@@ -351,5 +370,29 @@ vector<pair<int,int>> getFactorsN(string s, string vgl){
 	}
 	values.push_back(make_pair(startpos, stringLength));
 	return values;
+}
+
+
+
+
+
+
+/*
+ * Testmethoden
+ */
+ 
+ 
+void test_dArray(){
+	
+	int_vector<> is = {1,1,2,2,6,6,7,8,10};
+	int_vector<> ie = {5,6,4,5,6,8,8,8,10};
+	int_vector<> d; // 0,6,5,4,3,2,3,2,1,0,1
+	
+	d = d_Array(is,ie);
+	for(int i = 0; i< d.size(); i++){
+	cout << "d: " << d[i] << endl;
+	}
+	
+	
 }
 
