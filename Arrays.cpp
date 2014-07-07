@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <string>
 #include <tuple>
+#include <fstream>
 #include "Arrays.h"
 
 using namespace std;
@@ -193,7 +194,7 @@ int_vector<> d_Array(int_vector<> &is,int_vector<> &ie){
 			if(neuerFaktor2 > neuerFaktor){  	// wenn die Endposition des aktuellen Faktors größer ist als das bisherige Maximum, verwende diesen als neues Maximum
 			neuerFaktor = neuerFaktor2;												
 			}		
-								cout << p << " " << j << " " << neuerFaktor<< endl;				
+			//cout << p << " " << j << " " << neuerFaktor<< endl;				
 			j++;			
 		}
 		while(p<=j){					// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
@@ -392,10 +393,24 @@ void test_dArray(){
 	//int_vector<> d; // 0,6,5,4,3,2,3,2,1,0,1
 	
 	a1.d = d_Array(a1.is,a1.ie);
-	for(int i = 0; i<= a1.d.size(); i++){
-	cout << "d: " << a1.d[i] << endl;
-	}
+
+
+	ofstream ofs("arrays.txt", ios::binary); // Pfad und Speichermethode
+	char* buffer = new char[sizeof(a1)];
+	ofs.write((char *)&a1, sizeof(a1));	// Speichern des Objekts
+
+	Arrays a2;
+
+	ifstream ifs("arrays.txt", ios::binary);	// Pfad und Speichermethode
+	ifs.read((char *)&a2, sizeof(a2));		// Lesen der Datei und speichern in Objekt
 	
+
+	ofs.close();
+	for(int i = 0; i<= a1.d.size(); i++){
+	cout << "A1: " << a1.d[i] << " | A2: " << a2.d[i] << endl;
+	}
+
+	ifs.close();
 	
 }
 
