@@ -3,7 +3,7 @@
 #include <cstring>
 
 #include <sdsl/bit_vectors.hpp>
-#include <sdsl/int_vector.hpp>
+//#include <sdsl/int_vector.hpp>
 #include <sdsl/suffix_arrays.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/rmq_support.hpp>
@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <string>
 #include <tuple>
-
+#include "Arrays.h"
 
 using namespace std;
 using namespace sdsl;
@@ -21,7 +21,7 @@ using namespace sdsl;
 /*
  * OLI
 */
-int_vector<> d_Array(int_vector<> is,int_vector<> ie);
+int_vector<> d_Array(int_vector<> &is,int_vector<> &ie);
 int_vector<> d_Strich(csa_wt<> sa, int_vector<> d);
 int_vector<> g_Array_Sort(vector <pair<int,int>> t_array, int size_t);
 
@@ -164,7 +164,7 @@ int main(){
 
 
 
-int_vector<> d_Array(int_vector<> is,int_vector<> ie){
+int_vector<> d_Array(int_vector<> &is,int_vector<> &ie){
 	/*
 	 * Erwartet is und ie
 	 * leifert d zurück
@@ -178,11 +178,11 @@ int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 	uint64_t neuerFaktor2 = 0;
 	while(p<d.size()){ 	
 		
-				if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
+		if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
 		neuerFaktor = 0; 
 								
 		};					
-		while(p<is[j] && neuerFaktor == 0){					// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
+		while(p<is[j] && neuerFaktor == 0){		// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
 			d[p] = 0;			
 		
 			p++;		
@@ -383,14 +383,17 @@ vector<pair<int,int>> getFactorsN(string s, string vgl){
  
  
 void test_dArray(){
+	Arrays a1;
+	a1.is = {1,1,2,2,5,6,7,8,10};
+	//int_vector<> is = {1,1,2,2,6,6,7,8,10};
+	a1.ie = {5,6,4,5,6,8,8,8,10};
+	//int_vector<> ie = {5,6,4,5,6,8,8,8,10};
+	a1.d;
+	//int_vector<> d; // 0,6,5,4,3,2,3,2,1,0,1
 	
-	int_vector<> is = {1,1,2,2,6,6,7,8,10};
-	int_vector<> ie = {5,6,4,5,6,8,8,8,10};
-	int_vector<> d; // 0,6,5,4,3,2,3,2,1,0,1
-	
-	d = d_Array(is,ie);
-	for(int i = 0; i< d.size(); i++){
-	cout << "d: " << d[i] << endl;
+	a1.d = d_Array(a1.is,a1.ie);
+	for(int i = 0; i<= a1.d.size(); i++){
+	cout << "d: " << a1.d[i] << endl;
 	}
 	
 	
