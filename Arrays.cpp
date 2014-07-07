@@ -13,6 +13,7 @@
 #include <string>
 #include <tuple>
 
+
 using namespace std;
 using namespace sdsl;
 
@@ -152,7 +153,6 @@ int main(){
 
 
 int_vector<> d_Array(int_vector<> is,int_vector<> ie){
-
 	/*
 	 * Erwartet is und ie
 	 * leifert d zurück
