@@ -3,7 +3,7 @@
 #include <cstring>
 
 #include <sdsl/bit_vectors.hpp>
-#include <sdsl/int_vector.hpp>
+//#include <sdsl/int_vector.hpp>
 #include <sdsl/suffix_arrays.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/rmq_support.hpp>
@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <string>
 #include <tuple>
+#include <fstream>
+#include "Arrays.h"
 
 using namespace std;
 using namespace sdsl;
@@ -20,7 +22,7 @@ using namespace sdsl;
 /*
  * OLI
 */
-int_vector<> d_Array(int_vector<> is,int_vector<> ie);
+int_vector<> d_Array(int_vector<> &is,int_vector<> &ie);
 int_vector<> d_Strich(csa_wt<> sa, int_vector<> d);
 int_vector<> g_Array_Sort(vector <pair<int,int>> t_array, int size_t);
 
@@ -36,10 +38,22 @@ void getFactors(uint64_t startIndex, uint64_t patternLength, int_vector<>& g, in
 vector<string> getLempelZivFactors(string R, vector<string> S);
 vector<pair<int,int>> getFactorPosInR(string R, vector<string> factors);
 
+
+
+/*
+ * Testmethoden
+ */
+
+void test_dArray();
+
+
 int main(){
 /*
  * OLI
  */
+ 
+ 
+ test_dArray();
 /*
 	int_vector<> d;
 	int_vector<> d_1;
@@ -61,15 +75,15 @@ int main(){
 	g = g_Array_Sort(t_array,8);
 
 	d_1 = d_Strich(sa,d);
-	for(int i = 0; i< 8; i++){
-	cout << "d: " << g[i] << endl;
+	for(int i = 0; i< 9; i++){
+	cout << "d: " << d[i] << endl;
 	}
-*/
 
+*/
 /*
  * SANDRA 
  */
-
+/*
   int_vector<> dStrich = {4,2,4,3,1,5,2,3,6};
   int_vector<> g = {1,2,3,6,8,5,7,4};
   int_vector<> is = {0,0,0,2,3,4,6,7};
@@ -83,7 +97,7 @@ int main(){
   backward_search(sa, i, j, pattern.begin(), pattern.end(), startIndex, endIndex); // Rueckwaertssuche => startIndex, endIndex
   searchPattern(startIndex-1, endIndex-1, dStrich,pattern.size(), sa, g, is, ie);
 
-
+*/
 
 /*
  * HARRY
@@ -148,56 +162,50 @@ int main(){
  * OLI
  */
 
-/*
-<<<<<<< HEAD
 
 
-int_vector<> d_Array(int_vector<> is,int_vector<> ie){
 
+int_vector<> d_Array(int_vector<> &is,int_vector<> &ie){
 	/*
 	 * Erwartet is und ie
 	 * leifert d zurück
 	*/
 
-/*	int p = 0; 						// Aktuelle Stelle in d
+	int p = 0; 						// Aktuelle Stelle in d
 	int j = 0; 						// Laufvariable fuer die maximale Distanz
-	int_vector<> d(9);						
+	int_vector<> d(ie[ie.size()-1]);	
+				
 	uint64_t neuerFaktor = 0;				// max aus ie[j], bei is[j] <= p
 	uint64_t neuerFaktor2 = 0;
-	while(p<d.size()){ 						
-		while(p<is[j]){					// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
-			d[p] = 0;					
-=======
-int d_Array(int d[],int size_d,int is[],int size_is, int ie[]){
-	int p = 0; 							// Aktuelle Stelle in d
-	int j = 0; 							// Laufvariable fï¿½r die maximale Distanz
-	int j1 = 0;							// Varible fï¿½r das Rï¿½cksetzen von j
-	int neuerFaktor = 0;				// Speicher fï¿½r Faktor an neuer Stelle
-	int neuerFaktor2 = 0;
-	while(p<size_d-1){ 					// solange p kleiner n, p = aktuelle Stelle in d, n = Lï¿½nge von G, bzw IS und IE
-		while(p<is[j]){					// Falls der erste String nicht an erster Stelle anfï¿½ngt, schreibe 0 in d
-			d[p] = 0;					// evtl unnï¿½tig, da mit 0 initialisiert
->>>>>>> 25283eaafa7583828da6861fbb31f8ae14a19dc3
-			p++;
-		}
+	while(p<d.size()){ 	
+		
 		if(neuerFaktor < p){				// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
-		neuerFaktor = 0; 							
-		};										
+		neuerFaktor = 0; 
+								
+		};					
+		while(p<is[j] && neuerFaktor == 0){		// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
+			d[p] = 0;			
+		
+			p++;		
+		}
+									
 		while(is[j]<=p && j<=is.size()){		// solange der Start des Faktors kleiner gleich der Stelle in d und j in is
 			neuerFaktor2 =ie[j];
 			if(neuerFaktor2 > neuerFaktor){  	// wenn die Endposition des aktuellen Faktors größer ist als das bisherige Maximum, verwende diesen als neues Maximum
 			neuerFaktor = neuerFaktor2;												
-			}			
+			}		
+			//cout << p << " " << j << " " << neuerFaktor<< endl;				
 			j++;			
 		}
-		while(p<j){					// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
-		d[p] = neuerFaktor-p+1;			
+		while(p<=j){					// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
+		d[p] = neuerFaktor-p+1;		
+	
 		p++;
 		}	
 	}
 	return d;							
 }
-*/
+
 
 int_vector<> d_Strich(csa_wt<> sa, int_vector<> d){
 	int_vector<> d_1(d.size());
@@ -363,5 +371,46 @@ vector<pair<int,int>> getFactorsN(string s, string vgl){
 	}
 	values.push_back(make_pair(startpos, stringLength));
 	return values;
+}
+
+
+
+
+
+
+/*
+ * Testmethoden
+ */
+ 
+ 
+void test_dArray(){
+	Arrays a1;
+	a1.is = {1,1,2,2,5,6,7,8,10};
+	//int_vector<> is = {1,1,2,2,6,6,7,8,10};
+	a1.ie = {5,6,4,5,6,8,8,8,10};
+	//int_vector<> ie = {5,6,4,5,6,8,8,8,10};
+	a1.d;
+	//int_vector<> d; // 0,6,5,4,3,2,3,2,1,0,1
+	
+	a1.d = d_Array(a1.is,a1.ie);
+
+
+	ofstream ofs("arrays.txt", ios::binary); // Pfad und Speichermethode
+	char* buffer = new char[sizeof(a1)];
+	ofs.write((char *)&a1, sizeof(a1));	// Speichern des Objekts
+
+	Arrays a2;
+
+	ifstream ifs("arrays.txt", ios::binary);	// Pfad und Speichermethode
+	ifs.read((char *)&a2, sizeof(a2));		// Lesen der Datei und speichern in Objekt
+	
+
+	ofs.close();
+	for(int i = 0; i<= a1.d.size(); i++){
+	cout << "A1: " << a1.d[i] << " | A2: " << a2.d[i] << endl;
+	}
+
+	ifs.close();
+	
 }
 
