@@ -1,0 +1,18 @@
+#include "FRLZSI.hpp"
+
+
+int main(){
+
+	/*Beispiel aus dem Paper*/
+	string r = "ACGTGATAG";
+	vector<string> s; // hat alle S-Strings
+	s.push_back("TGATAGACG");
+	s.push_back("GAGTACTA");
+	s.push_back("GTACGT");
+	s.push_back("AGGA");
+	
+	FRLZSI t1(r, s);
+	t1.search_pattern("a"); 
+		
+	return EXIT_SUCCESS;
+}
