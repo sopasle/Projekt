@@ -13,35 +13,40 @@ using namespace std;
 
 class FRLZSI{
 	public: 
-		FRLZSI(string r, vector<string> &s);
-		~FRLZSI();
-		void search_pattern(string pattern);
+		FRLZSI();				// Konstruktor
+		FRLZSI(string r, vector<string> &s);	// Konstruktor mit Aufruf Referenzstring, Vektor mit Eingabestrings
+		~FRLZSI();				// Destruktor
+		void search_pattern(string pattern);	// Patternsuche
+		void test_ausgabe();			// Testausgaben
 		
 	private:
-		vector<pair<int,int>> m_t_array;
-		csa_wt<> m_sa;
+		vector<pair<int,int>> m_t_array;	// T-Array, (Faktoranfang,Faktorende) im Referenzstring
+		csa_wt<> m_sa;				// Suffix-Array
+			int_vector<> m_ds;		// D'-Array, für Ausgabetests
 		/* I(T) Datenstruktur */
-		int_vector<> m_g;
-		int_vector<> m_is;
-		rmq_succinct_sct<false> m_ie_rmaxq;
-		rmq_succinct_sct<false> m_ds_rmaxq;
+		int_vector<> m_g;			// G-Array
+		int_vector<> m_is;			// IS-Array = Faktoranfang im Referenzstring
+		rmq_succinct_sct<false> m_ie_rmaxq;	// RMQ auf IE	
+		rmq_succinct_sct<false> m_ds_rmaxq;	// RMQ auf D'
 		
 		/*
 		 * HARRY
 		*/
-		void getLempelZivFactors(string r, vector<string> &s);
+		void getLempelZivFactors(string r, vector<string> &s); // Faktoren herausfinden
 		
 		/*
 		 * OLI
 		*/
-		void g_Array_Sort();
-		int_vector<> d_Array();
-		void d_Strich(int_vector<> d);
+		void g_Array();				// G-Array erstellen
+		int_vector<> d_Array();			// D-Array erstellen
+		void d_Strich(int_vector<> d);		// D'-Array erstellen
+
+		void d_ArrayTest();			// D-Array naiv für ein sicheres Ergebnis
 		
 		/*
 		 * SANDRA
 		*/
-		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);
+		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
 };
 

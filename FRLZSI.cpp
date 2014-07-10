@@ -5,12 +5,20 @@
 using namespace sdsl;
 using namespace std;
 
+
+/*Default Konstruktor*/
+
+FRLZSI::FRLZSI(){
+}
+
+
 /*Konstruktor*/
 FRLZSI::FRLZSI(string r, vector<string> &s){
 	getLempelZivFactors(r,s);	//m_t_array initialisieren
 	construct_im(m_sa, "ACGTGATAG", 1);	//m_sa initialisieren
-	g_Array_Sort(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
+	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
+	d_ArrayTest();
 	
 }
 
@@ -32,13 +40,14 @@ void FRLZSI::getLempelZivFactors(string r, vector<string> &s){
 		t_array[i] ={is[i],ie[i]};
 	} 
 	m_t_array = t_array;
+
 }
 
 
 /*
  * OLI
 */
-void FRLZSI::g_Array_Sort(){
+void FRLZSI::g_Array(){
 	vector<pair<pair<int,int>,int > > r(m_t_array.size()); // Vektor als ((is,ie),g)
 	vector<pair<int,int> > r1(m_t_array.size()); // Vektor (is,ie)
 	int_vector<> g(m_t_array.size());
@@ -49,29 +58,29 @@ void FRLZSI::g_Array_Sort(){
 		r[i] = {r1[i],i+1};	// r wird aus r1,g zusammengesetzt, inhalt in g entspricht dem index des t arrays, das aus der Faktorensuche entsteht
 	}
 	sort(r.begin(), r.end());	// r wird nach dem ersten Faktor sortiert, der erste Faktor ist r1, da es wieder ein pair ist wird nach is stabil sortiert
-	for(int i=0; i<m_t_array.size(); ++i)
+	/*for(int i=0; i<m_t_array.size(); ++i)
 	{
 		cout << r[i].first.first << ", " << r[i].first.second << ", " << r[i].second << endl; // Ausgabe r
-	}
+	}*/
 
-	cout << "----" << endl;
+	//cout << "----" << endl;
 	for(int i=0; i<m_t_array.size(); ++i)
 	{
 		g[i] = r[i].second;	// da der index ueber den Schleifenindex erzeugt wird muss er noch in g geschrieben werden
 		is[i] = r[i].first.first;
 		ie[i] = r[i].first.second;
-		cout << g[i] << endl;	// Ausgabe g
+		//cout << g[i] << endl;	// Ausgabe g
 	}
 	m_g = g;
 	m_is = is;
 	rmq_succinct_sct<false> rmaxq(&ie);
-	m_ie_rmaxq = rmaxq;;
+	m_ie_rmaxq = rmaxq;
 }
 
 int_vector<> FRLZSI::d_Array(){
 	/*
 	* Erwartet Initialisierung von m_is und m_t_array
-	* leifert d zurück
+	* erstellt d
 	*/
 
 	int p = 0; // Aktuelle Stelle in d
@@ -95,14 +104,19 @@ int_vector<> FRLZSI::d_Array(){
 			if(neuerFaktor2 > neuerFaktor){ // wenn die Endposition des aktuellen Faktors größer ist als das bisherige Maximum, verwende diesen als neues Maximum
 				neuerFaktor = neuerFaktor2;	
 			}	
-			//cout << p << " " << j << " " << neuerFaktor<< endl;
+			cout << p << " " << j << " " << neuerFaktor<< endl;
 			j++;	
 		}
-		while(p<=j){	// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
+		while(p<j){	// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
 			d[p] = neuerFaktor-p+1;	
 			p++;
 		}	
 	}
+	cout << "d:  ";
+	for(int i = 0;i<d.size();i++){
+		cout << d[i] << ",";
+	}
+	cout << endl;
 	return d;	
 }
 
@@ -111,6 +125,7 @@ void FRLZSI::d_Strich(int_vector<> d){
 	for(int i = 0; i < d.size();i++){
 		d_1[i]=(d[m_sa[i+1]]);	// Berechnung von d', Laenge des laengsten Intervalls an der Position SAr[i]
 	}
+	m_ds = d_1;
 	rmq_succinct_sct<false> rmaxq(&d_1);
 	m_ds_rmaxq = rmaxq;
 }
@@ -160,5 +175,66 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 		if(factorPosition > ieStartIndex){
 			getFactors(startIndex, patternLength, ieStartIndex, factorPosition-1);
 		}
-   }
+  	 }
+}
+/*
+ * Testmethoden
+*/
+
+
+void FRLZSI::test_ausgabe(){
+	/*for(int i = 0;i<m_g.size();i++){
+		cout << "g: " << m_g[i] << endl;
+	}*/
+
+	cout << "sa: ";
+	for(int i = 1;i<m_sa.size();i++){
+		cout << m_sa[i]+1 << ",";
+	}
+	cout << endl;
+
+	cout << "ds: ";
+	for(int i = 0;i<m_ds.size();i++){
+		cout << m_ds[i] << ",";
+	}
+	cout << endl;
+}
+
+void FRLZSI::d_ArrayTest(){
+/*
+	* Erwartet Initialisierung von m_is und m_t_array
+	* erstellt d
+	*/
+	int_vector<> ie = {1,2,3,3,8,5,7,8};
+	int i = 0; // Höchster Wert der Reichweite
+ 	int j = 0; // Laufvariable fuer die maximale Distanz
+	int p = 0; // Aktuelle Stelle in d
+	int_vector<> d(m_sa.size()-1);	
+	while(p<d.size()){
+		while(m_is[j]>p){ // Solange kein Faktor da ist, wird 0 geschrieben
+			d[p] = 0;
+			p++;
+		}
+		while(m_is[j] <= p && j < ie.size()){ 	// solange der Anfang der Faktoren kleiner ist als die aktuelle Stelle und kleiner ist als die Gesamtlänge
+			if(i < ie[j]-p+1){		// Abfrage ob aktuell höchster Wert kleiner ist als der Wert an der neuen Stelle, eins weiter
+				i = ie[j]-p+1;		// Falls ja, wird der höhere Wert übernommen
+				if(i<0){		// Falls der Wert kleiner als 0 wird, muss er auf 0 gesetzt werden, da ansonsten der Vergleich fehlschlägt
+					i = 0;
+				}
+			}
+			j++;
+			
+		}
+		j = 0;					// Durch j=0 wird immer vom Anfang an geprüft
+		d[p] = i;				// Speichern des höchsten Wertes an der aktuellen Stelle	
+		i = 0;					// Rücksetzen des höchsten Werts
+		p++;
+	}
+
+
+	cout << "dT: ";
+	for(int i = 0;i<d.size();i++){
+		cout << d[i] << ",";
+	}
+	cout << endl;	
 }
