@@ -123,7 +123,7 @@ void FRLZSI::d_Strich(int_vector<> d){
 void FRLZSI::search_pattern(string pattern){
 	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
 	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	// Rueckwaertssuche => startIndex, endIndex
-	if(l_res <= r_res){	//Pattern existiert in R
+	if(l_res <= r_res && r_res <= m_sa.size()-1){	//Pattern existiert in R
 		searchPattern(l_res-1, r_res-1, pattern.size());
 	}else{
 		cout << pattern << " existiert nicht" << endl;	//Vorlaeufig fuer Case1
