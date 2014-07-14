@@ -1,1 +1,1 @@
-g++ -std=c++11 -O3 -DNDEBUG -I ../sdsl_installed/include -L ../sdsl_installed/lib Arrays.cpp -o arrays -lsdsl -ldivsufsort -ldivsufsort64
+g++ -std=c++11 -O3 -DNDEBUG -I ../sdsl_installed/include -L ../sdsl_installed/lib FRLZSI.cpp test_FRLZSI.cpp -o a -lsdsl -ldivsufsort -ldivsufsort64

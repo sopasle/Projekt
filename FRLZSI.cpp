@@ -17,7 +17,8 @@ FRLZSI::FRLZSI(string r, vector<string> &s){
 	getLempelZivFactors(r,s);	//m_t_array initialisieren
 	construct_im(m_sa, "ACGTGATAG", 1);	//m_sa initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
-	d_Strich(d_Array());		//m_ds initialisieren
+	d_Array();
+	//d_Strich(d_Array());		//m_ds initialisieren
 	d_ArrayTest();
 	
 }
@@ -33,10 +34,12 @@ FRLZSI::~FRLZSI(){
 */
 void FRLZSI::getLempelZivFactors(string r, vector<string> &s){
 	/*Zum Testen erstmal mit den Werten vom Beispiel initialisieren*/
-	int_vector<> is = {0,0,0,7,4,2,6,3};
-	int_vector<> ie = {1,2,3,8,5,3,7,8};
-	vector<pair<int,int>> t_array(8);
-	for(int i = 0; i<8;i++){
+	int_vector<> is = {0,0,0,7,4,2,6,3}; // Blattbsp
+	int_vector<> ie = {1,2,3,8,5,3,7,8}; // Blattbsp
+	//int_vector<> is = {0,0,0,0,0,0,1,2,2,2,9,12,14};	// Zufallsbsp
+	//int_vector<> ie = {1,2,4,5,7,13,14,5,8,17,10,28,15};	// Zufallsbsp
+	vector<pair<int,int>> t_array(is.size());
+	for(int i = 0; i<is.size();i++){
 		t_array[i] ={is[i],ie[i]};
 	} 
 	m_t_array = t_array;
@@ -79,38 +82,21 @@ void FRLZSI::g_Array(){
 
 int_vector<> FRLZSI::d_Array(){
 	/*
-	* Erwartet Initialisierung von m_is und m_t_array
+	* Erwartet Initialisierung von m_is, m_ie_rmaxq und m_t_array
 	* erstellt d
 	*/
-
 	int p = 0; // Aktuelle Stelle in d
 	int j = 0; // Laufvariable fuer die maximale Distanz
 	int_vector<> d(m_sa.size()-1);	
-
-	uint64_t neuerFaktor = 0;	// max aus ie[j], bei is[j] <= p
-	uint64_t neuerFaktor2 = 0;
+	uint64_t posmax = 0;	// Position des Maximums an bis zur aktuellen Stelle
 	while(p<d.size()){
-
-		if(neuerFaktor < p){	// wenn das max aus ie kleiner ist als die Position in d, ist der aktuell Längste Faktor zu ende
-			neuerFaktor = 0;
-		};	
-		while(p<m_is[j] && neuerFaktor == 0){	// solange die Position in d echt kleiner ist als der erste Inhalt in is, fülle d mit 0
-			d[p] = 0;
-			p++;	
+		while(m_is[j]<=p && j<m_is.size()){ 
+		j++;
 		}
-
-		while(m_is[j]<=p && j<=m_is.size()){	// solange der Start des Faktors kleiner gleich der Stelle in d und j in is
-			neuerFaktor2 = m_t_array[m_g[j]-1].second; //ie[j];
-			if(neuerFaktor2 > neuerFaktor){ // wenn die Endposition des aktuellen Faktors größer ist als das bisherige Maximum, verwende diesen als neues Maximum
-				neuerFaktor = neuerFaktor2;	
-			}	
-			cout << p << " " << j << " " << neuerFaktor<< endl;
-			j++;	
-		}
-		while(p<j){	// solange die aktuelle Position in d kleiner ist als die aktuelle Stelle in is, schreibe in d
-			d[p] = neuerFaktor-p+1;	
-			p++;
-		}	
+		posmax = m_ie_rmaxq(0,j-1);
+		//cout << p << " " << j << " " << neuerFaktor << endl;
+		d[p] = m_t_array[m_g[posmax]-1].second - p+1;
+		p++;	
 	}
 	cout << "d:  ";
 	for(int i = 0;i<d.size();i++){
@@ -198,6 +184,7 @@ void FRLZSI::test_ausgabe(){
 		cout << m_ds[i] << ",";
 	}
 	cout << endl;
+
 }
 
 void FRLZSI::d_ArrayTest(){
@@ -205,7 +192,7 @@ void FRLZSI::d_ArrayTest(){
 	* Erwartet Initialisierung von m_is und m_t_array
 	* erstellt d
 	*/
-	int_vector<> ie = {1,2,3,3,8,5,7,8};
+	//int_vector<> ie = {1,2,3,3,8,5,7,8};
 	int i = 0; // Höchster Wert der Reichweite
  	int j = 0; // Laufvariable fuer die maximale Distanz
 	int p = 0; // Aktuelle Stelle in d
@@ -215,9 +202,9 @@ void FRLZSI::d_ArrayTest(){
 			d[p] = 0;
 			p++;
 		}
-		while(m_is[j] <= p && j < ie.size()){ 	// solange der Anfang der Faktoren kleiner ist als die aktuelle Stelle und kleiner ist als die Gesamtlänge
-			if(i < ie[j]-p+1){		// Abfrage ob aktuell höchster Wert kleiner ist als der Wert an der neuen Stelle, eins weiter
-				i = ie[j]-p+1;		// Falls ja, wird der höhere Wert übernommen
+		while(m_is[j] <= p && j < m_t_array.size()){ 	// solange der Anfang der Faktoren kleiner ist als die aktuelle Stelle und kleiner ist als die Gesamtlänge
+			if(i < m_t_array[m_g[j]-1].second-p+1){		// Abfrage ob aktuell höchster Wert kleiner ist als der Wert an der neuen Stelle, eins weiter
+				i = m_t_array[m_g[j]-1].second-p+1;		// Falls ja, wird der höhere Wert übernommen
 				if(i<0){		// Falls der Wert kleiner als 0 wird, muss er auf 0 gesetzt werden, da ansonsten der Vergleich fehlschlägt
 					i = 0;
 				}
