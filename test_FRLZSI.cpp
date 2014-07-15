@@ -13,8 +13,10 @@ int main(){
 	s.push_back("AGGA");
 	
 	FRLZSI t1(r,s);
-	t1.test_ausgabe();
-	//t1.search_pattern(pattern); 
+	//t1.test_ausgabe();
+	t1.search_pattern(pattern);
+	cout << "Testmethode:"  << endl;
+	t1.test_search(pattern);
 		
 	return EXIT_SUCCESS;
 }

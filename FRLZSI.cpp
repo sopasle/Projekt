@@ -17,9 +17,9 @@ FRLZSI::FRLZSI(string r, vector<string> &s){
 	getLempelZivFactors(r,s);	//m_t_array initialisieren
 	construct_im(m_sa, "ACGTGATAG", 1);	//m_sa initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
-	d_Array();
-	//d_Strich(d_Array());		//m_ds initialisieren
-	d_ArrayTest();
+	//d_Array();
+	d_Strich(d_Array());		//m_ds initialisieren
+	//d_ArrayTest();
 	
 }
 
@@ -166,6 +166,23 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 /*
  * Testmethoden
 */
+
+void FRLZSI::test_search(string pattern){
+	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
+	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	//Rueckwaertssuche => startIndex, endIndex
+	if(l_res <= r_res && r_res <= m_sa.size()-1){	//Pattern existiert in R
+		while(l_res <= r_res){
+			for(int i = 0; i< m_t_array.size(); i++){
+				if(m_t_array[i].first <= m_sa[l_res] && m_t_array[i].second >= m_sa[l_res]+pattern.size()-1){
+					cout << "Faktor: " << i+1 << " " << m_sa[l_res]-m_t_array[i].first << "-" << m_sa[l_res]-m_t_array[i].first+pattern.size()-1 << endl;
+				}
+			}
+			l_res++;
+		}
+	}else{
+		cout << pattern << " existiert nicht" << endl;	//Vorlaeufig fuer Case1
+	}
+}
 
 
 void FRLZSI::test_ausgabe(){

@@ -18,6 +18,7 @@ class FRLZSI{
 		~FRLZSI();				// Destruktor
 		void search_pattern(string pattern);	// Patternsuche
 		void test_ausgabe();			// Testausgaben
+		void test_search(string pattern);
 		
 	private:
 		vector<pair<int,int>> m_t_array;	// T-Array, (Faktoranfang,Faktorende) im Referenzstring
