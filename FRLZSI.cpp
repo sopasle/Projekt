@@ -14,8 +14,8 @@ FRLZSI::FRLZSI(){
 
 /*Konstruktor*/
 FRLZSI::FRLZSI(string r, vector<string> &s){
-	getLempelZivFactors(r,s);	//m_t_array initialisieren
-	construct_im(m_sa, "ACGTGATAG", 1);	//m_sa initialisieren
+	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	LZ_faktorization(r, s);		//m_t_array initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	//d_Array();
 	d_Strich(d_Array());		//m_ds initialisieren
@@ -29,23 +29,6 @@ FRLZSI::~FRLZSI(){
 
 
 /*Methoden*/
-/*
- * HARRY
-*/
-void FRLZSI::getLempelZivFactors(string r, vector<string> &s){
-	/*Zum Testen erstmal mit den Werten vom Beispiel initialisieren*/
-	int_vector<> is = {0,0,0,7,4,2,6,3}; // Blattbsp
-	int_vector<> ie = {1,2,3,8,5,3,7,8}; // Blattbsp
-	//int_vector<> is = {0,0,0,0,0,0,1,2,2,2,9,12,14};	// Zufallsbsp
-	//int_vector<> ie = {1,2,4,5,7,13,14,5,8,17,10,28,15};	// Zufallsbsp
-	vector<pair<int,int>> t_array(is.size());
-	for(int i = 0; i<is.size();i++){
-		t_array[i] ={is[i],ie[i]};
-	} 
-	m_t_array = t_array;
-
-}
-
 
 /*
  * OLI
@@ -163,6 +146,67 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 		}
   	 }
 }
+
+
+/*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
+void FRLZSI::LZ_faktorization(string R, vector<string> S){
+	vector<pair<int,pair<int,int>>> factors;
+	string R_r(R.rbegin(), R.rend());	//R reverse
+	csa_wt<wt_hutu<>> csa_bwd;
+	construct_im(csa_bwd, R_r.c_str(), 1);	//SA von R reverse
+
+	for(int i = 0; i<S.size(); i++){	//Faktorisierung der einzelnen Strings S
+		uint64_t l_fwd = 0, r_fwd = m_sa.size()-1, l_bwd = 0, r_bwd = csa_bwd.size()-1, l_fwd_res = 0, r_fwd_res = 0, r_bwd_res = 0, l_bwd_res = 0;
+		uint64_t factorLength = 0;
+
+		for(int j = 0; j<S[i].size(); j++){	//String S wird durchlaufen
+			bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
+			if(l_bwd_res <= r_bwd_res){	//Teilstring existiert in R
+				l_fwd = l_fwd_res;
+				r_fwd = r_fwd_res;
+				l_bwd = l_bwd_res;
+				r_bwd = r_bwd_res;
+				factorLength++;
+			}
+			else{	//Teilstring existiert nicht in R (aber Teilstring-1)
+				pair<int,pair<int,int>> temp;
+				temp.second.first = m_sa[l_bwd];
+				temp.second.second = m_sa[l_bwd]+factorLength-1;
+				temp.first = l_bwd;
+				factors.push_back(temp);
+				
+				l_fwd = 0;
+				r_fwd = m_sa.size()-1;
+				l_bwd = 0;
+				r_bwd = csa_bwd.size()-1;
+				bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);	//Da alle Buchstaben von S in R vorkommen muss l_bwd_res <= r_bwd_res sein
+				l_fwd = l_fwd_res;
+				r_fwd = r_fwd_res;
+				l_bwd = l_bwd_res;
+				r_bwd = r_bwd_res;
+				factorLength = 1;
+			}
+		
+		}
+		//letzter Faktor des Strings:
+		pair<int,pair<int,int>> temp;
+		temp.second.first = m_sa[l_bwd];
+		temp.second.second = m_sa[l_bwd]+factorLength-1;
+		temp.first = l_bwd;
+		factors.push_back(temp);
+	}
+	
+	sort(factors.begin(), factors.end());	//nach SA sortieren
+
+	for(uint64_t i = 0; i<factors.size(); i++){	//im m_t_array speichern
+		m_t_array.push_back(factors[i].second);
+	}
+	m_t_array.erase(unique(m_t_array.begin(), m_t_array.end()), m_t_array.end());	//gleiche Faktoren loeschen
+}
+
+
+
+
 /*
  * Testmethoden
 */

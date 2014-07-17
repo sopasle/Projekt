@@ -30,10 +30,6 @@ class FRLZSI{
 		rmq_succinct_sct<false> m_ie_rmaxq;	// RMQ auf IE	
 		rmq_succinct_sct<false> m_ds_rmaxq;	// RMQ auf D'
 		
-		/*
-		 * HARRY
-		*/
-		void getLempelZivFactors(string r, vector<string> &s); // Faktoren herausfinden
 		
 		/*
 		 * OLI
@@ -49,6 +45,7 @@ class FRLZSI{
 		*/
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
+		void LZ_faktorization(string R, vector<string> S); // Faktoren herausfinden
 };
 
 #endif
