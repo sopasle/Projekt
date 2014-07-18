@@ -19,6 +19,7 @@ class FRLZSI{
 		void search_pattern(string pattern);	// Patternsuche
 		void test_ausgabe();			// Testausgaben
 		void test_search(string pattern);
+		void test_LZ_factorization(string r, vector<string> s);
 		
 	private:
 		vector<pair<int,int>> m_t_array;	// T-Array, (Faktoranfang,Faktorende) im Referenzstring
@@ -45,7 +46,7 @@ class FRLZSI{
 		*/
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
-		void LZ_faktorization(string R, vector<string> S); // Faktoren herausfinden
+		void LZ_factorization(string R, vector<string> S); // Faktoren herausfinden
 };
 
 #endif

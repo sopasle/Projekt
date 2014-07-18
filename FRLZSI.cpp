@@ -15,7 +15,7 @@ FRLZSI::FRLZSI(){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string r, vector<string> &s){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-	LZ_faktorization(r, s);		//m_t_array initialisieren
+	LZ_factorization(r, s);		//m_t_array initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	//d_Array();
 	d_Strich(d_Array());		//m_ds initialisieren
@@ -149,7 +149,7 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 
 
 /*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
-void FRLZSI::LZ_faktorization(string R, vector<string> S){
+void FRLZSI::LZ_factorization(string R, vector<string> S){
 	vector<pair<int,pair<int,int>>> factors;
 	string R_r(R.rbegin(), R.rend());	//R reverse
 	csa_wt<wt_hutu<>> csa_bwd;
@@ -210,6 +210,57 @@ void FRLZSI::LZ_faktorization(string R, vector<string> S){
 /*
  * Testmethoden
 */
+
+void FRLZSI::test_LZ_factorization(string R, vector<string> S){
+	vector<pair<string,pair<int,int>>> factors;
+	for(uint64_t i = 0; i< S.size(); i++){
+		uint64_t start = 0;
+		uint64_t length = 1;
+		uint64_t is = 0;
+		while(start+length-1<S[i].length()){
+			uint64_t found = R.find(S[i].substr(start, length));
+  			if (found!=string::npos){	//Teilstring in R enthalten
+				is = found;
+				length++;
+			}
+			else{	//Teilstring nicht in R enthalten (aber Teilstring-1)
+				pair<string,pair<int,int>> temp;
+				temp.second.first = is;
+				temp.second.second = is+length-2;
+				temp.first = S[i].substr(start,length-1);
+				factors.push_back(temp);
+				start = start + length-1;
+				length = 1;
+			}
+		}
+		pair<string,pair<int,int>> temp;	//letzter Faktor
+		temp.second.first = is;
+		temp.second.second = is+length-2;
+		temp.first = S[i].substr(start,length-1);
+		factors.push_back(temp);
+	}
+	sort(factors.begin(), factors.end());	//sortieren
+	factors.erase(unique(factors.begin(), factors.end()), factors.end()); //doppelte Eintraege loeschen
+	
+	int failure = 1;	//Ueberpruefen
+	if(m_t_array.size() == factors.size()){	
+		for(uint64_t i = 0; i<factors.size(); i++){
+			if(m_t_array[i].first != factors[i].second.first || m_t_array[i].second != factors[i].second.second){
+				failure = 0;
+				cout << "Fehler an Positon: " << i << endl;
+			}
+		}
+		if(failure){
+			cout << "m_t_array korrekt" << endl;
+		}
+	}
+	else{
+		cout << "Unterschiedliche Anzahl an Faktoren!" << endl;
+	}
+
+	
+	
+}
 
 void FRLZSI::test_search(string pattern){
 	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
