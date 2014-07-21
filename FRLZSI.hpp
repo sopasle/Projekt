@@ -6,9 +6,12 @@
 #include <sdsl/rmq_support.hpp>
 #include <vector>
 #include <string>
+#include <sdsl/util.hpp>
 
 using namespace sdsl;
 using namespace std;
+
+
 
 
 class FRLZSI{
@@ -20,6 +23,36 @@ class FRLZSI{
 		void test_ausgabe();			// Testausgaben
 		void test_search(string pattern);
 		void test_LZ_factorization(string r, vector<string> s);
+
+		        int_vector<64> m_offset;	 	// Number of nodes to skip on each level
+        		int_vector<64> m_tree; 			// Tree
+	//! Load the data structure
+        void load(std::istream& in) {
+            read_member(m_sa, in);
+            read_member(m_ds, in);
+          //  read_member(m_g, in);
+	  //  read_member(m_is, in);
+          //  read_member(m_ie_rmaxq, in);
+	  //  read_member(m_ds_rmaxq, in);
+            m_offset.load(in);
+            m_tree.load(in);
+        }
+
+        //! Serialize the data structure
+        int serialize(std::ostream& out, structure_tree_node* v=nullptr, std::string name="")const {
+            structure_tree_node* child = structure_tree::add_child(v, name, util::class_name(*this));
+            int written_bytes = 0;
+            written_bytes += write_member(m_sa, out, child, "sa");
+            written_bytes += write_member(m_ds, out, child, "ds");
+         //   written_bytes += write_member(m_g, out, child, "s");
+	 //   written_bytes += write_member(m_is, out, child, "is");
+         //   written_bytes += write_member(m_ie_rmaxq, out, child, "ie RMQ");
+         //   written_bytes += write_member(m_ds_rmaxq, out, child, "ds RMQ");
+            written_bytes += m_offset.serialize(out, child, "offset");
+            written_bytes += m_tree.serialize(out, child, "tree");
+            structure_tree::add_size(child, written_bytes);
+            return written_bytes;
+        }
 		
 	private:
 		vector<pair<int,int>> m_t_array;	// T-Array, (Faktoranfang,Faktorende) im Referenzstring
@@ -48,5 +81,8 @@ class FRLZSI{
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
 		void LZ_factorization(string R, vector<string> S); // Faktoren herausfinden
 };
+
+namespace util{
+}
 
 #endif
