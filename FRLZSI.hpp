@@ -28,8 +28,9 @@ class FRLZSI{
 		      int_vector<64> m_offset;	 	// Number of nodes to skip on each level
         		int_vector<64> m_tree; 			// Tree
 			// m_offset und m_tree werden hier benötigt, da sonst ein Fehler auftritt, wenn er es in Zeile 53/54 verwenden will
+
 	//! Load the data structure
-        void load(std::istream& in) {
+        void load(std::istream& in) {		
 		m_sa.load(in);
 		m_ds.load(in);
 		m_g.load(in);
@@ -82,6 +83,10 @@ class FRLZSI{
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
 		void LZ_factorization(string R, vector<string> S); // Faktoren herausfinden
+
+
+
+
 };
 
 namespace util{
