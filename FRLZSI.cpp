@@ -14,11 +14,11 @@ FRLZSI::FRLZSI(){
 
 /*Konstruktor*/
 FRLZSI::FRLZSI(string r, vector<string> &s){
-	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-	LZ_factorization(r, s);		//m_t_array initialisieren
-	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
+	//construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	//LZ_factorization(r, s);		//m_t_array initialisieren
+	//g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	//d_Array();
-	d_Strich(d_Array());		//m_ds initialisieren
+	//d_Strich(d_Array());		//m_ds initialisieren
 	//d_ArrayTest();
 	
 }
@@ -284,13 +284,13 @@ void FRLZSI::test_ausgabe(){
 	/*for(int i = 0;i<m_g.size();i++){
 		cout << "g: " << m_g[i] << endl;
 	}*/
-
+	/*
 	cout << "sa: ";
 	for(int i = 1;i<m_sa.size();i++){
 		cout << m_sa[i]+1 << ",";
 	}
 	cout << endl;
-
+	*/
 	cout << "ds: ";
 	for(int i = 0;i<m_ds.size();i++){
 		cout << m_ds[i] << ",";

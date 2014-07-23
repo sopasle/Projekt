@@ -23,12 +23,14 @@ class FRLZSI{
 		void test_ausgabe();			// Testausgaben
 		void test_search(string pattern);
 		void test_LZ_factorization(string r, vector<string> s);
-
-		        int_vector<64> m_offset;	 	// Number of nodes to skip on each level
+		
+		typedef uint64_t size_type;
+		      int_vector<64> m_offset;	 	// Number of nodes to skip on each level
         		int_vector<64> m_tree; 			// Tree
+			// m_offset und m_tree werden hier benötigt, da sonst ein Fehler auftritt, wenn er es in Zeile 53/54 verwenden will
 	//! Load the data structure
         void load(std::istream& in) {
-            read_member(m_sa, in);
+          //  read_member(m_sa, in);
             read_member(m_ds, in);
           //  read_member(m_g, in);
 	  //  read_member(m_is, in);
@@ -39,11 +41,11 @@ class FRLZSI{
         }
 
         //! Serialize the data structure
-        int serialize(std::ostream& out, structure_tree_node* v=nullptr, std::string name="")const {
+        size_type serialize(std::ostream& out, structure_tree_node* v=nullptr, std::string name="")const {
             structure_tree_node* child = structure_tree::add_child(v, name, util::class_name(*this));
-            int written_bytes = 0;
-            written_bytes += write_member(m_sa, out, child, "sa");
-            written_bytes += write_member(m_ds, out, child, "ds");
+            size_type written_bytes = 0;
+         //   written_bytes += m_sa.serialize(out, child, "sa");
+            written_bytes += m_ds.serialize(out, child, "ds");
          //   written_bytes += write_member(m_g, out, child, "s");
 	 //   written_bytes += write_member(m_is, out, child, "is");
          //   written_bytes += write_member(m_ie_rmaxq, out, child, "ie RMQ");
