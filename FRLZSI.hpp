@@ -17,12 +17,12 @@ using namespace std;
 class FRLZSI{
 	public: 
 		FRLZSI();				// Konstruktor
-		FRLZSI(string r, vector<string> &s);	// Konstruktor mit Aufruf Referenzstring, Vektor mit Eingabestrings
+		FRLZSI(string &r, vector<string> &s);	// Konstruktor mit Aufruf Referenzstring, Vektor mit Eingabestrings
 		~FRLZSI();				// Destruktor
-		void search_pattern(string pattern);	// Patternsuche
+		void search_pattern(string &pattern);	// Patternsuche
 		void test_ausgabe();			// Testausgaben
-		void test_search(string pattern);
-		void test_LZ_factorization(string r, vector<string> s);
+		void test_search(string &pattern);
+		void test_LZ_factorization(string &r, vector<string> &s);
 		
 		typedef uint64_t size_type;
 		      int_vector<64> m_offset;	 	// Number of nodes to skip on each level
@@ -81,7 +81,7 @@ class FRLZSI{
 		*/
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
-		void LZ_factorization(string R, vector<string> S); // Faktoren herausfinden
+		void LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
 };
 
 namespace util{

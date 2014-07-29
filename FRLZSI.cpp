@@ -13,7 +13,7 @@ FRLZSI::FRLZSI(){
 
 
 /*Konstruktor*/
-FRLZSI::FRLZSI(string r, vector<string> &s){
+FRLZSI::FRLZSI(string &r, vector<string> &s){
 	//construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 	//LZ_factorization(r, s);		//m_t_array initialisieren
 	//g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
@@ -104,7 +104,7 @@ void FRLZSI::d_Strich(int_vector<> d){
  * SANDRA
 */
 /*oeffentlich aufrufbare Methode zum auffinden eines Patterns in S*/
-void FRLZSI::search_pattern(string pattern){
+void FRLZSI::search_pattern(string &pattern){
 	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
 	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	// Rueckwaertssuche => startIndex, endIndex
 	if(l_res <= r_res && r_res <= m_sa.size()-1){	//Pattern existiert in R
@@ -149,7 +149,7 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 
 
 /*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
-void FRLZSI::LZ_factorization(string R, vector<string> S){
+void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	vector<pair<int,pair<int,int>>> factors;
 	string R_r(R.rbegin(), R.rend());	//R reverse
 	csa_wt<wt_hutu<>> csa_bwd;
@@ -211,7 +211,7 @@ void FRLZSI::LZ_factorization(string R, vector<string> S){
  * Testmethoden
 */
 
-void FRLZSI::test_LZ_factorization(string R, vector<string> S){
+void FRLZSI::test_LZ_factorization(string &R, vector<string> &S){
 	vector<pair<string,pair<int,int>>> factors;
 	for(uint64_t i = 0; i< S.size(); i++){
 		uint64_t start = 0;
@@ -262,7 +262,7 @@ void FRLZSI::test_LZ_factorization(string R, vector<string> S){
 	
 }
 
-void FRLZSI::test_search(string pattern){
+void FRLZSI::test_search(string &pattern){
 	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
 	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	//Rueckwaertssuche => startIndex, endIndex
 	if(l_res <= r_res && r_res <= m_sa.size()-1){	//Pattern existiert in R
