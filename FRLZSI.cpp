@@ -13,9 +13,9 @@ FRLZSI::FRLZSI(){
 
 
 /*Konstruktor*/
-FRLZSI::FRLZSI(string &r, vector<string> &s){
+FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-	LZ_factorization(r, s);		//m_t_array initialisieren
+	LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
 }
@@ -120,10 +120,12 @@ void FRLZSI::searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength){
 
 	if(dsValue >= patternLength){	//Abbruch, wenn Faktorlaenge < Patternlaenge
 		getFactors(m_sa[maxPosition+1], patternLength, 0, up-m_is.begin()-1);
-		if(st < maxPosition)
+		if(st < maxPosition){
 			searchPattern(st, maxPosition-1, patternLength);
-		if(ed > maxPosition)
+		}
+		if(ed > maxPosition){
 			searchPattern(maxPosition+1, ed, patternLength);
+		}
 	}
 }
 
@@ -144,7 +146,7 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 
 /*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
 void FRLZSI::LZ_factorization(string &R, vector<string> &S){
-	vector<pair<int,pair<int,int>>> factors;
+	vector<tuple<int,pair<int,int>,int,int>> factors;	//tuple(ISA,is,ie,Si,faktornummer)
 	string R_r(R.rbegin(), R.rend());	//R reverse
 	csa_wt<wt_hutu<>> csa_bwd;
 	construct_im(csa_bwd, R_r.c_str(), 1);	//SA von R reverse
@@ -152,6 +154,7 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	for(int i = 0; i<S.size(); i++){	//Faktorisierung der einzelnen Strings S
 		uint64_t l_fwd = 0, r_fwd = m_sa.size()-1, l_bwd = 0, r_bwd = csa_bwd.size()-1, l_fwd_res = 0, r_fwd_res = 0, r_bwd_res = 0, l_bwd_res = 0;
 		uint64_t factorLength = 0;
+		uint64_t number_of_factors = 0;
 
 		for(int j = 0; j<S[i].size(); j++){	//String S wird durchlaufen
 			bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
@@ -163,11 +166,10 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 				factorLength++;
 			}
 			else{	//Teilstring existiert nicht in R (aber Teilstring-1)
-				pair<int,pair<int,int>> temp;
-				temp.second.first = m_sa[l_bwd];
-				temp.second.second = m_sa[l_bwd]+factorLength-1;
-				temp.first = l_bwd;
-				factors.push_back(temp);
+				pair<int,int> temp;
+				temp.first = m_sa[l_bwd];
+				temp.second = m_sa[l_bwd]+factorLength-1;
+				factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
 				
 				l_fwd = 0;
 				r_fwd = m_sa.size()-1;
@@ -179,23 +181,53 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 				l_bwd = l_bwd_res;
 				r_bwd = r_bwd_res;
 				factorLength = 1;
+				number_of_factors++;
 			}
 		
 		}
 		//letzter Faktor des Strings:
-		pair<int,pair<int,int>> temp;
-		temp.second.first = m_sa[l_bwd];
-		temp.second.second = m_sa[l_bwd]+factorLength-1;
-		temp.first = l_bwd;
-		factors.push_back(temp);
+		pair<int,int> temp;
+		temp.first = m_sa[l_bwd];
+		temp.second = m_sa[l_bwd]+factorLength-1;
+		factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
+
+		int_vector<> s(number_of_factors+1);
+		m_s[i] = s;
 	}
 	
 	sort(factors.begin(), factors.end());	//nach SA sortieren
-
-	for(uint64_t i = 0; i<factors.size(); i++){	//im m_t_array speichern
-		m_t_array.push_back(factors[i].second);
+	
+	//m_s[i] initialisieren
+	uint64_t repeatedly = 0;
+	vector<tuple<int,pair<int,int>,int,int>>::iterator iter;
+	vector<tuple<int,pair<int,int>,int,int>>::iterator iter2;
+	uint64_t i = 0;
+	if(!factors.empty()){
+		iter = factors.begin();
+		m_s[get<2>(*iter)][get<3>(*iter)] = i+1;
+		i++;
+		iter2 = factors.begin();
+		iter++;
+		while(iter != factors.end()){
+			if(get<1>(*iter) == get<1>(*iter2)){	//gleicher Faktor
+				repeatedly++;
+			}
+			m_s[get<2>(*iter)][get<3>(*iter)] = i-repeatedly+1;
+			i++;
+			iter2++;
+			iter++;
+		}
 	}
+	
+	
+	for(vector<tuple<int,pair<int,int>,int,int>>::iterator iter = factors.begin(); iter != factors.end(); iter++){  	
+		m_t_array.push_back(get<1>(*iter));
+	}
+	//for(uint64_t i = 0; i<factors.size(); i++){	//im m_t_array speichern
+		//m_t_array.push_back(factors[i].second);
+	//}
 	m_t_array.erase(unique(m_t_array.begin(), m_t_array.end()), m_t_array.end());	//gleiche Faktoren loeschen
+
 }
 
 
