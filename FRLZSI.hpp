@@ -28,14 +28,15 @@ class FRLZSI{
 		      int_vector<64> m_offset;	 	// Number of nodes to skip on each level
         		int_vector<64> m_tree; 			// Tree
 			// m_offset und m_tree werden hier benötigt, da sonst ein Fehler auftritt, wenn er es in Zeile 53/54 verwenden will
+
 	//! Load the data structure
-        void load(std::istream& in) {
-          //  read_member(m_sa, in);
-            read_member(m_ds, in);
-          //  read_member(m_g, in);
-	  //  read_member(m_is, in);
-          //  read_member(m_ie_rmaxq, in);
-	  //  read_member(m_ds_rmaxq, in);
+        void load(std::istream& in) {		
+		m_sa.load(in);
+		m_ds.load(in);
+		m_g.load(in);
+		m_is.load(in);
+		m_ie_rmaxq.load(in);
+		m_ds_rmaxq.load(in);
             m_offset.load(in);
             m_tree.load(in);
         }
@@ -44,12 +45,12 @@ class FRLZSI{
         size_type serialize(std::ostream& out, structure_tree_node* v=nullptr, std::string name="")const {
             structure_tree_node* child = structure_tree::add_child(v, name, util::class_name(*this));
             size_type written_bytes = 0;
-         //   written_bytes += m_sa.serialize(out, child, "sa");
+            written_bytes += m_sa.serialize(out, child, "sa");
             written_bytes += m_ds.serialize(out, child, "ds");
-         //   written_bytes += write_member(m_g, out, child, "s");
-	 //   written_bytes += write_member(m_is, out, child, "is");
-         //   written_bytes += write_member(m_ie_rmaxq, out, child, "ie RMQ");
-         //   written_bytes += write_member(m_ds_rmaxq, out, child, "ds RMQ");
+            written_bytes += m_g.serialize(out, child, "g");
+	    written_bytes += m_is.serialize(out, child, "is");
+            written_bytes += m_ie_rmaxq.serialize(out, child, "ie RMQ");
+            written_bytes += m_ds_rmaxq.serialize(out, child, "ds RMQ");
             written_bytes += m_offset.serialize(out, child, "offset");
             written_bytes += m_tree.serialize(out, child, "tree");
             structure_tree::add_size(child, written_bytes);
@@ -81,7 +82,9 @@ class FRLZSI{
 		*/
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
+
 		void LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
+
 };
 
 namespace util{

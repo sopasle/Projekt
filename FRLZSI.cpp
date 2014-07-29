@@ -14,13 +14,10 @@ FRLZSI::FRLZSI(){
 
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s){
-	//construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-	//LZ_factorization(r, s);		//m_t_array initialisieren
-	//g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
-	//d_Array();
-	//d_Strich(d_Array());		//m_ds initialisieren
-	//d_ArrayTest();
-	
+	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	LZ_factorization(r, s);		//m_t_array initialisieren
+	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
+	d_Strich(d_Array());		//m_ds initialisieren
 }
 
 /*Destruktor*/
@@ -34,33 +31,30 @@ FRLZSI::~FRLZSI(){
  * OLI
 */
 void FRLZSI::g_Array(){
-	vector<pair<pair<int,int>,int > > r(m_t_array.size()); // Vektor als ((is,ie),g)
-	vector<pair<int,int> > r1(m_t_array.size()); // Vektor (is,ie)
+	/*
+	* Erwartet Initialisierung von m_t_array
+	*	erstellt g
+	*/
+	vector<tuple<uint64_t,uint64_t,uint64_t>> r; // tupel(is,ie,g)
 	int_vector<> g(m_t_array.size());
 	int_vector<> is(m_t_array.size());
 	int_vector<> ie(m_t_array.size());
 	for(int i = 0; i<m_t_array.size();i++){	
-		r1[i] = {m_t_array[i].first, m_t_array[i].second};	// r1 wird aus is,ie zusammengesetzt, entspricht nacher dem r Vektor, der aus der Faktorensuche entsteht
-		r[i] = {r1[i],i+1};	// r wird aus r1,g zusammengesetzt, inhalt in g entspricht dem index des t arrays, das aus der Faktorensuche entsteht
+		r.push_back(std::make_tuple (m_t_array[i].first,m_t_array[i].second,i+1)); // anhängen des nächsten tupels
 	}
-	sort(r.begin(), r.end());	// r wird nach dem ersten Faktor sortiert, der erste Faktor ist r1, da es wieder ein pair ist wird nach is stabil sortiert
-	/*for(int i=0; i<m_t_array.size(); ++i)
-	{
-		cout << r[i].first.first << ", " << r[i].first.second << ", " << r[i].second << endl; // Ausgabe r
-	}*/
-
-	//cout << "----" << endl;
-	for(int i=0; i<m_t_array.size(); ++i)
-	{
-		g[i] = r[i].second;	// da der index ueber den Schleifenindex erzeugt wird muss er noch in g geschrieben werden
-		is[i] = r[i].first.first;
-		ie[i] = r[i].first.second;
-		//cout << g[i] << endl;	// Ausgabe g
-	}
-	m_g = g;
-	m_is = is;
+	sort(r.begin(), r.end());		// sortieren nach is,ie
+	int i = 0;
+	for(vector<tuple<uint64_t,uint64_t,uint64_t>>::iterator iter = r.begin(); iter != r.end(); iter++){  	
+	is[i] = get<0>(*iter);
+	ie[i] = get<1>(*iter);
+	g[i] = get<2>(*iter);
+	i++;
+  	}
+	
+	m_g = std::move(g);
+	m_is = std::move(is);
 	rmq_succinct_sct<false> rmaxq(&ie);
-	m_ie_rmaxq = rmaxq;
+	m_ie_rmaxq = std::move(rmaxq);
 }
 
 int_vector<> FRLZSI::d_Array(){
@@ -81,11 +75,11 @@ int_vector<> FRLZSI::d_Array(){
 		d[p] = m_t_array[m_g[posmax]-1].second - p+1;
 		p++;	
 	}
-	cout << "d:  ";
+	/*cout << "d:  ";
 	for(int i = 0;i<d.size();i++){
 		cout << d[i] << ",";
 	}
-	cout << endl;
+	cout << endl;*/
 	return d;	
 }
 
@@ -94,9 +88,9 @@ void FRLZSI::d_Strich(int_vector<> d){
 	for(int i = 0; i < d.size();i++){
 		d_1[i]=(d[m_sa[i+1]]);	// Berechnung von d', Laenge des laengsten Intervalls an der Position SAr[i]
 	}
-	m_ds = d_1;
+	m_ds = std::move(d_1);
 	rmq_succinct_sct<false> rmaxq(&d_1);
-	m_ds_rmaxq = rmaxq;
+	m_ds_rmaxq = std::move(rmaxq);
 }
 
 
@@ -281,16 +275,16 @@ void FRLZSI::test_search(string &pattern){
 
 
 void FRLZSI::test_ausgabe(){
-	/*for(int i = 0;i<m_g.size();i++){
+	for(int i = 0;i<m_g.size();i++){
 		cout << "g: " << m_g[i] << endl;
-	}*/
-	/*
+	}
+	
 	cout << "sa: ";
 	for(int i = 1;i<m_sa.size();i++){
 		cout << m_sa[i]+1 << ",";
 	}
 	cout << endl;
-	*/
+	
 	cout << "ds: ";
 	for(int i = 0;i<m_ds.size();i++){
 		cout << m_ds[i] << ",";
