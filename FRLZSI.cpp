@@ -89,7 +89,7 @@ void FRLZSI::d_Strich(int_vector<> d){
 		d_1[i]=(d[m_sa[i+1]]);	// Berechnung von d', Laenge des laengsten Intervalls an der Position SAr[i]
 	}
 	m_ds = std::move(d_1);
-	rmq_succinct_sct<false> rmaxq(&d_1);
+	rmq_succinct_sct<false> rmaxq(&m_ds);
 	m_ds_rmaxq = std::move(rmaxq);
 }
 
@@ -313,7 +313,7 @@ void FRLZSI::test_ausgabe(){
 	
 	cout << "sa: ";
 	for(int i = 1;i<m_sa.size();i++){
-		cout << m_sa[i]+1 << ",";
+		cout << m_ds_rmaxq(0,i) << ",";
 	}
 	cout << endl;
 	
@@ -322,7 +322,6 @@ void FRLZSI::test_ausgabe(){
 		cout << m_ds[i] << ",";
 	}
 	cout << endl;
-
 }
 
 void FRLZSI::d_ArrayTest(){
