@@ -18,7 +18,8 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
-	bcl_erzeugen();
+	bcl_erzeugen();			// Datenstruktur X(T) füllen
+
 }
 
 /*Destruktor*/
@@ -95,7 +96,6 @@ void FRLZSI::d_Strich(int_vector<> d){
 }
 
 void FRLZSI::bcl_erzeugen(){
-	int_vector <> sa = {1,8,6,2,9,5,3,7,4};		//sa vektor für den test
 	vector<bool> b;
 	vector<bool> c(m_is.size());
 	vector<vector <int> > gamma;
@@ -103,7 +103,7 @@ void FRLZSI::bcl_erzeugen(){
 	int j = 0;	
 	bool b_help;
 	vector<int> gamma_help;
-	while(i < sa.size()){
+	while(i < m_sa.size()-1){
 	while(m_is[j] == i){				// überprüfen, ob an der aktuellen Stelle ein String anfängt
 	gamma_help.push_back(m_t_array[m_g[j]-1].second-m_is[j] +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
 	j++;
@@ -122,15 +122,15 @@ void FRLZSI::bcl_erzeugen(){
 
 	}
 	m_c = std::move(c);
-	i = 0;
-	while(i < sa.size()){
-	m_gamma.push_back(gamma[sa[i]-1]);		// Umtragen in die Membervariable im Zusammenhang mit SA
-	m_b.push_back(b[sa[i]-1]);			// -"-----------------"--------------------------"------
+	i = 1;
+	while(i < m_sa.size()){
+	m_gamma.push_back(gamma[m_sa[i]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+	m_b.push_back(b[m_sa[i]]);			// -"-----------------"--------------------------"------
 	i++;
 	}
 	i = 0;
-	while(i < sa.size()){
-	cout << m_gamma[i] << " - " << m_b[i] << " - " << m_c[i] << endl;
+	while(i < m_sa.size()-1){
+	cout << m_gamma[i] << " - " << m_b[i] << " - " << m_c[i] << " ; " << m_sa[i+1] << endl;
 	i++;
 	}
 }
