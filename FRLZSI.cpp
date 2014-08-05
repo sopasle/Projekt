@@ -8,7 +8,7 @@ using namespace std;
 
 /*Default Konstruktor*/
 
-FRLZSI::FRLZSI(){
+FRLZSI::FRLZSI(){	
 }
 
 
@@ -18,6 +18,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
+	bcl_erzeugen();
 }
 
 /*Destruktor*/
@@ -92,6 +93,48 @@ void FRLZSI::d_Strich(int_vector<> d){
 	rmq_succinct_sct<false> rmaxq(&m_ds);
 	m_ds_rmaxq = std::move(rmaxq);
 }
+
+void FRLZSI::bcl_erzeugen(){
+	int_vector <> sa = {1,8,6,2,9,5,3,7,4};		//sa vektor für den test
+	vector<bool> b;
+	vector<bool> c(m_is.size());
+	vector<vector <int> > gamma;
+	int i = 0;
+	int j = 0;	
+	bool b_help;
+	vector<int> gamma_help;
+	while(i < sa.size()){
+	while(m_is[j] == i){				// überprüfen, ob an der aktuellen Stelle ein String anfängt
+	gamma_help.push_back(m_t_array[m_g[j]-1].second-m_is[j] +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
+	j++;
+	b_help = 1;					// b wird an dieser Stelle auf 1 gesetzt, da min ein String anfängt
+	//cout << gamma_help[0] << " ; " << sa[i]-1 << endl;
+	}
+	gamma.push_back(gamma_help);			// Vektor von Vektoren mit der Länge der Strings die an der aktuellen Stelle beginnen
+	b.push_back(b_help);				// Vektor der anzeigt das an der aktuellen Stelle ein String beginnt
+	b_help = 0;
+	if(j != 0){
+	c[j-1] = 1;					// C Vektor Eintrag, da j die Anzahl an String die bisher geprüft wurden
+	}
+	//cout << gamma[i] << " | " << sa[i] << endl;
+	i++;
+	gamma_help.erase(gamma_help.begin(),gamma_help.end()); // Hilfsvektor leeren um Platz zu sparen
+
+	}
+	m_c = std::move(c);
+	i = 0;
+	while(i < sa.size()){
+	m_gamma.push_back(gamma[sa[i]-1]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+	m_b.push_back(b[sa[i]-1]);			// -"-----------------"--------------------------"------
+	i++;
+	}
+	i = 0;
+	while(i < sa.size()){
+	cout << m_gamma[i] << " - " << m_b[i] << " - " << m_c[i] << endl;
+	i++;
+	}
+}
+
 
 
 /*

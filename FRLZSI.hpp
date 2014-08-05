@@ -68,15 +68,22 @@ class FRLZSI{
 		rmq_succinct_sct<false> m_ie_rmaxq;	// RMQ auf IE	
 		rmq_succinct_sct<false> m_ds_rmaxq;	// RMQ auf D'
 		
-		
+		/* X(T) Datenstruktur */
+		vector<bool> m_b;			// B-Bitvektor
+		vector<bool> m_c;			// C-Bitvektor
+		vector<vector<int>> m_gamma;		// L-Array
+	
 		/*
 		 * OLI
 		*/
 		void g_Array();				// G-Array erstellen
 		int_vector<> d_Array();			// D-Array erstellen
 		void d_Strich(int_vector<> d);		// D'-Array erstellen
-
 		void d_ArrayTest();			// D-Array naiv für ein sicheres Ergebnis
+
+		/* für X(T) */
+		void bcl_erzeugen();		
+
 		
 		/*
 		 * SANDRA
