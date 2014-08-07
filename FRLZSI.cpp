@@ -190,6 +190,7 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 /*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
 void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	vector<tuple<int,pair<int,int>,int,int>> factors;	//tuple(ISA,is,ie,Si,faktornummer)
+	vector<tuple<int,int,pair<int,int>>> factors_reverse;		//tuple(ISA_reverse,faktorlaenge,pair(is,ie))
 	string R_r(R.rbegin(), R.rend());	//R reverse
 	csa_wt<wt_hutu<>> csa_bwd;
 	construct_im(csa_bwd, R_r.c_str(), 1);	//SA von R reverse
@@ -198,7 +199,7 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 		uint64_t l_fwd = 0, r_fwd = m_sa.size()-1, l_bwd = 0, r_bwd = csa_bwd.size()-1, l_fwd_res = 0, r_fwd_res = 0, r_bwd_res = 0, l_bwd_res = 0;
 		uint64_t factorLength = 0;
 		uint64_t number_of_factors = 0;
-
+		
 		for(int j = 0; j<S[i].size(); j++){	//String S wird durchlaufen
 			bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
 			if(l_bwd_res <= r_bwd_res){	//Teilstring existiert in R
@@ -211,8 +212,9 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 			else{	//Teilstring existiert nicht in R (aber Teilstring-1)
 				pair<int,int> temp;
 				temp.first = m_sa[l_bwd];
-				temp.second = m_sa[l_bwd]+factorLength-1;
+				temp.second = temp.first + factorLength-1;
 				factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
+				factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
 				
 				l_fwd = 0;
 				r_fwd = m_sa.size()-1;
@@ -233,12 +235,14 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 		temp.first = m_sa[l_bwd];
 		temp.second = m_sa[l_bwd]+factorLength-1;
 		factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
+		factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
 
 		int_vector<> s(number_of_factors+1);
 		m_s[i] = s;
 	}
 	
 	sort(factors.begin(), factors.end());	//nach SA sortieren
+	sort(factors_reverse.begin(), factors_reverse.end());
 	
 	//m_s[i] initialisieren
 	if(!factors.empty()){
@@ -261,12 +265,16 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 		}
 	}
 	
+	vector<tuple<int,int,pair<int,int>>>::iterator iter_reverse = factors_reverse.begin();
 	for(vector<tuple<int,pair<int,int>,int,int>>::iterator iter = factors.begin(); iter != factors.end(); iter++){  	
 		m_t_array.push_back(get<1>(*iter));
+		m_t_reverse_array.push_back(get<2>(*iter_reverse));
+		iter_reverse++;
 	}
 
 	m_t_array.erase(unique(m_t_array.begin(), m_t_array.end()), m_t_array.end());	//gleiche Faktoren loeschen
-
+	m_t_reverse_array.erase(unique(m_t_reverse_array.begin(), m_t_reverse_array.end()), m_t_reverse_array.end());
+	
 }
 
 

@@ -59,6 +59,7 @@ class FRLZSI{
 		
 	private:
 		vector<pair<int,int>> m_t_array;	// T-Array, (Faktoranfang,Faktorende) im Referenzstring
+		vector<pair<int,int>> m_t_reverse_array; //T-quer-Array (Faktoranfang,Faktorende)
 		csa_wt<> m_sa;				// Suffix-Array
 		vector<int_vector<>> m_s;		// Faktorzerlegung der einzelnen S
 		int_vector<> m_ds;			// D'-Array, für Ausgabetests
