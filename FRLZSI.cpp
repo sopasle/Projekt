@@ -241,34 +241,30 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	sort(factors.begin(), factors.end());	//nach SA sortieren
 	
 	//m_s[i] initialisieren
-	uint64_t repeatedly = 0;
-	vector<tuple<int,pair<int,int>,int,int>>::iterator iter;
-	vector<tuple<int,pair<int,int>,int,int>>::iterator iter2;
-	uint64_t i = 0;
 	if(!factors.empty()){
+		vector<tuple<int,pair<int,int>,int,int>>::iterator iter;
+		vector<tuple<int,pair<int,int>,int,int>>::iterator iter2;
+		uint64_t i = 1;
+		
 		iter = factors.begin();
-		m_s[get<2>(*iter)][get<3>(*iter)] = i+1;
-		i++;
+		m_s[get<2>(*iter)][get<3>(*iter)] = i;
 		iter2 = factors.begin();
 		iter++;
 		while(iter != factors.end()){
-			if(get<1>(*iter) == get<1>(*iter2)){	//gleicher Faktor
-				repeatedly++;
+			if(get<1>(*iter) != get<1>(*iter2)){	//neuer Faktor
+				i++;
 			}
-			m_s[get<2>(*iter)][get<3>(*iter)] = i-repeatedly+1;
-			i++;
+			m_s[get<2>(*iter)][get<3>(*iter)] = i;
 			iter2++;
 			iter++;
+
 		}
 	}
-	
 	
 	for(vector<tuple<int,pair<int,int>,int,int>>::iterator iter = factors.begin(); iter != factors.end(); iter++){  	
 		m_t_array.push_back(get<1>(*iter));
 	}
-	//for(uint64_t i = 0; i<factors.size(); i++){	//im m_t_array speichern
-		//m_t_array.push_back(factors[i].second);
-	//}
+
 	m_t_array.erase(unique(m_t_array.begin(), m_t_array.end()), m_t_array.end());	//gleiche Faktoren loeschen
 
 }
