@@ -19,6 +19,9 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
+	uint64_t a,b;
+	p_zu_t(2,3,a,b);
+	cout << a << " " << b << endl;
 }
 
 /*Destruktor*/
@@ -156,9 +159,10 @@ void FRLZSI::bcl_erzeugen(){
 
 
 void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q){
-	p = st;
-	q = ed;
-	
+	rank_support_v<1> m_b_t_rank(&m_b_t);
+	select_support_mcl<1> m_c_t_select(&m_c_t);
+	p = 1 + m_c_t_select(m_b_t_rank(st-1));
+	q = m_c_t_select(m_b_t_rank(ed));
 }
 
 
