@@ -19,10 +19,6 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
-
-uint64_t a ,b;
-p_zu_t(1,2,a,b);
-cout << a << b << endl;
 }
 
 /*Destruktor*/
@@ -104,28 +100,40 @@ void FRLZSI::bcl_erzeugen(){
 	m_b_tq.resize(m_sa.size());
 	m_c_tq.resize(m_t_array.size());
 	vector<vector <uint32_t> > gamma_t(m_sa.size()-1);
-	vector<vector <uint32_t> > gamma_q(m_sa.size()-1);
+	vector<vector <uint32_t> > gamma_tq(m_sa.size()-1);
+	
+	vector<pair<int,int>> t_reverse_array = {{3,4},{1,2},{7,8},{0,1},{0,5},{6,8},{5,6},{5,8}};
+	
 	int i = 0;
 	while(i < m_t_array.size()){
-		gamma[m_t_array[i].first].push_back(m_t_array[i].second-m_t_array[i].first +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
+		gamma_t[m_t_array[i].first].push_back(m_t_array[i].second-m_t_array[i].first +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
+		gamma_tq[t_reverse_array[i].first].push_back(t_reverse_array[i].second-t_reverse_array[i].first +1);
 		i++;
 	}
 	i = 0;
-	while(i < gamma.size()){
-		if(!gamma[m_sa[i+1]].empty()){
-			m_gamma_t.push_back(gamma[m_sa[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+	while(i < gamma_t.size()){
+		if(!gamma_t[m_sa[i+1]].empty()){
+			m_gamma_t.push_back(gamma_t[m_sa[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
 			m_b_t[i] = 1;		// Faktor fängt an dieser Stelle an
 		}else{
 			m_b_t[i] = 0;
+			}
+		if(!gamma_tq[m_sa[i+1]].empty()){
+			m_gamma_tq.push_back(gamma_tq[m_sa[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+			m_b_tq[i] = 1;		// Faktor fängt an dieser Stelle an
+		}else{
+			m_b_tq[i] = 0;
 			}
 	
 	i++;
 	}
 	i = 0;
-	int j = 0;
+	int j = 0,k=0;
 	while(i<m_gamma_t.size()){
-		j += m_gamma_t[i].size();  // Anzahlö an Faktoren in Gamma um c zu berechnen
+		j += m_gamma_t[i].size();  // Anzahl an Faktoren in Gamma um c zu berechnen
 		m_c_t[j-1] = 1;
+		k += m_gamma_tq[i].size();  
+		m_c_tq[k-1] = 1;
 		i++;
 	}
 	i = 0;
@@ -136,7 +144,12 @@ void FRLZSI::bcl_erzeugen(){
 	}
 	i = 0;
 	while(i < m_gamma_t.size()-1){
-	cout  << m_gamma_t[i] << " ;" << m_c_t[i] << endl;
+	cout  << m_gamma_t[i] << " ; " << m_c_t[i] << endl;
+	i++;
+	}
+	i = 0;
+	while(i < m_gamma_tq.size()-1){
+	cout  << m_gamma_tq[i] << " - " << m_c_tq[i] << endl;
 	i++;
 	}
 }
