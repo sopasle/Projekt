@@ -23,7 +23,7 @@ class FRLZSI{
 		void test_ausgabe();			// Testausgaben
 		void test_search(string &pattern);
 		void test_LZ_factorization(string &r, vector<string> &s);
-		
+		void test_bcl_erzeugen();
 		typedef uint64_t size_type;
 		      int_vector<64> m_offset;	 	// Number of nodes to skip on each level
         		int_vector<64> m_tree; 			// Tree
@@ -37,8 +37,6 @@ class FRLZSI{
 		m_is.load(in);
 		m_ie_rmaxq.load(in);
 		m_ds_rmaxq.load(in);
-            m_offset.load(in);
-            m_tree.load(in);
         }
 
         //! Serialize the data structure
@@ -51,8 +49,6 @@ class FRLZSI{
 	    written_bytes += m_is.serialize(out, child, "is");
             written_bytes += m_ie_rmaxq.serialize(out, child, "ie RMQ");
             written_bytes += m_ds_rmaxq.serialize(out, child, "ds RMQ");
-            written_bytes += m_offset.serialize(out, child, "offset");
-            written_bytes += m_tree.serialize(out, child, "tree");
             structure_tree::add_size(child, written_bytes);
             return written_bytes;
         }
@@ -70,9 +66,13 @@ class FRLZSI{
 		rmq_succinct_sct<false> m_ds_rmaxq;	// RMQ auf D'
 		
 		/* X(T) Datenstruktur */
-		vector<bool> m_b;			// B-Bitvektor
-		vector<bool> m_c;			// C-Bitvektor
-		vector<vector<int>> m_gamma;		// L-Array
+		bit_vector m_b_t;			// B-Bitvektor
+		bit_vector m_c_t;			// C-Bitvektor
+		vector<vector<uint32_t>> m_gamma_t;		// Gamma-Array
+		/* X(T~) Datenstruktur */
+		bit_vector m_b_tq;			// B-Bitvektor
+		bit_vector m_c_tq;			// C-Bitvektor
+		vector<vector<uint32_t>> m_gamma_tq;		// Gamma-Array
 	
 		/*
 		 * OLI
@@ -81,7 +81,7 @@ class FRLZSI{
 		int_vector<> d_Array();			// D-Array erstellen
 		void d_Strich(int_vector<> d);		// D'-Array erstellen
 		void d_ArrayTest();			// D-Array naiv für ein sicheres Ergebnis
-
+		void p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q);			// Funktion fpr die Datenstruktur X(T)
 		/* für X(T) */
 		void bcl_erzeugen();		
 

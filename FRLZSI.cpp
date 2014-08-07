@@ -20,6 +20,9 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 
+uint64_t a ,b;
+p_zu_t(1,2,a,b);
+cout << a << b << endl;
 }
 
 /*Destruktor*/
@@ -96,43 +99,53 @@ void FRLZSI::d_Strich(int_vector<> d){
 }
 
 void FRLZSI::bcl_erzeugen(){
-	vector<bool> b;
-	vector<bool> c(m_is.size());
-	vector<vector <int> > gamma;
+	m_b_t.resize(m_sa.size());
+	m_c_t.resize(m_t_array.size());
+	m_b_tq.resize(m_sa.size());
+	m_c_tq.resize(m_t_array.size());
+	vector<vector <uint32_t> > gamma_t(m_sa.size()-1);
+	vector<vector <uint32_t> > gamma_q(m_sa.size()-1);
 	int i = 0;
-	int j = 0;	
-	bool b_help;
-	vector<int> gamma_help;
-	while(i < m_sa.size()-1){
-	while(m_is[j] == i){				// überprüfen, ob an der aktuellen Stelle ein String anfängt
-	gamma_help.push_back(m_t_array[m_g[j]-1].second-m_is[j] +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
-	j++;
-	b_help = 1;					// b wird an dieser Stelle auf 1 gesetzt, da min ein String anfängt
-	//cout << gamma_help[0] << " ; " << sa[i]-1 << endl;
+	while(i < m_t_array.size()){
+		gamma[m_t_array[i].first].push_back(m_t_array[i].second-m_t_array[i].first +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
+		i++;
 	}
-	gamma.push_back(gamma_help);			// Vektor von Vektoren mit der Länge der Strings die an der aktuellen Stelle beginnen
-	b.push_back(b_help);				// Vektor der anzeigt das an der aktuellen Stelle ein String beginnt
-	b_help = 0;
-	if(j != 0){
-	c[j-1] = 1;					// C Vektor Eintrag, da j die Anzahl an String die bisher geprüft wurden
-	}
-	//cout << gamma[i] << " | " << sa[i] << endl;
-	i++;
-	gamma_help.erase(gamma_help.begin(),gamma_help.end()); // Hilfsvektor leeren um Platz zu sparen
-
-	}
-	m_c = std::move(c);
-	i = 1;
-	while(i < m_sa.size()){
-	m_gamma.push_back(gamma[m_sa[i]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
-	m_b.push_back(b[m_sa[i]]);			// -"-----------------"--------------------------"------
+	i = 0;
+	while(i < gamma.size()){
+		if(!gamma[m_sa[i+1]].empty()){
+			m_gamma_t.push_back(gamma[m_sa[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+			m_b_t[i] = 1;		// Faktor fängt an dieser Stelle an
+		}else{
+			m_b_t[i] = 0;
+			}
+	
 	i++;
 	}
 	i = 0;
+	int j = 0;
+	while(i<m_gamma_t.size()){
+		j += m_gamma_t[i].size();  // Anzahlö an Faktoren in Gamma um c zu berechnen
+		m_c_t[j-1] = 1;
+		i++;
+	}
+	i = 0;
 	while(i < m_sa.size()-1){
-	cout << m_gamma[i] << " - " << m_b[i] << " - " << m_c[i] << " ; " << m_sa[i+1] << endl;
+	cout  << m_c_t[i] << " ; " << m_sa[i+1] << " |" << m_b_t[i] << endl;
+		//cout << i << " " << b[i] << " , " << gamma[i] << " | " << m_sa[i+1] << " : " << m_t_array[i].first << endl;
 	i++;
 	}
+	i = 0;
+	while(i < m_gamma_t.size()-1){
+	cout  << m_gamma_t[i] << " ;" << m_c_t[i] << endl;
+	i++;
+	}
+}
+
+
+void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q){
+	p = st;
+	q = ed;
+	
 }
 
 
@@ -409,3 +422,43 @@ void FRLZSI::d_ArrayTest(){
 	}
 	cout << endl;	
 }
+/*
+void FRLZSI::test_bcl_erzeugen(){
+	vector<bool> b;
+	vector<bool> c(m_is.size());
+	vector<vector <int> > gamma;
+	int i = 0;
+	int j = 0;	
+	bool b_help;
+	vector<int> gamma_help;
+	while(i < m_sa.size()-1){
+	while(m_is[j] == i){				// überprüfen, ob an der aktuellen Stelle ein String anfängt
+	gamma_help.push_back(m_t_array[m_g[j]-1].second-m_is[j] +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
+	j++;
+	b_help = 1;					// b wird an dieser Stelle auf 1 gesetzt, da min ein String anfängt
+	//cout << gamma_help[0] << " ; " << sa[i]-1 << endl;
+	}
+	gamma.push_back(gamma_help);			// Vektor von Vektoren mit der Länge der Strings die an der aktuellen Stelle beginnen
+	b.push_back(b_help);				// Vektor der anzeigt das an der aktuellen Stelle ein String beginnt
+	b_help = 0;
+	if(j != 0){
+	c[j-1] = 1;					// C Vektor Eintrag, da j die Anzahl an String die bisher geprüft wurden
+	}
+	//cout << gamma[i] << " | " << sa[i] << endl;
+	i++;
+	gamma_help.erase(gamma_help.begin(),gamma_help.end()); // Hilfsvektor leeren um Platz zu sparen
+
+	}
+	m_c = std::move(c);
+	i = 1;
+	while(i < m_sa.size()){
+	m_gamma.push_back(gamma[m_sa[i]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+	m_b.push_back(b[m_sa[i]]);			// -"-----------------"--------------------------"------
+	i++;
+	}
+	i = 0;
+	while(i < m_sa.size()-1){
+	cout << m_gamma[i] << " - " << m_b[i] << " - " << m_c[i] << " ; " << m_sa[i+1] << endl;
+	i++;
+	}
+}*/
