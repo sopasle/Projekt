@@ -250,7 +250,10 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 				r_fwd = m_sa.size()-1;
 				l_bwd = 0;
 				r_bwd = csa_bwd.size()-1;
-				bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);	//Da alle Buchstaben von S in R vorkommen muss l_bwd_res <= r_bwd_res sein
+				bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
+				if(l_bwd_res > r_bwd_res || r_bwd_res > csa_bwd.size()-1){	//Abbruch falls Buchstabe nicht in R vorkommt
+					abort();
+				}
 				l_fwd = l_fwd_res;
 				r_fwd = r_fwd_res;
 				l_bwd = l_bwd_res;
