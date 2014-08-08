@@ -240,10 +240,13 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 				factorLength++;
 			}
 			else{	//Teilstring existiert nicht in R (aber Teilstring-1)
-				pair<int,int> temp;
-				temp.first = m_sa[l_bwd];
+				pair<int,int> temp;	
+				temp.first = m_sa[l_bwd];	//factors
 				temp.second = temp.first + factorLength-1;
 				factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
+				
+				temp.first = csa_bwd[l_fwd];	//factors_reverse
+				temp.second = temp.first + factorLength-1;
 				factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
 				
 				l_fwd = 0;
@@ -265,9 +268,12 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 		}
 		//letzter Faktor des Strings:
 		pair<int,int> temp;
-		temp.first = m_sa[l_bwd];
+		temp.first = m_sa[l_bwd];	//factors
 		temp.second = m_sa[l_bwd]+factorLength-1;
 		factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
+		
+		temp.first = csa_bwd[l_fwd];	//factors_reverse
+		temp.second = temp.first + factorLength-1;
 		factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
 
 		int_vector<> s(number_of_factors+1);
