@@ -15,6 +15,8 @@ FRLZSI::FRLZSI(){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	string R_r(r.rbegin(), r.rend());	//R reverse
+	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
@@ -217,21 +219,54 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 }
 
 
+/*a-Array fuer die Suche im 2.Fall*/
+vector<vector<int>> FRLZSI::a_array(string pattern){
+	vector<vector<int>> a(pattern.size());
+	for(uint64_t i = 0; i<pattern.size(); i++){
+		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
+		uint64_t st_r = 0, ed_r = m_csa_bwd.size()-1, st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
+		
+		string sub_pattern = pattern.substr (i,pattern.size()-i);
+		while(j <= sub_pattern.size()){
+			uint64_t st_r_res, ed_r_res, st_r_reverse_res, ed_r_reverse_res;
+			bidirectional_search(m_csa_bwd, st_r_reverse, ed_r_reverse, st_r, ed_r, sub_pattern[j], st_r_reverse_res, ed_r_reverse_res, st_r_res, ed_r_res);
+			if(st_r_res <= ed_r_res){	//P[i..j] existiert in R
+				st_r = st_r_res;
+				ed_r = ed_r_res;
+				st_r_reverse = st_r_reverse_res;
+				ed_r_reverse = ed_r_reverse_res;
+				j++;
+			}
+			else{
+				break;
+			}
+		}
+		uint64_t st_t, ed_t;
+		p_zu_t(st_r, ed_r, st_t, ed_t);
+		if(st_t <= ed_t){	//???
+			while(st_t <= ed_t){
+				a[i].push_back(st_t+1);
+				st_t++;
+			}
+		} // else a[i] = nil
+	}
+	
+	return a;
+}
+
+
 /*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
 void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	vector<tuple<int,pair<int,int>,int,int>> factors;	//tuple(ISA,is,ie,Si,faktornummer)
 	vector<tuple<int,int,pair<int,int>>> factors_reverse;		//tuple(ISA_reverse,faktorlaenge,pair(is,ie))
-	string R_r(R.rbegin(), R.rend());	//R reverse
-	csa_wt<wt_hutu<>> csa_bwd;
-	construct_im(csa_bwd, R_r.c_str(), 1);	//SA von R reverse
 
 	for(int i = 0; i<S.size(); i++){	//Faktorisierung der einzelnen Strings S
-		uint64_t l_fwd = 0, r_fwd = m_sa.size()-1, l_bwd = 0, r_bwd = csa_bwd.size()-1, l_fwd_res = 0, r_fwd_res = 0, r_bwd_res = 0, l_bwd_res = 0;
+		uint64_t l_fwd = 0, r_fwd = m_sa.size()-1, l_bwd = 0, r_bwd = m_csa_bwd.size()-1, l_fwd_res = 0, r_fwd_res = 0, r_bwd_res = 0, l_bwd_res = 0;
 		uint64_t factorLength = 0;
 		uint64_t number_of_factors = 0;
 		
 		for(int j = 0; j<S[i].size(); j++){	//String S wird durchlaufen
-			bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
+			bidirectional_search(m_csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
 			if(l_bwd_res <= r_bwd_res){	//Teilstring existiert in R
 				l_fwd = l_fwd_res;
 				r_fwd = r_fwd_res;
@@ -245,16 +280,16 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 				temp.second = temp.first + factorLength-1;
 				factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
 				
-				temp.first = csa_bwd[l_fwd];	//factors_reverse
+				temp.first = m_csa_bwd[l_fwd];	//factors_reverse
 				temp.second = temp.first + factorLength-1;
 				factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
 				
 				l_fwd = 0;
 				r_fwd = m_sa.size()-1;
 				l_bwd = 0;
-				r_bwd = csa_bwd.size()-1;
-				bidirectional_search(csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
-				if(l_bwd_res > r_bwd_res || r_bwd_res > csa_bwd.size()-1){	//Abbruch falls Buchstabe nicht in R vorkommt
+				r_bwd = m_csa_bwd.size()-1;
+				bidirectional_search(m_csa_bwd, l_fwd, r_fwd, l_bwd, r_bwd, S[i][j], l_fwd_res, r_fwd_res, l_bwd_res, r_bwd_res);
+				if(l_bwd_res > r_bwd_res || r_bwd_res > m_csa_bwd.size()-1){	//Abbruch falls Buchstabe nicht in R vorkommt
 					abort();
 				}
 				l_fwd = l_fwd_res;
@@ -272,7 +307,7 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 		temp.second = m_sa[l_bwd]+factorLength-1;
 		factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
 		
-		temp.first = csa_bwd[l_fwd];	//factors_reverse
+		temp.first = m_csa_bwd[l_fwd];	//factors_reverse
 		temp.second = temp.first + factorLength-1;
 		factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
 
