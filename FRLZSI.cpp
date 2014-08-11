@@ -22,8 +22,8 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(2,3,a,b);
-	cout << a << " " << b << endl;
+	p_zu_t(2,3,a,b,3);
+	//cout << a << " " << b << endl;
 }
 
 /*Destruktor*/
@@ -104,8 +104,8 @@ void FRLZSI::bcl_erzeugen(){
 	m_c_t.resize(m_t_array.size());
 	m_b_tq.resize(m_sa.size());
 	m_c_tq.resize(m_t_array.size());
-	vector<vector <uint32_t> > gamma_t(m_sa.size()-1);
-	vector<vector <uint32_t> > gamma_tq(m_sa.size()-1);
+	vector<vector <uint64_t> > gamma_t(m_sa.size()-1);
+	vector<vector <uint64_t> > gamma_tq(m_sa.size()-1);
 	
 	vector<pair<int,int>> t_reverse_array = {{3,4},{1,2},{7,8},{0,1},{0,5},{6,8},{5,6},{5,8}};
 	
@@ -160,14 +160,33 @@ void FRLZSI::bcl_erzeugen(){
 }
 
 
-void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q){
+void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c){
 	rank_support_v<1> m_b_t_rank(&m_b_t);
-	select_support_mcl<1> m_c_t_select(&m_c_t);
-	p = 1 + m_c_t_select(m_b_t_rank(st-1));
+	select_support_mcl<1> m_c_t_select(&m_c_t);	
+	p = 1 + m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c);
 	q = m_c_t_select(m_b_t_rank(ed));
 }
 
-
+uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
+   uint64_t l=0;
+   uint64_t r=7;
+   uint64_t x;
+   vector <uint64_t> gamma_b = m_gamma_t[b_rank];
+	
+   while(r >= l) {
+      x=l + ((r-l)/2);
+      if(c < gamma_b[x] ) /* kleiner? */
+         r=x-1;  /* Rechte Seite ist nicht mehr so interessant. */
+       else      /* dann halt größer */
+         l=x+1;  /* Linke Seite ist nicht mehr so interessant. */
+       if(gamma_b[x] == c && x != 0)
+          return x;     /* gefunden; x = Position */
+   }
+	if(c < gamma_b[x])
+	return x;
+	else
+	return x+1;
+}
 
 /*
  * SANDRA
@@ -241,8 +260,8 @@ vector<vector<int>> FRLZSI::a_array(string pattern){
 				break;
 			}
 		}
-		uint64_t st_t, ed_t;
-		p_zu_t(st_r, ed_r, st_t, ed_t);
+		uint64_t st_t, ed_t,c;
+		p_zu_t(st_r, ed_r, st_t, ed_t,c); // edit von oli, p_zu_t braucht noch zusätzlich die patternlänge, wie besprochen
 		if(st_t <= ed_t){	//???
 			while(st_t <= ed_t){
 				a[i].push_back(st_t+1);

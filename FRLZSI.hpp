@@ -69,11 +69,11 @@ class FRLZSI{
 		/* X(T) Datenstruktur */
 		bit_vector m_b_t;			// B-Bitvektor
 		bit_vector m_c_t;			// C-Bitvektor
-		vector<vector<uint32_t>> m_gamma_t;		// Gamma-Array
+		vector<vector<uint64_t>> m_gamma_t;		// Gamma-Array
 		/* X(T~) Datenstruktur */
 		bit_vector m_b_tq;			// B-Bitvektor
 		bit_vector m_c_tq;			// C-Bitvektor
-		vector<vector<uint32_t>> m_gamma_tq;		// Gamma-Array
+		vector<vector<uint64_t>> m_gamma_tq;		// Gamma-Array
 	
 		/*
 		 * OLI
@@ -82,10 +82,10 @@ class FRLZSI{
 		int_vector<> d_Array();			// D-Array erstellen
 		void d_Strich(int_vector<> d);		// D'-Array erstellen
 		void d_ArrayTest();			// D-Array naiv für ein sicheres Ergebnis
-		void p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q);			// Funktion fpr die Datenstruktur X(T)
+		void p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c);			// Funktion fpr die Datenstruktur X(T)
 		/* für X(T) */
 		void bcl_erzeugen();		
-
+		uint64_t binaere_suche(uint64_t rank_b, uint64_t c);
 		
 		/*
 		 * SANDRA
