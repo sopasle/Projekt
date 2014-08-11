@@ -22,8 +22,8 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(2,3,a,b,3);
-	//cout << a << " " << b << endl;
+	p_zu_t(1,1,a,b,1);
+	cout << a << " " << b << endl;
 }
 
 /*Destruktor*/
@@ -163,8 +163,22 @@ void FRLZSI::bcl_erzeugen(){
 void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c){
 	rank_support_v<1> m_b_t_rank(&m_b_t);
 	select_support_mcl<1> m_c_t_select(&m_c_t);	
-	p = 1 + m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c);
+	uint64_t m_b_t_rank_helper;
+	m_b_t_rank_helper = m_b_t_rank(st-1);
+	if(m_b_t_rank_helper == 0){
+		// 
+	}else{
+	p = 1 + m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st),c);
+	}
+	m_b_t_rank_helper = m_b_t_rank(ed);
+	if(m_b_t_rank_helper == 0){
+		// 
+	}else{
 	q = m_c_t_select(m_b_t_rank(ed));
+	}
+	if(p > q){
+		//
+	}
 }
 
 uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
