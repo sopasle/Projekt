@@ -22,7 +22,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(1,1,a,b,1);
+	p_zu_t(1,3,a,b,1);
 	cout << a << " " << b << endl;
 }
 
@@ -166,7 +166,7 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 	uint64_t m_b_t_rank_helper;
 	m_b_t_rank_helper = m_b_t_rank(st-1);
 	if(m_b_t_rank_helper == 0){
-		// 
+		// st =>st-1 if(<0) = 0
 	}else{
 	p = 1 + m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st),c);
 	}
@@ -183,10 +183,11 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 
 uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
    uint64_t l=0;
-   uint64_t r=7;
+
    uint64_t x;
    vector <uint64_t> gamma_b = m_gamma_t[b_rank];
-	
+   cout << gamma_b << " :)" << endl;
+	   uint64_t r=7;
    while(r >= l) {
       x=l + ((r-l)/2);
       if(c < gamma_b[x] ) /* kleiner? */
@@ -260,7 +261,7 @@ vector<vector<int>> FRLZSI::a_array(string pattern){
 		uint64_t st_r = 0, ed_r = m_csa_bwd.size()-1, st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
 		
 		string sub_pattern = pattern.substr (i,pattern.size()-i);
-		while(j <= sub_pattern.size()){
+		while(j < sub_pattern.size()){
 			uint64_t st_r_res, ed_r_res, st_r_reverse_res, ed_r_reverse_res;
 			bidirectional_search(m_csa_bwd, st_r_reverse, ed_r_reverse, st_r, ed_r, sub_pattern[j], st_r_reverse_res, ed_r_reverse_res, st_r_res, ed_r_res);
 			if(st_r_res <= ed_r_res){	//P[i..j] existiert in R
@@ -275,7 +276,7 @@ vector<vector<int>> FRLZSI::a_array(string pattern){
 			}
 		}
 		uint64_t st_t, ed_t,c;
-		p_zu_t(st_r, ed_r, st_t, ed_t,c); // edit von oli, p_zu_t braucht noch zusätzlich die patternlänge, wie besprochen
+		p_zu_t(st_r, ed_r, st_t, ed_t,j);
 		if(st_t <= ed_t){	//???
 			while(st_t <= ed_t){
 				a[i].push_back(st_t+1);
