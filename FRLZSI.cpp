@@ -22,7 +22,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(1,2,a,b,1);
+	p_zu_t(1,3,a,b,1);
 	cout << a << " " << b << endl;
 	//f_array();
 
@@ -166,8 +166,8 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 	rank_support_v<1> m_b_t_rank(&m_b_t);
 	select_support_mcl<1> m_c_t_select(&m_c_t);	
 	uint64_t m_b_t_rank_helper;
-	if(st > 0){ // Indexverscheibung mit b, bzw abfangen der 0
-	m_b_t_rank_helper = m_b_t_rank(st-1);
+	if(st > 1){ // Indexverscheibung mit b, bzw abfangen der 0
+	m_b_t_rank_helper = m_b_t_rank(st-2);
 	}else{
 	m_b_t_rank_helper = 0;
 	}
@@ -175,11 +175,10 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 	
 	if(m_b_t_rank_helper == 0){
 		cout << "haha muh" << endl;
-			p = 1 + binaere_suche(m_b_t_rank(st),c);
-			//cout << binaere_suche(m_b_t_rank(st-1),c) << ";:;:;" << endl;
+			p = binaere_suche(m_b_t_rank(st-1),c);
 	}else{
 		cout << "haha muh muh" << endl;
-	p = 1 + m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st),c);
+	p = 1+m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st-1),c);
 	}
 	m_b_t_rank_helper = m_b_t_rank(ed);
 	if(m_b_t_rank_helper == 0){
@@ -187,7 +186,7 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 		q = 0;
 	}else{
 		cout << "haha zzz zzz" << endl;
-	q = m_c_t_select(m_b_t_rank(ed))+1; // da c bei 0 anfängt
+	q = m_c_t_select(m_b_t_rank(ed)); // da c bei 0 anfängt
 	}
 	if(p > q){
 		//
@@ -197,41 +196,50 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 }
 
 uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
-   uint64_t l=0;
+	vector <int>::iterator low;
+	vector <int> gamma_b;
+	gamma_b.push_back(0);
+		copy (m_gamma_t[b_rank].begin(),m_gamma_t[b_rank].end(),back_inserter(gamma_b));
+    cout << gamma_b << " :)" << '\n';
+
+	low = lower_bound(gamma_b.begin(), gamma_b.end(), c);
+	cout << (low-gamma_b.begin())-1<< "." << ":" << c << '\n';
+	return (low-gamma_b.begin())-1;
+}
+  /* uint64_t l=0;
 
    uint64_t x;
-   vector <uint64_t> gamma_b = m_gamma_t[b_rank];
-   cout << gamma_b << " :)" << endl;
+
 	   uint64_t r= gamma_b.size()-1;
    while(r >= l) {
       x=l + ((r-l)/2);
-      if(c < gamma_b[x] ) /* kleiner? */
+      if(c < gamma_b[x] ) 
 		if(x == 0){
 			return 0;
 		}else{
-         r=x-1;  /* Rechte Seite ist nicht mehr so interessant. */
+         r=x-1;  
 	 }
-       else      /* dann halt größer */
+       else      
        if(x == gamma_b.size()-1){
 		   return gamma_b.size();
 	   }else{
-         l=x+1;  /* Linke Seite ist nicht mehr so interessant. */
+         l=x+1;  
 	 }
        if(gamma_b[x] == c && x != 0)
-          return x;     /* gefunden; x = Position */
+          return x;     
    }
 	if(c < gamma_b[x])
 	return x;
 	else
 	return x+1;
-}
-
+}*/
 /*
+
 uint64_t FRLZSI:: y_Array(){
 	int_vector<> y(pattern.size()-1);
 	int_vector<> yq(pattern.size()-1);
 	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
-	yq
+	
 }
 
 */
