@@ -22,7 +22,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(1,3,a,b,1);
+	p_zu_t(7,7,a,b,2);
 	cout << a << " " << b << endl;
 	//f_array();
 
@@ -322,10 +322,9 @@ int_vector<> FRLZSI::a_array(string pattern){
 				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
 				cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
 				if(st_t <= ed_t){	//P[i..j] ist moeglicherweise ein Faktor in T
-					for(int k = st_t-1; k<ed_t; k++){
+					for(int k = st_t; k<=ed_t; k++){
 						if(j+1 == m_t_array[k].second - m_t_array[k].first + 1){		//Faktor existiert
-							a[i] = st_t+1;
-							cout << "Faktor gefunden: " << st_t+1;
+							a[i] = k+1;
 						}
 					}
 				}
