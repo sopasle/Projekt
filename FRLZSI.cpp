@@ -22,7 +22,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(1,3,a,b,1);
+	p_zu_t(1,2,a,b,1);
 	cout << a << " " << b << endl;
 }
 
@@ -164,21 +164,34 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 	rank_support_v<1> m_b_t_rank(&m_b_t);
 	select_support_mcl<1> m_c_t_select(&m_c_t);	
 	uint64_t m_b_t_rank_helper;
+	if(st > 0){ // Indexverscheibung mit b, bzw abfangen der 0
 	m_b_t_rank_helper = m_b_t_rank(st-1);
-	if(m_b_t_rank_helper == 0){
-		// st =>st-1 if(<0) = 0
 	}else{
+	m_b_t_rank_helper = 0;
+	}
+		cout << "haha" << endl;
+	
+	if(m_b_t_rank_helper == 0){
+		cout << "haha muh" << endl;
+			p = 1 + binaere_suche(m_b_t_rank(st),c);
+			//cout << binaere_suche(m_b_t_rank(st-1),c) << ";:;:;" << endl;
+	}else{
+		cout << "haha muh muh" << endl;
 	p = 1 + m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st),c);
 	}
 	m_b_t_rank_helper = m_b_t_rank(ed);
 	if(m_b_t_rank_helper == 0){
-		// 
+		cout << "haha zzz" << endl;
+		q = 0;
 	}else{
-	q = m_c_t_select(m_b_t_rank(ed));
+		cout << "haha zzz zzz" << endl;
+	q = m_c_t_select(m_b_t_rank(ed))+1; // da c bei 0 anfängt
 	}
 	if(p > q){
 		//
 	}
+			cout << m_c_t_select(4) << ":-:" << m_c_t << endl;
+			cout << "haha2" << endl;
 }
 
 uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
@@ -187,13 +200,21 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
    uint64_t x;
    vector <uint64_t> gamma_b = m_gamma_t[b_rank];
    cout << gamma_b << " :)" << endl;
-	   uint64_t r=7;
+	   uint64_t r= gamma_b.size()-1;
    while(r >= l) {
       x=l + ((r-l)/2);
       if(c < gamma_b[x] ) /* kleiner? */
+		if(x == 0){
+			return 0;
+		}else{
          r=x-1;  /* Rechte Seite ist nicht mehr so interessant. */
+	 }
        else      /* dann halt größer */
+       if(x == gamma_b.size()-1){
+		   return gamma_b.size();
+	   }else{
          l=x+1;  /* Linke Seite ist nicht mehr so interessant. */
+	 }
        if(gamma_b[x] == c && x != 0)
           return x;     /* gefunden; x = Position */
    }
@@ -202,6 +223,22 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
 	else
 	return x+1;
 }
+
+/*
+uint64_t FRLZSI:: y_Array(){
+	int_vector<> y(pattern.size()-1);
+	int_vector<> yq(pattern.size()-1);
+	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
+	yq
+}
+
+*/
+
+
+
+
+
+
 
 /*
  * SANDRA
