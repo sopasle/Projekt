@@ -74,6 +74,8 @@ class FRLZSI{
 		bit_vector m_b_tq;			// B-Bitvektor
 		bit_vector m_c_tq;			// C-Bitvektor
 		vector<vector<uint64_t>> m_gamma_tq;		// Gamma-Array
+		
+		csa_wt<wt_hutu<>> m_f;	//F-Array
 	
 		/*
 		 * OLI
