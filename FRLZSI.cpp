@@ -254,6 +254,7 @@ void FRLZSI::search_pattern(string &pattern){
 	}else{
 		cout << pattern << " existiert nicht" << endl;	//Vorlaeufig fuer Case1
 	}
+	a_array(pattern);
 }
 
 /*sucht solange das Maximum in d_Strich bis Faktorlaenge < Patternlaenge und berechnet jeweils die zugehoerigen Faktoren mittels getFactors.*/
@@ -293,8 +294,8 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 
 
 /*a-Array fuer die Suche im 2.Fall*/
-vector<vector<int>> FRLZSI::a_array(string pattern){
-	vector<vector<int>> a(pattern.size());
+int_vector<> FRLZSI::a_array(string pattern){
+	int_vector<> a(pattern.size());
 	for(uint64_t i = 0; i<pattern.size(); i++){
 		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
 		uint64_t st_r = 0, ed_r = m_csa_bwd.size()-1, st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
@@ -311,28 +312,24 @@ vector<vector<int>> FRLZSI::a_array(string pattern){
 				
 				uint64_t st_t, ed_t,c;
 				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
+				cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
 				if(st_t <= ed_t){	//P[i..j] ist moeglicherweise ein Faktor in T
-					for(int k = st_t; k<=ed_t; k++){
-						if(j+1 == m_t_array[m_g[k]-1].second - m_is[k])
-						cout << "Faktor der Länge: " << j+1 << endl;
+					for(int k = st_t-1; k<ed_t; k++){
+						if(j+1 == m_t_array[k].second - m_t_array[k].first + 1){		//Faktor existiert
+							a[i] = st_t+1;
+							cout << "Faktor gefunden: " << st_t+1;
+						}
 					}
 				}
-				
 				j++;
 			}
 			else{
 				break;
 			}
 		}
-		uint64_t st_t, ed_t,c;
-		p_zu_t(st_r, ed_r, st_t, ed_t,j);
-		if(st_t <= ed_t){	//???
-			while(st_t <= ed_t){
-				a[i].push_back(st_t+1);
-				st_t++;
-			}
-		} // else a[i] = nil
+
 	}
+	cout << "A: " << a << endl;
 	
 	return a;
 }
