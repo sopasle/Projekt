@@ -22,9 +22,10 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(1,1,a,b,3);
+	p_zu_t(8,9,a,b,1);
 
-	cout << a << " " << b << endl;
+	cout << "27: " <<  a << " " << b << endl;
+	//y_array();
 	//f_array();
 
 }
@@ -146,18 +147,18 @@ void FRLZSI::bcl_erzeugen(){
 	}
 	i = 0;
 	while(i < m_sa.size()-1){
-	cout  << m_c_t[i] << " ; " << m_sa[i+1] << " |" << m_b_t[i] << endl;
+	//cout  << m_c_t[i] << " ; " << m_sa[i+1] << " |" << m_b_t[i] << endl;
 		//cout << i << " " << b[i] << " , " << gamma[i] << " | " << m_sa[i+1] << " : " << m_t_array[i].first << endl;
 	i++;
 	}
 	i = 0;
 	while(i < m_gamma_t.size()-1){
-	cout  << m_gamma_t[i] << " ; " << m_c_t[i] << endl;
+	//cout  << m_gamma_t[i] << " ; " << m_c_t[i] << endl;
 	i++;
 	}
 	i = 0;
 	while(i < m_gamma_tq.size()-1){
-	cout  << m_gamma_tq[i] << " - " << m_c_tq[i] << endl;
+	//cout  << m_gamma_tq[i] << " - " << m_c_tq[i] << endl;
 	i++;
 	}
 }
@@ -166,34 +167,19 @@ void FRLZSI::bcl_erzeugen(){
 void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c){
 	rank_support_v<1> m_b_t_rank(&m_b_t);
 	select_support_mcl<1> m_c_t_select(&m_c_t);	
-	uint64_t m_b_t_rank_helper;
-	if(st > 1){ // Indexverscheibung mit b, bzw abfangen der 0
-	m_b_t_rank_helper = m_b_t_rank(st-2);
+	uint64_t rank_helper = m_b_t_rank(st-1);
+	if(rank_helper == 0){
+		cout << "lll" << endl;
+		p = binaere_suche(m_b_t_rank(st),c);
 	}else{
-	m_b_t_rank_helper = 0;
+	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c);
 	}
-		cout << "haha" << endl;
-	
-	if(m_b_t_rank_helper == 0){
-		cout << "haha muh" << endl;
-			p = binaere_suche(m_b_t_rank(st-1),c);
-	}else{
-		cout << "haha muh muh" << endl;
-	p = 2+m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st-1),c);
-	}
-	m_b_t_rank_helper = m_b_t_rank(ed);
-	if(m_b_t_rank_helper == 0){
-		cout << "haha zzz" << endl;
+	rank_helper = m_b_t_rank(ed);
+	if(rank_helper == 0){
 		q = 0;
 	}else{
-		cout << "haha zzz zzz" << endl;
-	q = m_c_t_select(m_b_t_rank(ed)); // da c bei 0 anfängt
+	q = m_c_t_select(m_b_t_rank(ed));
 	}
-	if(p > q){
-		//
-	}
-			cout << m_c_t_select(4) << ":-:" << m_c_t << endl;
-			cout << "haha2" << endl;
 }
 
 uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
@@ -201,10 +187,10 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
 	vector <int> gamma_b;
 	gamma_b.push_back(0);
 		copy (m_gamma_t[b_rank].begin(),m_gamma_t[b_rank].end(),back_inserter(gamma_b));
-    cout << gamma_b << " :)" << '\n';
+    //cout << gamma_b << " :)" << '\n';
 
 	low = lower_bound(gamma_b.begin(), gamma_b.end(), c);
-	cout << (low-gamma_b.begin())-1<< "." << ":" << c << '\n';
+	cout << (low-gamma_b.begin())-1<< "." << gamma_b <<":" << c << '\n';
 	return (low-gamma_b.begin())-1;
 }
   /* uint64_t l=0;
@@ -237,9 +223,42 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
 
 
 void FRLZSI::y_array(){
+	string pattern = "AGTA";
 	vector<pair<uint64_t,uint64_t>> y(4); // jeweils pattern.size()-1
 	vector<pair<uint64_t,uint64_t>> yq(4);
 	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
+
+
+	for(uint64_t i = 0; i<pattern.size(); i++){
+		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
+		uint64_t st_r = 0, ed_r = m_csa_bwd.size()-1, st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
+		
+		string sub_pattern = pattern.substr (i,pattern.size()-1);
+		while(j < sub_pattern.size()){
+			uint64_t st_r_res, ed_r_res, st_r_reverse_res, ed_r_reverse_res;
+			bidirectional_search(m_csa_bwd, st_r_reverse, ed_r_reverse, st_r, ed_r, sub_pattern[j], st_r_reverse_res, ed_r_reverse_res, st_r_res, ed_r_res);
+			if(st_r_res <= ed_r_res){	//P[i..j] existiert in R
+				st_r = st_r_res;
+				ed_r = ed_r_res;
+				st_r_reverse = st_r_reverse_res;
+				ed_r_reverse = ed_r_reverse_res;
+				
+				uint64_t st_t, ed_t,c;
+				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
+				//cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
+				
+				
+				j++;
+			}
+			else{
+				if(j == sub_pattern.size()-1){
+					cout << "SA:" << st_r << " " << ed_r << endl;
+				}
+				break;
+			}
+		}
+
+	}
 
 }
 
