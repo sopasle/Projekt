@@ -24,6 +24,8 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	uint64_t a,b;
 	p_zu_t(1,3,a,b,1);
 	cout << a << " " << b << endl;
+	//f_array();
+
 }
 
 /*Destruktor*/
@@ -269,6 +271,16 @@ vector<vector<int>> FRLZSI::a_array(string pattern){
 				ed_r = ed_r_res;
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
+				
+				uint64_t st_t, ed_t,c;
+				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
+				if(st_t <= ed_t){	//P[i..j] ist moeglicherweise ein Faktor in T
+					for(int k = st_t; k<=ed_t; k++){
+						if(j+1 == m_t_array[m_g[k]-1].second - m_is[k])
+						cout << "Faktor der Länge: " << j+1 << endl;
+					}
+				}
+				
 				j++;
 			}
 			else{
@@ -383,6 +395,40 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	m_t_array.erase(unique(m_t_array.begin(), m_t_array.end()), m_t_array.end());	//gleiche Faktoren loeschen
 	m_t_reverse_array.erase(unique(m_t_reverse_array.begin(), m_t_reverse_array.end()), m_t_reverse_array.end());
 	
+}
+
+/*Erzeugt das F-Array*/
+void FRLZSI::f_array(){
+	/*uint64_t eof = m_t_array.size()+1;
+	uint64_t length = 0;
+	//csa der einzelnen S-Zerlegungen -> int_vectoren zusammenfassen
+	for(int i = 0; i< m_s.size(); i++){
+		length += m_s[i].size();
+	}
+	int_vector<> seg(length+m_s.size()-1);
+	uint64_t counter = 0;
+	for(int i = 0; i< m_s.size(); i++){
+		for(int j = 0; j<m_s[i].size(); j++){
+			seg[counter] = m_s[i][j];
+			counter++;
+		}
+		if(i != m_s.size()-1){
+			seg[counter] = eof;
+			counter++;
+		}
+	}
+	cout << seg << endl;
+	csa_wt<wt_hutu<>> f;
+	construct_im(f, seg, 1);
+	
+	cout << "i" << "\t" << "text[i]" << "\t" << "sa[i]" << "\t" << "isa[i]" << "\t" << "bwt[i]" << "\t" << "psi[i]" << "\t" << "lf[i]" << "\t" << "Suffix" << endl;
+	for(uint64_t i=0; i<f.size(); ++i)
+		cout << i << "\t" << f.text[i] << "\t" << f[i] << "\t" << f.isa[i] << "\t" << f.bwt[i] << "\t" << f.psi[i] << "\t" << f.lf[i] << "\t" << extract(f, f[i], f.size()-1) << endl;
+	cout << endl;
+	
+	bit_vector f_v(length);
+	for(int i=1; i<f.size(); i++){	//V initialisieren
+	}*/
 }
 
 

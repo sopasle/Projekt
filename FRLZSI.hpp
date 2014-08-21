@@ -95,6 +95,7 @@ class FRLZSI{
 		vector<vector<int>> a_array(string pattern);
 
 		void LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
+		void f_array();	//F-Array erzeugen
 
 };
 
