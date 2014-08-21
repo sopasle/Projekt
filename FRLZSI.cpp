@@ -22,7 +22,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-	p_zu_t(1,3,a,b,1);
+	p_zu_t(1,1,a,b,3);
 	cout << a << " " << b << endl;
 	//f_array();
 
@@ -178,7 +178,7 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 			p = binaere_suche(m_b_t_rank(st-1),c);
 	}else{
 		cout << "haha muh muh" << endl;
-	p = 1+m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st-1),c);
+	p = 2+m_c_t_select(m_b_t_rank_helper) + binaere_suche(m_b_t_rank(st-1),c);
 	}
 	m_b_t_rank_helper = m_b_t_rank(ed);
 	if(m_b_t_rank_helper == 0){
@@ -233,16 +233,16 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
 	else
 	return x+1;
 }*/
-/*
 
-uint64_t FRLZSI:: y_Array(){
-	int_vector<> y(pattern.size()-1);
-	int_vector<> yq(pattern.size()-1);
+
+void FRLZSI::y_array(){
+	vector<pair<uint64_t,uint64_t>> y(4); // jeweils pattern.size()-1
+	vector<pair<uint64_t,uint64_t>> yq(4);
 	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
-	
+
 }
 
-*/
+
 
 
 
