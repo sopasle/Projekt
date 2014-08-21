@@ -320,7 +320,6 @@ int_vector<> FRLZSI::a_array(string pattern){
 				
 				uint64_t st_t, ed_t,c;
 				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
-				cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
 				if(st_t <= ed_t){	//P[i..j] ist moeglicherweise ein Faktor in T
 					for(int k = st_t; k<=ed_t; k++){
 						if(j+1 == m_t_array[k].second - m_t_array[k].first + 1){		//Faktor existiert
@@ -440,7 +439,7 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 
 /*Erzeugt das F-Array*/
 void FRLZSI::f_array(){
-	/*uint64_t eof = m_t_array.size()+1;
+	uint64_t eof = m_t_array.size()+1;
 	uint64_t length = 0;
 	//csa der einzelnen S-Zerlegungen -> int_vectoren zusammenfassen
 	for(int i = 0; i< m_s.size(); i++){
@@ -459,17 +458,16 @@ void FRLZSI::f_array(){
 		}
 	}
 	cout << seg << endl;
-	csa_wt<wt_hutu<>> f;
-	construct_im(f, seg, 1);
+	construct_im(m_f, seg, 1);
 	
 	cout << "i" << "\t" << "text[i]" << "\t" << "sa[i]" << "\t" << "isa[i]" << "\t" << "bwt[i]" << "\t" << "psi[i]" << "\t" << "lf[i]" << "\t" << "Suffix" << endl;
-	for(uint64_t i=0; i<f.size(); ++i)
-		cout << i << "\t" << f.text[i] << "\t" << f[i] << "\t" << f.isa[i] << "\t" << f.bwt[i] << "\t" << f.psi[i] << "\t" << f.lf[i] << "\t" << extract(f, f[i], f.size()-1) << endl;
+	for(uint64_t i=0; i<m_f.size(); ++i)
+		cout << i << "\t" << m_f.text[i] << "\t" << m_f[i] << "\t" << m_f.isa[i] << "\t" << m_f.bwt[i] << "\t" << m_f.psi[i] << "\t" << m_f.lf[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
 	cout << endl;
 	
 	bit_vector f_v(length);
-	for(int i=1; i<f.size(); i++){	//V initialisieren
-	}*/
+	for(int i=1; i<m_f.size(); i++){	//V initialisieren
+	}
 }
 
 
