@@ -87,6 +87,9 @@ class FRLZSI{
 		void bcl_erzeugen();		
 		uint64_t binaere_suche(uint64_t rank_b, uint64_t c);
 		
+		/* y(F,T)*/
+		void y_array();
+		
 		/*
 		 * SANDRA
 		*/
