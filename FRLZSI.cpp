@@ -328,6 +328,9 @@ int_vector<> FRLZSI::a_array(string pattern){
 						}
 					}
 				}
+				else{
+					break;
+				}
 				j++;
 			}
 			else{
@@ -459,16 +462,20 @@ void FRLZSI::f_array(){
 		}
 	}
 	cout << seg << endl;
-	construct_im(m_f, seg, 1);
 	
-	cout << "i" << "\t" << "text[i]" << "\t" << "sa[i]" << "\t" << "isa[i]" << "\t" << "bwt[i]" << "\t" << "psi[i]" << "\t" << "lf[i]" << "\t" << "Suffix" << endl;
+	string filename = "int_vector";
+	store_to_file(seg, filename);
+	
+	construct(m_f, filename, 0);
+	
+	/*cout << "i" << "\t" << "text[i]" << "\t" << "sa[i]" << "\t" << "isa[i]" << "\t" << "bwt[i]" << "\t" << "psi[i]" << "\t" << "lf[i]" << "\t" << "Suffix" << endl;
 	for(uint64_t i=0; i<m_f.size(); ++i)
 		cout << i << "\t" << m_f.text[i] << "\t" << m_f[i] << "\t" << m_f.isa[i] << "\t" << m_f.bwt[i] << "\t" << m_f.psi[i] << "\t" << m_f.lf[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
 	cout << endl;
 	
 	bit_vector f_v(length);
 	for(int i=1; i<m_f.size(); i++){	//V initialisieren
-	}
+	}*/
 }
 
 
