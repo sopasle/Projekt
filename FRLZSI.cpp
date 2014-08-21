@@ -23,9 +23,13 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
 	p_zu_t(8,9,a,b,1);
-
-	cout << "27: " <<  a << " " << b << endl;
-	//y_array();
+	vector<pair<uint64_t,uint64_t>> ya;
+	
+	//cout << "27: " <<  a << " " << b << endl;
+	y_array(ya);
+	for(int i = 0; i<ya.size();i++){
+		cout << ya[i].first << " " << ya[i].second << endl;
+	}
 	//f_array();
 
 }
@@ -169,16 +173,16 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 	select_support_mcl<1> m_c_t_select(&m_c_t);	
 	uint64_t rank_helper = m_b_t_rank(st-1);
 	if(rank_helper == 0){
-		cout << "lll" << endl;
-		p = binaere_suche(m_b_t_rank(st),c);
+		//cout << "lll" << endl;
+		p = binaere_suche(m_b_t_rank(st),c)+1;
 	}else{
-	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c);
+	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c)+1; // +1 Zusatz, da yq es so braucht 
 	}
 	rank_helper = m_b_t_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-	q = m_c_t_select(m_b_t_rank(ed));
+	q = m_c_t_select(m_b_t_rank(ed))+1;
 	}
 }
 
@@ -190,7 +194,7 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
     //cout << gamma_b << " :)" << '\n';
 
 	low = lower_bound(gamma_b.begin(), gamma_b.end(), c);
-	cout << (low-gamma_b.begin())-1<< "." << gamma_b <<":" << c << '\n';
+	//cout << (low-gamma_b.begin())-1<< "." << gamma_b <<":" << c << '\n';
 	return (low-gamma_b.begin())-1;
 }
   /* uint64_t l=0;
@@ -222,13 +226,13 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
 }*/
 
 
-void FRLZSI::y_array(){
+void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 	string pattern = "AGTA";
-	vector<pair<uint64_t,uint64_t>> y(4); // jeweils pattern.size()-1
-	vector<pair<uint64_t,uint64_t>> yq(4);
+	y.resize(pattern.size()); // jeweils pattern.size()-1
+	vector<pair<uint64_t,uint64_t>> yq(pattern.size());
 	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
 
-
+	/* Yq */
 	for(uint64_t i = 0; i<pattern.size(); i++){
 		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
 		uint64_t st_r = 0, ed_r = m_csa_bwd.size()-1, st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
@@ -242,28 +246,58 @@ void FRLZSI::y_array(){
 				ed_r = ed_r_res;
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
-				
-				uint64_t st_t, ed_t,c;
+				uint64_t st_t,ed_t;
 				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
-				//cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
-				
+				//cout << "st_t, ed_t: " << st_r << " " << ed_r << endl;
+				if(j == sub_pattern.size()-1){
+					cout << "SA:" << st_t << " " << ed_t << endl;
+					yq[i].first = st_t;
+					yq[i].second = ed_t;
+				}
 				
 				j++;
 			}
 			else{
-				if(j == sub_pattern.size()-1){
-					cout << "SA:" << st_r << " " << ed_r << endl;
-				}
+			
 				break;
 			}
 		}
 
 	}
+	for(int i = 0; i<yq.size();i++){
+		cout << yq[i].first << " " << yq[i].second << endl;
+	}
+	/* Y */
+	
+	select_support_mcl<1> v_select(&v_test);	
+	for(uint64_t i = 0; i<yq.size();i++){
+		cout << "a" << endl;
+		if(yq[i].first != 0){
+			if(yq[i].first-1 == 0){
+				y[i].first = 1;
+			}else{
+				y[i].first = v_select(yq[i].first)+1;
+			}
+			cout << "b" << endl;
+		y[i].second =v_select(yq[i].second+1);
+			cout << "c" << endl;
+		}
+	}
+	for(int i = 0; i<y.size();i++){
+		cout << y[i].first << " " << y[i].second << endl;
+	}
 
 }
 
 
-
+/*void FRLZSI::q_array(){
+	vector<pair<uint64_t,uint64_t>> q(pattern.size());
+	for(uint64_t i = 0; i < q.size();i++){
+		if()
+	}
+	
+	
+}*/
 
 
 
