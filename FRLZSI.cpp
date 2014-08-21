@@ -22,11 +22,8 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	uint64_t a,b;
-<<<<<<< HEAD
 	p_zu_t(1,1,a,b,3);
-=======
-	p_zu_t(7,7,a,b,2);
->>>>>>> 5b14fcf7ac52150520499eb2d537af70954b0b01
+
 	cout << a << " " << b << endl;
 	//f_array();
 
