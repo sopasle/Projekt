@@ -95,7 +95,7 @@ class FRLZSI{
 		*/
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
-		vector<vector<int>> a_array(string pattern);
+		int_vector<> a_array(string pattern);
 
 		void LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
 		void f_array();	//F-Array erzeugen
