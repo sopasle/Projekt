@@ -26,7 +26,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 
 	cout << "27: " <<  a << " " << b << endl;
 	//y_array();
-	//f_array();
+	f_array();
 
 }
 
@@ -358,7 +358,6 @@ int_vector<> FRLZSI::a_array(string pattern){
 		}
 
 	}
-	cout << "A: " << a << endl;
 	
 	return a;
 }
@@ -462,39 +461,37 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 
 /*Erzeugt das F-Array*/
 void FRLZSI::f_array(){
-	uint64_t eof = m_t_array.size()+1;
+	uint64_t eos = m_t_array.size()+1;
 	uint64_t length = 0;
 	//csa der einzelnen S-Zerlegungen -> int_vectoren zusammenfassen
 	for(int i = 0; i< m_s.size(); i++){
 		length += m_s[i].size();
 	}
-	int_vector<> seg(length+m_s.size()-1);
+	int_vector<> seg(length+m_s.size());
 	uint64_t counter = 0;
 	for(int i = 0; i< m_s.size(); i++){
 		for(int j = 0; j<m_s[i].size(); j++){
 			seg[counter] = m_s[i][j];
 			counter++;
 		}
-		if(i != m_s.size()-1){
-			seg[counter] = eof;
+			seg[counter] = eos;
 			counter++;
+	}	
+	construct_im(m_f, seg, 0);
+	
+	//m_v initialisieren
+	bit_vector v(length);
+	v[0] = 1;
+	for(int i=2; i<m_f.size(); i++){
+		if(seg[m_f[i]] != seg[m_f[i-1]]){
+			v[i-1] = 1;
+		}
+		else{
+			v[i-1] = 0;
 		}
 	}
-	cout << seg << endl;
-	
-	string filename = "int_vector";
-	store_to_file(seg, filename);
-	
-	construct(m_f, filename, 0);
-	
-	/*cout << "i" << "\t" << "text[i]" << "\t" << "sa[i]" << "\t" << "isa[i]" << "\t" << "bwt[i]" << "\t" << "psi[i]" << "\t" << "lf[i]" << "\t" << "Suffix" << endl;
-	for(uint64_t i=0; i<m_f.size(); ++i)
-		cout << i << "\t" << m_f.text[i] << "\t" << m_f[i] << "\t" << m_f.isa[i] << "\t" << m_f.bwt[i] << "\t" << m_f.psi[i] << "\t" << m_f.lf[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
-	cout << endl;
-	
-	bit_vector f_v(length);
-	for(int i=1; i<m_f.size(); i++){	//V initialisieren
-	}*/
+	select_support_mcl<1> v_select(&v);
+	m_v = std::move(v_select);
 }
 
 
