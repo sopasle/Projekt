@@ -91,7 +91,8 @@ class FRLZSI{
 		uint64_t binaere_suche(uint64_t rank_b, uint64_t c);
 		
 		/* y(F,T)*/
-		void y_array();
+		void y_array(vector<pair<uint64_t,uint64_t>> &y);
+		void q_array();
 		
 		/*
 		 * SANDRA
