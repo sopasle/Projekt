@@ -529,7 +529,7 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	
 }
 
-/*Erzeugt das F-Array*/
+/*Erzeugt das F-Arrayz*/
 void FRLZSI::f_array(){
 	uint64_t eos = m_t_array.size()+1;
 	uint64_t length = 0;
@@ -562,6 +562,12 @@ void FRLZSI::f_array(){
 	}
 	select_support_mcl<1> v_select(&v);
 	m_v = std::move(v_select);
+
+	cout << "m_v in f_array():" << endl;
+	for(int i = 1; i<10;i++){
+		cout << "Stelle: " << i << "V: " << m_v(i) << endl;
+	}
+	cout << endl;
 }
 
 
