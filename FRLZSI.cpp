@@ -24,14 +24,16 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	f_array();				//m_f und m_v initialisieren
 	uint64_t a,b;
 	p_zu_t(8,9,a,b,1);
-
-	vector<pair<uint64_t,uint64_t>> ya;
-	
-	//cout << "27: " <<  a << " " << b << endl;
-	y_array(ya);
-	for(int i = 0; i<ya.size();i++){
-		cout << ya[i].first << " " << ya[i].second << endl;
+	//vector<pair<uint64_t,uint64_t>> ya;
+	for(int i = 1; i<10;i++){
+		cout << "Stelle: " << i << "V: " << m_v(i) << endl;
 	}
+	//cout << "27: " <<  a << " " << b << endl;
+	//y_array(ya);
+	//for(int i = 0; i<ya.size();i++){
+	//	cout << ya[i].first << " " << ya[i].second << endl;
+	//}
+	q_array();
 	
 }
 
@@ -231,7 +233,7 @@ void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 	string pattern = "AGTA";
 	y.resize(pattern.size()); // jeweils pattern.size()-1
 	vector<pair<uint64_t,uint64_t>> yq(pattern.size());
-	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
+	//bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
 
 	/* Yq */
 	for(uint64_t i = 0; i<pattern.size(); i++){
@@ -270,35 +272,50 @@ void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 	}
 	/* Y */
 	
-	select_support_mcl<1> v_select(&v_test);	
+	//select_support_mcl<1> v_select(&v_test);	
 	for(uint64_t i = 0; i<yq.size();i++){
 		cout << "a" << endl;
 		if(yq[i].first != 0){
 			if(yq[i].first-1 == 0){
 				y[i].first = 1;
 			}else{
-				y[i].first = v_select(yq[i].first)+1;
+				y[i].first = m_v(yq[i].first)+1;
 			}
 			cout << "b" << endl;
-		y[i].second =v_select(yq[i].second+1);
+		y[i].second =m_v(yq[i].second+1);
 			cout << "c" << endl;
 		}
 	}
 	for(int i = 0; i<y.size();i++){
-		cout << y[i].first << " " << y[i].second << endl;
+		cout << "y1: " << y[i].first << " " << y[i].second << endl;
 	}
 
 }
 
 
-/*void FRLZSI::q_array(){
+void FRLZSI::q_array(){
+	string pattern = "AGTA";
 	vector<pair<uint64_t,uint64_t>> q(pattern.size());
+	vector<pair<uint64_t,uint64_t>> y;
+	int_vector<> a = a_array(pattern);
+	y_array(y);
 	for(uint64_t i = 0; i < q.size();i++){
-		if()
+		if(y[i].first != 0){
+			q[i].first = y[i].first;
+			q[i].second = y[i].second;
+			}else if(a[i] != 0){
+				//uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
+				//backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);
+				q[i] = {99,99};
+				}else{
+					q[i] = {0,0};
+					}
 	}
-	
-	
-}*/
+	for(int i = 0; i<q.size();i++){
+		cout << "y: " << y[i].first << " " << y[i].second << endl;
+		cout << "q: " << q[i].first << " " << q[i].second << endl;
+	}		
+}
 
 
 
