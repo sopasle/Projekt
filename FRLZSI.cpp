@@ -233,7 +233,7 @@ void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 	string pattern = "AGTA";
 	y.resize(pattern.size()); // jeweils pattern.size()-1
 	vector<pair<uint64_t,uint64_t>> yq(pattern.size());
-	//bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
+	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
 
 	/* Yq */
 	for(uint64_t i = 0; i<pattern.size(); i++){
@@ -272,17 +272,17 @@ void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 	}
 	/* Y */
 	
-	//select_support_mcl<1> v_select(&v_test);	
+	select_support_mcl<1> v_select(&v_test);	
 	for(uint64_t i = 0; i<yq.size();i++){
 		cout << "a" << endl;
 		if(yq[i].first != 0){
 			if(yq[i].first-1 == 0){
 				y[i].first = 1;
 			}else{
-				y[i].first = m_v(yq[i].first)+1;
+				y[i].first = v_select(yq[i].first)+1;
 			}
 			cout << "b" << endl;
-		y[i].second =m_v(yq[i].second+1);
+		y[i].second =v_select(yq[i].second+1);
 			cout << "c" << endl;
 		}
 	}
@@ -299,14 +299,32 @@ void FRLZSI::q_array(){
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a = a_array(pattern);
 	y_array(y);
+
+/* fm index von 'schönem' S */
+	uint64_t length = 0;
+	//csa der einzelnen S-Zerlegungen -> int_vectoren zusammenfassen
+	for(int i = 0; i< m_s.size(); i++){
+		length += m_s[i].size();
+	}
+	int_vector<> seg(length+m_s.size());
+	uint64_t counter = 0;
+	for(int i = 0; i< m_s.size(); i++){
+		for(int j = 0; j<m_s[i].size(); j++){
+			seg[counter] = m_s[i][j];
+			counter++;
+		}
+	}
+	csa_wt<> s;
+	//construct_im(s, seg, 0);
+
 	for(uint64_t i = 0; i < q.size();i++){
 		if(y[i].first != 0){
 			q[i].first = y[i].first;
 			q[i].second = y[i].second;
 			}else if(a[i] != 0){
-				//uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
-				//backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);
-				q[i] = {99,99};
+				uint64_t i=0, j=s.size()-1, l_res=0, r_res=0;
+				//backward_search(s, i, j, a[i],q[i+1], l_res, r_res);
+				//q[i] = {l_res,r_res};
 				}else{
 					q[i] = {0,0};
 					}
