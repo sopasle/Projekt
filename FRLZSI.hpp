@@ -77,6 +77,7 @@ class FRLZSI{
 		
 		csa_wt<wt_int<>, 32, 512, sa_order_sa_sampling<>, int_vector<>, int_alphabet<>> m_f;	//F-Array
 		select_support_mcl<1> m_v; //V-Bitvektor
+		bit_vector m_v_array;
 	
 		/*
 		 * OLI

@@ -560,7 +560,8 @@ void FRLZSI::f_array(){
 			v[i-1] = 0;
 		}
 	}
-	select_support_mcl<1> v_select(&v);
+	m_v_array = std::move(v);
+	select_support_mcl<1> v_select(&m_v_array);
 	m_v = std::move(v_select);
 
 	cout << "m_v in f_array():" << endl;
