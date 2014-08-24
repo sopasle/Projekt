@@ -233,7 +233,7 @@ void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 	string pattern = "AGTA";
 	y.resize(pattern.size()); // jeweils pattern.size()-1
 	vector<pair<uint64_t,uint64_t>> yq(pattern.size());
-	bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
+	//bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
 
 	/* Yq */
 	for(uint64_t i = 0; i<pattern.size(); i++){
@@ -272,17 +272,17 @@ void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 	}
 	/* Y */
 	
-	select_support_mcl<1> v_select(&v_test);	
+	//select_support_mcl<1> v_select(&v_test);	
 	for(uint64_t i = 0; i<yq.size();i++){
 		cout << "a" << endl;
 		if(yq[i].first != 0){
 			if(yq[i].first-1 == 0){
 				y[i].first = 1;
 			}else{
-				y[i].first = v_select(yq[i].first)+1;
+				y[i].first = m_v(yq[i].first)+1;
 			}
 			cout << "b" << endl;
-		y[i].second =v_select(yq[i].second+1);
+		y[i].second =m_v(yq[i].second+1);
 			cout << "c" << endl;
 		}
 	}
