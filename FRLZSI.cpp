@@ -24,15 +24,15 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	f_array();				//m_f und m_v initialisieren
 	uint64_t a,b;
 	p_zu_t(8,9,a,b,1);
-	//vector<pair<uint64_t,uint64_t>> ya;
+	vector<pair<uint64_t,uint64_t>> ya;
 	for(int i = 1; i<10;i++){
 		cout << "Stelle: " << i << "V: " << m_v(i) << endl;
 	}
 	//cout << "27: " <<  a << " " << b << endl;
-	//y_array(ya);
 	//for(int i = 0; i<ya.size();i++){
 	//	cout << ya[i].first << " " << ya[i].second << endl;
 	//}
+	cout << "a: " << a_array("AGTA") << endl;
 	q_array();
 	
 }
@@ -315,16 +315,20 @@ void FRLZSI::q_array(){
 		}
 	}
 	csa_wt<> s;
-	//construct_im(s, seg, 0);
+	//construct(s, seg, 0);
 
-	for(uint64_t i = 0; i < q.size();i++){
+	for(uint64_t i = q.size()-1; i >= 0;i++){
 		if(y[i].first != 0){
 			q[i].first = y[i].first;
 			q[i].second = y[i].second;
 			}else if(a[i] != 0){
-				uint64_t i=0, j=s.size()-1, l_res=0, r_res=0;
-				//backward_search(s, i, j, a[i],q[i+1], l_res, r_res);
-				//q[i] = {l_res,r_res};
+				uint64_t st_a=0, ed_a=a[i], a_res=0, a_res=0;
+				//backward_search(s,st_a,ed_a,q[i+m_t_array[a[i]]], st_a_res, ed_a_res);
+				if(a_res <= a_res)
+					st_a = st_a_res;
+					ed_a = ed_a_res;
+					//todo Bedingung für Erfolg
+					// q[i] = {l_res,r_res};
 				}else{
 					q[i] = {0,0};
 					}
@@ -334,11 +338,6 @@ void FRLZSI::q_array(){
 		cout << "q: " << q[i].first << " " << q[i].second << endl;
 	}		
 }
-
-
-
-
-
 
 /*
  * SANDRA
@@ -428,7 +427,6 @@ int_vector<> FRLZSI::a_array(string pattern){
 		}
 
 	}
-	
 	return a;
 }
 
