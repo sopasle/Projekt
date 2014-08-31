@@ -317,25 +317,26 @@ void FRLZSI::q_array(){
 	csa_wt<> s;
 	//construct(s, seg, 0);
 
-	for(uint64_t i = q.size()-1; i >= 0;i++){
-		if(y[i].first != 0){
-			q[i].first = y[i].first;
-			q[i].second = y[i].second;
-			}else if(a[i] != 0){
-				uint64_t st_a=0, ed_a=a[i], a_res=0, a_res=0;
-				//backward_search(s,st_a,ed_a,q[i+m_t_array[a[i]]], st_a_res, ed_a_res);
-				if(a_res <= a_res)
-					st_a = st_a_res;
-					ed_a = ed_a_res;
-					//todo Bedingung für Erfolg
-					// q[i] = {l_res,r_res};
+	for(uint64_t i = q.size(); i > 0;i--){
+		if(y[i-1].first != 0){
+			q[i].first = y[i-1].first;
+			q[i].second = y[i-1].second;
+			cout << "y i: "<< i << "|" << q[i].first << endl;
+			}else if(a[i-1] != 0){
+				cout << "muh" << endl;
+				uint64_t st_a_res=0, ed_a_res=0;
+				backward_search(s,q[i+2].first,q[i+2].second,a[i-1]-1,st_a_res, ed_a_res);
+				
+				q[i] = {st_a_res,ed_a_res};
+				cout << "a i: " << i << "|" << q[i].first << endl;
 				}else{
 					q[i] = {0,0};
 					}
 	}
-	for(int i = 0; i<q.size();i++){
-		cout << "y: " << y[i].first << " " << y[i].second << endl;
-		cout << "q: " << q[i].first << " " << q[i].second << endl;
+	for(int i = 1; i<=q.size();i++){
+		cout << "a: " << a[i-1]  << endl;
+		cout << "y: " << y[i-1].first << " " << y[i-1].second << endl;
+		cout << "q: " << q[i].first << " - " << q[i].second << endl;
 	}		
 }
 
