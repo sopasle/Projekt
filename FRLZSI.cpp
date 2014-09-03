@@ -297,17 +297,18 @@ void FRLZSI::q_array(){
 	string pattern = "AGTA";
 	vector<pair<uint64_t,uint64_t>> q(pattern.size());
 	vector<pair<uint64_t,uint64_t>> y;
-	int_vector<> a = a_array(pattern);
+	int_vector<> a_length;
+	int_vector<> a = a_array(pattern,a_length);
 	y_array(y);
-	for(uint64_t i = q.size(); i > 0;i--){
-		if(y[i-1].first != 0){
-			q[i].first = y[i-1].first;
-			q[i].second = y[i-1].second;
+	for(uint64_t i = q.size()-1; i <q.size();i--){
+		if(y[i].first != 0){
+			q[i].first = y[i].first;
+			q[i].second = y[i].second;
 			cout << "y i: "<< i << "|" << q[i].first << endl;
-			}else if(a[i-1] != 0){
+			}else if(a[i] != 0){
 				cout << "muh" << endl;
 				uint64_t st_a_res=0, ed_a_res=0;
-				backward_search(m_f,q[i+2].first,q[i+2].second,a[i-1],st_a_res, ed_a_res);
+				backward_search(m_f,q[i+a_length[i]].first,q[i+a_length[i]].second,a[i],st_a_res, ed_a_res);
 				if(st_a_res > ed_a_res){
 					q[i] = {0,0};
 				}else{
@@ -318,12 +319,27 @@ void FRLZSI::q_array(){
 					q[i] = {0,0};
 					}
 	}
-	for(int i = 1; i<=q.size();i++){
-		cout << "a: " << a[i-1]  << endl;
-		cout << "y: " << y[i-1].first << " " << y[i-1].second << endl;
+	for(int i = 1; i<q.size();i++){
+		cout << "a: " << a[i]  << endl;
+		cout << "y: " << y[i].first << " " << y[i].second << endl;
 		cout << "q: " << q[i].first << " - " << q[i].second << endl;
 	}		
 }
+
+void FRLZSI::m_array(){
+	int_vector<> fff = {7,5,7,0,0,4,1,0,3,0};
+	construct(m_m, filename, 0); // 0=Serialisierter int_vector<>
+	auto res = wt.range_search_2d(wt.size()/2, wt.size(), 3, 100);
+	cout << res.first << " Werte zwischen " << wt.size()/2 << " und " << wt.size() << " die zwischen 3 und 100 liegen: " << endl;
+	for(auto point : res.second)
+		cout << "(" << point.first << "," << point.second << ") ";
+	cout << endl;
+	cout << endl;
+	
+	
+	
+}
+
 
 /*
  * SANDRA
