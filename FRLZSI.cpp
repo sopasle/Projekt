@@ -353,7 +353,8 @@ void FRLZSI::search_pattern(string &pattern){
 	}else{
 		cout << pattern << " existiert nicht" << endl;	//Vorlaeufig fuer Case1
 	}
-	a_array(pattern);
+	int_vector<> length;
+	a_array(pattern, length);
 }
 
 /*sucht solange das Maximum in d_Strich bis Faktorlaenge < Patternlaenge und berechnet jeweils die zugehoerigen Faktoren mittels getFactors.*/
@@ -393,7 +394,8 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 
 
 /*a-Array fuer die Suche im 2.Fall*/
-int_vector<> FRLZSI::a_array(string pattern){
+int_vector<> FRLZSI::a_array(string pattern, int_vector<> &length){
+	length.resize(pattern.size());
 	int_vector<> a(pattern.size());
 	for(uint64_t i = 0; i<pattern.size(); i++){
 		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
@@ -415,6 +417,7 @@ int_vector<> FRLZSI::a_array(string pattern){
 					for(int k = st_t; k<=ed_t; k++){
 						if(j+1 == m_t_array[k-1].second - m_t_array[k-1].first + 1){		//Faktor existiert
 							a[i] = k;
+							length[i] = j+1;
 						}
 					}
 				}
@@ -529,7 +532,7 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	
 }
 
-/*Erzeugt das F-Arrayz*/
+/*Erzeugt das F-Array*/
 void FRLZSI::f_array(){
 	uint64_t eos = m_t_array.size()+1;
 	uint64_t length = 0;
