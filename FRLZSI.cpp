@@ -408,12 +408,12 @@ int_vector<> FRLZSI::a_array(string pattern){
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
 				
-				uint64_t st_t, ed_t,c;
+				uint64_t st_t, ed_t, c;
 				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
 				if(st_t <= ed_t){	//P[i..j] ist moeglicherweise ein Faktor in T
 					for(int k = st_t; k<=ed_t; k++){
-						if(j+1 == m_t_array[k].second - m_t_array[k].first + 1){		//Faktor existiert
-							a[i] = k+1;
+						if(j+1 == m_t_array[k-1].second - m_t_array[k-1].first + 1){		//Faktor existiert
+							a[i] = k;
 						}
 					}
 				}
