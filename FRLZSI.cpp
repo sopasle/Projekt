@@ -32,7 +32,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	//for(int i = 0; i<ya.size();i++){
 	//	cout << ya[i].first << " " << ya[i].second << endl;
 	//}
-	cout << "a: " << a_array("AGTA") << endl;
+	//cout << "a: " << a_array("AGTA") << endl;
 	q_array();
 	
 }
@@ -299,24 +299,6 @@ void FRLZSI::q_array(){
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a = a_array(pattern);
 	y_array(y);
-
-/* fm index von 'schönem' S */
-	uint64_t length = 0;
-	//csa der einzelnen S-Zerlegungen -> int_vectoren zusammenfassen
-	for(int i = 0; i< m_s.size(); i++){
-		length += m_s[i].size();
-	}
-	int_vector<> seg(length+m_s.size());
-	uint64_t counter = 0;
-	for(int i = 0; i< m_s.size(); i++){
-		for(int j = 0; j<m_s[i].size(); j++){
-			seg[counter] = m_s[i][j];
-			counter++;
-		}
-	}
-	csa_wt<> s;
-	//construct(s, seg, 0);
-
 	for(uint64_t i = q.size(); i > 0;i--){
 		if(y[i-1].first != 0){
 			q[i].first = y[i-1].first;
@@ -325,9 +307,12 @@ void FRLZSI::q_array(){
 			}else if(a[i-1] != 0){
 				cout << "muh" << endl;
 				uint64_t st_a_res=0, ed_a_res=0;
-				backward_search(s,q[i+2].first,q[i+2].second,a[i-1]-1,st_a_res, ed_a_res);
-				
+				backward_search(m_f,q[i+2].first,q[i+2].second,a[i-1],st_a_res, ed_a_res);
+				if(st_a_res > ed_a_res){
+					q[i] = {0,0};
+				}else{
 				q[i] = {st_a_res,ed_a_res};
+				}
 				cout << "a i: " << i << "|" << q[i].first << endl;
 				}else{
 					q[i] = {0,0};
