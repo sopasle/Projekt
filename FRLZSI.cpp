@@ -195,16 +195,16 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 	select_support_mcl<1> m_c_tq_select(&m_c_tq);	
 	uint64_t rank_helper = m_b_tq_rank(st-1);
 	if(rank_helper == 0){
-		//cout << "lll" << endl;
+		cout << "lll" << binaere_suche(m_b_tq_rank(st),c) << endl;
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); // +1 Zusatz, da yq es so braucht 
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)-1; // -1, da tq eins zu hoch berechnet wird
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-	q = m_c_tq_select(m_b_tq_rank(ed))+1;
+	q = m_c_tq_select(m_b_tq_rank(ed))-1; // -1, da tq eins zu hoch berechnet wird
 	}
 }
 
@@ -365,10 +365,10 @@ void FRLZSI::m_array(){
 		uint64_t st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
 		
 
-		while(j < pattern.size()){
+		while(j < pattern.size()){  // pattern.size() muss später geändert werden, in den linken Teil den die querry findet
 			uint64_t st_r_reverse_res, ed_r_reverse_res;
 			backward_search(m_csa_bwd, st_r_reverse, ed_r_reverse,pattern[j], st_r_reverse_res, ed_r_reverse_res);
-			if(st_r_reverse_res <= ed_r_reverse_res){	//P[i..j] existiert in R
+			if(st_r_reverse_res <= ed_r_reverse_res){	
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
 				uint64_t st_t,ed_t;
@@ -382,7 +382,6 @@ void FRLZSI::m_array(){
 				break;
 			}
 		}
-
 	
 }
 
