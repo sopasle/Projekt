@@ -81,9 +81,9 @@ class FRLZSI{
 		wt_int<> m_m;
 		int_vector<> m_m_array;
 		bit_vector m_c;
-		rank_support_mcl<1> m_c_rank;
+		rank_support_v<1> m_c_rank;
 		int_vector<> m_l;
-	
+		int m_exist;
 		/*
 		 * OLI
 		*/
@@ -102,8 +102,8 @@ class FRLZSI{
 		void q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_second);
 		
 		void m_array(string &pattern);
-		void phase_1(uint64_t factor);
-		void phase_2();
+		void phase_1(uint64_t factor,uint64_t st_pos);
+		void phase_2(uint64_t factor,uint64_t st_pos);
 		/*
 		 * SANDRA
 		*/
