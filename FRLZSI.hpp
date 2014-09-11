@@ -96,7 +96,7 @@ class FRLZSI{
 		
 		/* y(F,T)*/
 		void y_array(vector<pair<uint64_t,uint64_t>> &y);
-		void q_array();
+		void q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_second);
 		
 		void m_array();
 		/*

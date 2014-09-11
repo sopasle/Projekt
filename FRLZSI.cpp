@@ -34,8 +34,6 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	//	cout << ya[i].first << " " << ya[i].second << endl;
 	//}
 	//cout << "a: " << a_array("AGTA") << endl;
-	q_array();
-	
 	m_array();
 	
 }
@@ -198,24 +196,17 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 	select_support_mcl<1> m_c_tq_select(&m_c_tq);	
 	uint64_t rank_helper = m_b_tq_rank(st-1);
 	if(rank_helper == 0){
-		cout << "lll" << binaere_suche(m_b_tq_rank(st),c) << endl;
+		//cout << "lll" << binaere_suche(m_b_tq_rank(st),c) << endl;
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
-<<<<<<< HEAD
+
 	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
-=======
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)-1; // -1, da tq eins zu hoch berechnet wird
->>>>>>> bb13d8a15261f0f4242da710ef38eecd40498bb4
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-<<<<<<< HEAD
 	q = m_c_tq_select(m_b_tq_rank(ed));
-=======
-	q = m_c_tq_select(m_b_tq_rank(ed))-1; // -1, da tq eins zu hoch berechnet wird
->>>>>>> bb13d8a15261f0f4242da710ef38eecd40498bb4
 	}
 }
 
@@ -323,37 +314,36 @@ void FRLZSI::y_array(vector<pair<uint64_t,uint64_t>> &y){
 }
 
 
-void FRLZSI::q_array(){
-	string pattern = "AGTA";
-	vector<pair<uint64_t,uint64_t>> q(pattern.size());
+void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_second){
+	//vector<pair<uint64_t,uint64_t>> q(pattern.size());
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a_length;
 	int_vector<> a = a_array(pattern,a_length);
 	y_array(y);
-	for(uint64_t i = q.size()-1; i <q.size();i--){
+	for(uint64_t i = q_first.size()-1; i <q_first.size();i--){
 		if(y[i].first != 0){
-			q[i].first = y[i].first;
-			q[i].second = y[i].second;
-			cout << "y i: "<< i << "|" << q[i].first << endl;
+			q_first[i] = y[i].first;
+			q_second[i] = y[i].second;
 			}else if(a[i] != 0){
-				cout << "muh" << endl;
 				uint64_t st_a_res=0, ed_a_res=0;
-				backward_search(m_f,q[i+a_length[i]].first,q[i+a_length[i]].second,a[i],st_a_res, ed_a_res);
+				backward_search(m_f,q_first[i+a_length[i]],q_second[i+a_length[i]],a[i],st_a_res, ed_a_res);
 				if(st_a_res > ed_a_res){
-					q[i] = {0,0};
+					q_first[i] = 0;
+					q_second[i] = 0;
 				}else{
-				q[i] = {st_a_res,ed_a_res};
+				q_first[i] = st_a_res;
+				q_second[i] = ed_a_res;
 				}
-				cout << "a i: " << i << "|" << q[i].first << endl;
 				}else{
-					q[i] = {0,0};
+					q_first[i] = 0;
+					q_second[i] = 0;
 					}
-	}
-	for(int i = 1; i<q.size();i++){
-		cout << "a: " << a[i]  << endl;
-		cout << "y: " << y[i].first << " " << y[i].second << endl;
-		cout << "q: " << q[i].first << " - " << q[i].second << endl;
-	}		
+	}	
+	int i = 0;
+	while(i<q_first.size()){
+	//cout << "q_array: " << q_first[i] << " " << q_second[i] << endl;
+	i++;
+}
 }
 
 void FRLZSI::m_array(){
@@ -362,7 +352,9 @@ void FRLZSI::m_array(){
 	store_to_file(fff,filename);
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>	
 	string pattern = "AGTA";
-
+	int_vector<> q_first(pattern.size());
+	int_vector<> q_second(pattern.size());
+	q_array(pattern,q_first,q_second);
 
 		uint64_t j = 0;
 		uint64_t st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
@@ -371,11 +363,7 @@ void FRLZSI::m_array(){
 		while(j < pattern.size()){  // pattern.size() muss später geändert werden, in den linken Teil den die querry findet
 			uint64_t st_r_reverse_res, ed_r_reverse_res;
 			backward_search(m_csa_bwd, st_r_reverse, ed_r_reverse,pattern[j], st_r_reverse_res, ed_r_reverse_res);
-<<<<<<< HEAD
 			if(st_r_reverse_res <= ed_r_reverse_res){
-=======
-			if(st_r_reverse_res <= ed_r_reverse_res){	
->>>>>>> bb13d8a15261f0f4242da710ef38eecd40498bb4
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
 				uint64_t st_t,ed_t;
@@ -383,10 +371,11 @@ void FRLZSI::m_array(){
 				cout << "st_res, ed_res: " << st_r_reverse_res << " " << ed_r_reverse_res << endl;
 				cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
 				j++;
-					auto res = m_m.range_search_2d(6,7,st_t+1,ed_t+1);
+				cout << "q: " << q_first[j] << " " << q_second[j] << endl;
+					auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t+1,ed_t+1);
 			cout << res.first << " Wert 2D" << endl;
 			for(auto point : res.second)
-				cout << "(" << point.first << "," << point.second << ") ";
+				cout << "(" << point.first+1 << "," << point.second << ") ";
 			cout << endl;
 			cout << endl;
 			}
