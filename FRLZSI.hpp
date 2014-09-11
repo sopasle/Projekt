@@ -95,10 +95,12 @@ class FRLZSI{
 		uint64_t binaere_suche(uint64_t rank_b, uint64_t c);
 		
 		/* y(F,T)*/
-		void y_array(vector<pair<uint64_t,uint64_t>> &y);
+		void y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y);
 		void q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_second);
 		
-		void m_array();
+		void m_array(string &pattern);
+		void phase_1(uint64_t factor);
+		void phase_2();
 		/*
 		 * SANDRA
 		*/
