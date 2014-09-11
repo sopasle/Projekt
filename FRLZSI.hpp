@@ -79,6 +79,7 @@ class FRLZSI{
 		select_support_mcl<1> m_v; //V-Bitvektor
 		bit_vector m_v_array;
 		wt_int<> m_m;
+		int_vector<> m_m_array;
 	
 		/*
 		 * OLI
@@ -105,9 +106,10 @@ class FRLZSI{
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
 		int_vector<> a_array(string pattern, int_vector<> &length);
 
-		void LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
+		int_vector<> LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
 		void f_array();	//F-Array erzeugen
-
+		void initialize_m(int_vector<> &t_to_t_reverse);	//M-Vektor erzeugen
+	
 };
 
 namespace util{

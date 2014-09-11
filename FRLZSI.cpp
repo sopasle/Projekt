@@ -17,11 +17,12 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
-	LZ_factorization(r, s);		//m_t_array, m_s initialisieren
+	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	f_array();				//m_f und m_v initialisieren
+	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
 	uint64_t a,b;
 	p_zu_t(8,9,a,b,1);
 	vector<pair<uint64_t,uint64_t>> ya;
@@ -197,16 +198,24 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 	select_support_mcl<1> m_c_tq_select(&m_c_tq);	
 	uint64_t rank_helper = m_b_tq_rank(st-1);
 	if(rank_helper == 0){
-		//cout << "lll" << endl;
+		cout << "lll" << binaere_suche(m_b_tq_rank(st),c) << endl;
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
+<<<<<<< HEAD
 	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
+=======
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)-1; // -1, da tq eins zu hoch berechnet wird
+>>>>>>> bb13d8a15261f0f4242da710ef38eecd40498bb4
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
+<<<<<<< HEAD
 	q = m_c_tq_select(m_b_tq_rank(ed));
+=======
+	q = m_c_tq_select(m_b_tq_rank(ed))-1; // -1, da tq eins zu hoch berechnet wird
+>>>>>>> bb13d8a15261f0f4242da710ef38eecd40498bb4
 	}
 }
 
@@ -359,10 +368,14 @@ void FRLZSI::m_array(){
 		uint64_t st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
 		
 
-		while(j < pattern.size()){
+		while(j < pattern.size()){  // pattern.size() muss später geändert werden, in den linken Teil den die querry findet
 			uint64_t st_r_reverse_res, ed_r_reverse_res;
 			backward_search(m_csa_bwd, st_r_reverse, ed_r_reverse,pattern[j], st_r_reverse_res, ed_r_reverse_res);
+<<<<<<< HEAD
 			if(st_r_reverse_res <= ed_r_reverse_res){
+=======
+			if(st_r_reverse_res <= ed_r_reverse_res){	
+>>>>>>> bb13d8a15261f0f4242da710ef38eecd40498bb4
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
 				uint64_t st_t,ed_t;
@@ -382,7 +395,6 @@ void FRLZSI::m_array(){
 				break;
 			}
 		}
-
 	
 }
 
@@ -483,10 +495,11 @@ int_vector<> FRLZSI::a_array(string pattern, int_vector<> &length){
 
 
 /*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
-void FRLZSI::LZ_factorization(string &R, vector<string> &S){
-	vector<tuple<int,pair<int,int>,int,int>> factors;	//tuple(ISA,is,ie,Si,faktornummer)
-	vector<tuple<int,int,pair<int,int>>> factors_reverse;		//tuple(ISA_reverse,faktorlaenge,pair(is,ie))
-
+int_vector<> FRLZSI::LZ_factorization(string &R, vector<string> &S){
+	vector<tuple<int,pair<int,int>,int,int,int>> factors;	//tuple(ISA,is,ie,Si,faktornummer,T~)
+	vector<tuple<int,int,pair<int,int>,int>> factors_reverse;		//tuple(ISA_reverse,faktorlaenge,pair(is,ie),pos)
+	
+	uint64_t count = 0;
 	for(int i = 0; i<S.size(); i++){	//Faktorisierung der einzelnen Strings S
 		uint64_t l_fwd = 0, r_fwd = m_sa.size()-1, l_bwd = 0, r_bwd = m_csa_bwd.size()-1, l_fwd_res = 0, r_fwd_res = 0, r_bwd_res = 0, l_bwd_res = 0;
 		uint64_t factorLength = 0;
@@ -505,11 +518,12 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 				pair<int,int> temp;	
 				temp.first = m_sa[l_bwd];	//factors
 				temp.second = temp.first + factorLength-1;
-				factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
+				factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors,count));
 				
 				temp.first = m_csa_bwd[l_fwd];	//factors_reverse
 				temp.second = temp.first + factorLength-1;
-				factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
+				factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp,count));
+				count++;
 				
 				l_fwd = 0;
 				r_fwd = m_sa.size()-1;
@@ -532,23 +546,40 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 		pair<int,int> temp;
 		temp.first = m_sa[l_bwd];	//factors
 		temp.second = m_sa[l_bwd]+factorLength-1;
-		factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors));
+		factors.push_back(std::make_tuple (l_bwd,temp,i,number_of_factors,count));
 		
 		temp.first = m_csa_bwd[l_fwd];	//factors_reverse
 		temp.second = temp.first + factorLength-1;
-		factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp));
+		factors_reverse.push_back(std::make_tuple (l_fwd,factorLength,temp,count));
+		count++;
 
 		int_vector<> s(number_of_factors+1);
 		m_s[i] = s;
 	}
 	
+	sort(factors_reverse.begin(), factors_reverse.end());	//nach SA sortieren
+	vector<tuple<int,int,pair<int,int>,int>>::iterator f_reverse_iter = factors_reverse.begin();
+	vector<tuple<int,int,pair<int,int>,int>>::iterator f_reverse_iter2;
+	uint64_t pos = 0;
+	get<4>(factors[get<3>(*f_reverse_iter)]) = pos;
+	f_reverse_iter2 = factors_reverse.begin();
+	f_reverse_iter++;
+	while(f_reverse_iter != factors_reverse.end()){
+		if(get<2>(*f_reverse_iter) != get<2>(*f_reverse_iter2)){
+			pos++;
+		}
+		get<4>(factors[get<3>(*f_reverse_iter)]) = pos;
+		f_reverse_iter++;
+		f_reverse_iter2++;
+	}
+	
 	sort(factors.begin(), factors.end());	//nach SA sortieren
-	sort(factors_reverse.begin(), factors_reverse.end());
+	
 	
 	//m_s[i] initialisieren
 	if(!factors.empty()){
-		vector<tuple<int,pair<int,int>,int,int>>::iterator iter;
-		vector<tuple<int,pair<int,int>,int,int>>::iterator iter2;
+		vector<tuple<int,pair<int,int>,int,int,int>>::iterator iter;
+		vector<tuple<int,pair<int,int>,int,int,int>>::iterator iter2;
 		uint64_t i = 1;
 		
 		iter = factors.begin();
@@ -566,8 +597,8 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 		}
 	}
 	
-	vector<tuple<int,int,pair<int,int>>>::iterator iter_reverse = factors_reverse.begin();
-	for(vector<tuple<int,pair<int,int>,int,int>>::iterator iter = factors.begin(); iter != factors.end(); iter++){  	
+	vector<tuple<int,int,pair<int,int>,int>>::iterator iter_reverse = factors_reverse.begin();
+	for(vector<tuple<int,pair<int,int>,int,int,int>>::iterator iter = factors.begin(); iter != factors.end(); iter++){  	
 		m_t_array.push_back(get<1>(*iter));
 		m_t_reverse_array.push_back(get<2>(*iter_reverse));
 		iter_reverse++;
@@ -575,7 +606,17 @@ void FRLZSI::LZ_factorization(string &R, vector<string> &S){
 
 	m_t_array.erase(unique(m_t_array.begin(), m_t_array.end()), m_t_array.end());	//gleiche Faktoren loeschen
 	m_t_reverse_array.erase(unique(m_t_reverse_array.begin(), m_t_reverse_array.end()), m_t_reverse_array.end());
-	
+
+	vector<tuple<int,pair<int,int>,int,int,int>>::iterator iter = factors.begin();
+	int_vector<> t_to_t_reverse(m_t_array.size());
+	for(int i=0; i<t_to_t_reverse.size(); i++){
+		t_to_t_reverse[i]= get<4>(*iter);
+		while(get<4>(*iter)==t_to_t_reverse[i]){
+			iter++;
+		}
+	}
+
+	return t_to_t_reverse;
 }
 
 /*Erzeugt das F-Array*/
@@ -612,12 +653,19 @@ void FRLZSI::f_array(){
 	m_v_array = std::move(v);
 	select_support_mcl<1> v_select(&m_v_array);
 	m_v = std::move(v_select);
+}
 
-	cout << "m_v in f_array():" << endl;
-	for(int i = 1; i<10;i++){
-		cout << "Stelle: " << i << "V: " << m_v(i) << endl;
+/*Erzeugt den M-Vektor*/
+void FRLZSI::initialize_m(int_vector<> &t_to_t_reverse){
+	m_m_array.resize(m_v_array.size());
+	for(int i=0; i<m_m_array.size(); i++){
+		int t = m_f.bwt[i+1];
+		if(t == m_t_array.size()+1 || t == 0){	//$
+			m_m_array[i] = 0;
+		}else{
+			m_m_array[i] = t_to_t_reverse[t-1]+1;
+		}
 	}
-	cout << endl;
 }
 
 
