@@ -127,6 +127,8 @@ void FRLZSI::bcl_erzeugen(){
 		gamma_tq[m_t_reverse_array[i].first].push_back(m_t_reverse_array[i].second-m_t_reverse_array[i].first +1);
 		i++;
 	}
+
+
 	i = 0;
 	while(i < gamma_t.size()){
 		if(!gamma_t[m_sa[i+1]].empty()){
@@ -136,7 +138,7 @@ void FRLZSI::bcl_erzeugen(){
 			m_b_t[i] = 0;
 			}
 		if(!gamma_tq[m_csa_bwd[i+1]].empty()){
-			m_gamma_tq.push_back(gamma_tq[m_sa[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+			m_gamma_tq.push_back(gamma_tq[m_csa_bwd[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
 			m_b_tq[i] = 1;		// Faktor fängt an dieser Stelle an
 		}else{
 			m_b_tq[i] = 0;
@@ -154,18 +156,18 @@ void FRLZSI::bcl_erzeugen(){
 		i++;
 	}
 	i = 0;
-	while(i < m_sa.size()-1){
+	while(i < m_sa.size()){
 	//cout  << m_c_t[i] << " ; " << m_sa[i+1] << " |" << m_b_t[i] << endl;
 		//cout << i << " " << b[i] << " , " << gamma[i] << " | " << m_sa[i+1] << " : " << m_t_array[i].first << endl;
 	i++;
 	}
 	i = 0;
-	while(i < m_gamma_t.size()-1){
-	//cout  << m_gamma_t[i] << " ; " << m_c_t[i] << endl;
+	while(i < m_gamma_t.size()){
+	cout  << m_gamma_tq[i] << " ; " << m_c_t[i] << endl;
 	i++;
 	}
 	i = 0;
-	while(i < m_gamma_tq.size()-1){
+	while(i < m_gamma_tq.size()){
 	//cout  << m_gamma_tq[i] << " - " << m_c_tq[i] << endl;
 	i++;
 	}
@@ -198,13 +200,13 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 		//cout << "lll" << endl;
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); // +1 Zusatz, da yq es so braucht 
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-	q = m_c_tq_select(m_b_tq_rank(ed))+1;
+	q = m_c_tq_select(m_b_tq_rank(ed));
 	}
 }
 
@@ -349,33 +351,31 @@ void FRLZSI::m_array(){
 	string filename = "int_vector";
 	int_vector<> fff = {7,5,7,0,0,4,1,0,3,0};
 	store_to_file(fff,filename);
-	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
-	auto res = m_m.range_search_2d(6,7,1,2);
-	cout << res.first << " Wert 2D" << endl;
-	for(auto point : res.second)
-		cout << "(" << point.first << "," << point.second << ") ";
-	cout << endl;
-	cout << endl;
-	
-	
+	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>	
 	string pattern = "AGTA";
 
 
-		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
+		uint64_t j = 0;
 		uint64_t st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
 		
 
 		while(j < pattern.size()){
 			uint64_t st_r_reverse_res, ed_r_reverse_res;
 			backward_search(m_csa_bwd, st_r_reverse, ed_r_reverse,pattern[j], st_r_reverse_res, ed_r_reverse_res);
-			if(st_r_reverse_res <= ed_r_reverse_res){	//P[i..j] existiert in R
+			if(st_r_reverse_res <= ed_r_reverse_res){
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
 				uint64_t st_t,ed_t;
 				p_zu_tq(st_r_reverse, ed_r_reverse, st_t, ed_t,j);
+				cout << "st_res, ed_res: " << st_r_reverse_res << " " << ed_r_reverse_res << endl;
 				cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
-				
 				j++;
+					auto res = m_m.range_search_2d(6,7,st_t+1,ed_t+1);
+			cout << res.first << " Wert 2D" << endl;
+			for(auto point : res.second)
+				cout << "(" << point.first << "," << point.second << ") ";
+			cout << endl;
+			cout << endl;
 			}
 			else{
 			
