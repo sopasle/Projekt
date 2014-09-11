@@ -80,6 +80,8 @@ class FRLZSI{
 		bit_vector m_v_array;
 		wt_int<> m_m;
 		int_vector<> m_m_array;
+		bit_vector m_c;
+		int_vector<> m_l;
 	
 		/*
 		 * OLI

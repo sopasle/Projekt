@@ -617,13 +617,24 @@ void FRLZSI::f_array(){
 		length += m_s[i].size();
 	}
 	int_vector<> seg(length+m_s.size());
+	m_c.resize(length+m_s.size());
+	m_l.resize(length+m_s.size());
 	uint64_t counter = 0;
 	for(int i = 0; i< m_s.size(); i++){
 		for(int j = 0; j<m_s[i].size(); j++){
 			seg[counter] = m_s[i][j];
+			if(j == 0){
+				m_c[counter] = 1;
+				m_l[counter] = m_t_array[m_s[i][j]-1].second - m_t_array[m_s[i][j]-1].first+1;
+			}else{
+				m_c[counter] = 0;
+				m_l[counter] = m_l[counter-1] + m_t_array[m_s[i][j]-1].second - m_t_array[m_s[i][j]-1].first+1;
+			}
 			counter++;
 		}
 			seg[counter] = eos;
+			m_c[counter] = 0;
+			m_l[counter] = 0;
 			counter++;
 	}	
 	construct_im(m_f, seg, 0);
@@ -642,6 +653,22 @@ void FRLZSI::f_array(){
 	m_v_array = std::move(v);
 	select_support_mcl<1> v_select(&m_v_array);
 	m_v = std::move(v_select);
+	
+	cout << "seg: ";
+	for(int i = 0; i< seg.size(); i++){
+		cout << seg[i] << " " ;
+	}
+	cout << endl;
+	cout << "m_c: ";
+	for(int i = 0; i< m_c.size(); i++){
+		cout << m_c[i] << " " ;
+	}
+	cout << endl;
+	cout << "m_l: ";
+	for(int i = 0; i< m_l.size(); i++){
+		cout << m_l[i] << " " ;
+	}
+	cout << endl;
 }
 
 /*Erzeugt den M-Vektor*/
