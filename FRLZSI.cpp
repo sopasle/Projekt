@@ -646,6 +646,8 @@ void FRLZSI::f_array(){
 			m_l[counter] = 0;
 			counter++;
 	}	
+	rank_support_mcl<1> c_rank(&m_c);
+	m_c_rank = std::move(c_rank);
 	construct_im(m_f, seg, 0);
 	
 	//m_v initialisieren

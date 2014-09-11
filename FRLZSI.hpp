@@ -81,6 +81,7 @@ class FRLZSI{
 		wt_int<> m_m;
 		int_vector<> m_m_array;
 		bit_vector m_c;
+		rank_support_mcl<1> m_c_rank;
 		int_vector<> m_l;
 	
 		/*
