@@ -30,60 +30,98 @@ class FRLZSI{
 			// m_offset und m_tree werden hier benötigt, da sonst ein Fehler auftritt, wenn er es in Zeile 53/54 verwenden will
 
 	//! Load the data structure
-        void load(std::istream& in) {		
+        void load(std::istream& in) {	
+		//m_t_array.load(in);
+		//m_t_reverse_array.load(in);
 		m_sa.load(in);
+		m_csa_bwd.load(in);
+		//m_s.load(in);
 		m_ds.load(in);
 		m_g.load(in);
 		m_is.load(in);
 		m_ie_rmaxq.load(in);
 		m_ds_rmaxq.load(in);
+		m_b_t.load(in);
+		m_c_t.load(in);
+		//m_gamma_t.load(in);
+		m_b_tq.load(in);
+		m_c_tq.load(in);
+		//m_gamma_tq.load(in);
+		m_f.load(in);
+		m_v.load(in);
+		m_v_array.load(in);
+		m_m.load(in);
+		m_m_array.load(in);
+		m_c.load(in);
+		m_c_rank.load(in);
+		m_l.load(in);
+		//m_exist.load(in);
         }
 
         //! Serialize the data structure
         size_type serialize(std::ostream& out, structure_tree_node* v=nullptr, std::string name="")const {
             structure_tree_node* child = structure_tree::add_child(v, name, util::class_name(*this));
             size_type written_bytes = 0;
+           // written_bytes += m_t_array.serialize(out, child, "t_array");			// Problem
+           // written_bytes += m_t_reverse_array.serialize(out, child, "t_reverse_array");	// Problem
             written_bytes += m_sa.serialize(out, child, "sa");
+	    written_bytes += m_csa_bwd.serialize(out, child, "csa_bwd");
+           // written_bytes += m_s.serialize(out, child, "s");					// Problem
             written_bytes += m_ds.serialize(out, child, "ds");
             written_bytes += m_g.serialize(out, child, "g");
 	    written_bytes += m_is.serialize(out, child, "is");
             written_bytes += m_ie_rmaxq.serialize(out, child, "ie RMQ");
             written_bytes += m_ds_rmaxq.serialize(out, child, "ds RMQ");
+	    written_bytes += m_b_t.serialize(out, child, "b_t");
+	    written_bytes += m_c_t.serialize(out, child, "c_t");
+           // written_bytes += m_gamma_t.serialize(out, child, "gamma_t");			// Problem
+	    written_bytes += m_b_tq.serialize(out, child, "b_tq");
+	    written_bytes += m_c_tq.serialize(out, child, "c_tq");
+           // written_bytes += m_gamma_tq.serialize(out, child, "gamma_tq");			// Problem
+	    written_bytes += m_f.serialize(out, child, "f");
+	    written_bytes += m_v.serialize(out, child, "v");
+	    written_bytes += m_v_array.serialize(out, child, "v_array");
+	    written_bytes += m_m.serialize(out, child, "m");
+	    written_bytes += m_m_array.serialize(out, child, "m_array");
+	    written_bytes += m_c.serialize(out, child, "c");
+	    written_bytes += m_c_rank.serialize(out, child, "c_rank");
+	    written_bytes += m_l.serialize(out, child, "l");
+	   // written_bytes += m_exist.serialize(out, child, "exist"); 				// Problem
             structure_tree::add_size(child, written_bytes);
             return written_bytes;
         }
 		
 	private:
-		vector<pair<int,int>> m_t_array;	// T-Array, (Faktoranfang,Faktorende) im Referenzstring
-		vector<pair<int,int>> m_t_reverse_array; //T-quer-Array (Faktoranfang,Faktorende)
-		csa_wt<> m_sa;				// Suffix-Array
-		csa_wt<wt_hutu<>> m_csa_bwd;	// Suffix-Array von R reverse
-		vector<int_vector<>> m_s;		// Faktorzerlegung der einzelnen S
-		int_vector<> m_ds;			// D'-Array, für Ausgabetests
+		vector<pair<int,int>> m_t_array;	// T-Array, (Faktoranfang,Faktorende) im Referenzstring		*
+		vector<pair<int,int>> m_t_reverse_array; //T-quer-Array (Faktoranfang,Faktorende)			*
+		csa_wt<> m_sa;				// Suffix-Array							*
+		csa_wt<wt_hutu<>> m_csa_bwd;	// Suffix-Array von R reverse						*
+		vector<int_vector<>> m_s;		// Faktorzerlegung der einzelnen S				*
+		int_vector<> m_ds;			// D'-Array, für Ausgabetests					*
 		/* I(T) Datenstruktur */
-		int_vector<> m_g;			// G-Array
-		int_vector<> m_is;			// IS-Array = Faktoranfang im Referenzstring
-		rmq_succinct_sct<false> m_ie_rmaxq;	// RMQ auf IE	
-		rmq_succinct_sct<false> m_ds_rmaxq;	// RMQ auf D'
+		int_vector<> m_g;			// G-Array							*
+		int_vector<> m_is;			// IS-Array = Faktoranfang im Referenzstring			*
+		rmq_succinct_sct<false> m_ie_rmaxq;	// RMQ auf IE							*
+		rmq_succinct_sct<false> m_ds_rmaxq;	// RMQ auf D'							*
 		
 		/* X(T) Datenstruktur */
-		bit_vector m_b_t;			// B-Bitvektor
-		bit_vector m_c_t;			// C-Bitvektor
-		vector<vector<uint64_t>> m_gamma_t;		// Gamma-Array
+		bit_vector m_b_t;			// B-Bitvektor							*
+		bit_vector m_c_t;			// C-Bitvektor							*
+		vector<vector<uint64_t>> m_gamma_t;		// Gamma-Array						*
 		/* X(T~) Datenstruktur */
-		bit_vector m_b_tq;			// B-Bitvektor
-		bit_vector m_c_tq;			// C-Bitvektor
-		vector<vector<uint64_t>> m_gamma_tq;		// Gamma-Array
+		bit_vector m_b_tq;			// B-Bitvektor							*
+		bit_vector m_c_tq;			// C-Bitvektor							*
+		vector<vector<uint64_t>> m_gamma_tq;		// Gamma-Array						*
 		
-		csa_wt<wt_int<>, 32, 512, sa_order_sa_sampling<>, int_vector<>, int_alphabet<>> m_f;	//F-Array
-		select_support_mcl<1> m_v; //V-Bitvektor
-		bit_vector m_v_array;
-		wt_int<> m_m;
-		int_vector<> m_m_array;
-		bit_vector m_c;
-		rank_support_v<1> m_c_rank;
-		int_vector<> m_l;
-		int m_exist;
+		csa_wt<wt_int<>, 32, 512, sa_order_sa_sampling<>, int_vector<>, int_alphabet<>> m_f;	//F-Array	*
+		select_support_mcl<1> m_v; //V-Bitvektor								*
+		bit_vector m_v_array;									//		*
+		wt_int<> m_m;										//		*
+		int_vector<> m_m_array;									//		*
+		bit_vector m_c;										//		*
+		rank_support_v<1> m_c_rank;								//		*
+		int_vector<> m_l;									//		*
+		int m_exist;										//		*
 		/*
 		 * OLI
 		*/
