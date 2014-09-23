@@ -2,19 +2,56 @@
 #include <string>
 #include <sys/types.h>
 #include <dirent.h>
+#include <fstream>
+#include <sstream>
 
-int main(){
+int main(int c, char *v[]){
 	
-	//DIR *opendir(const char *dirname);
+	string r = "ACGTCGATTAG";
+	vector<string> s;
+	
+    int len;
+    struct dirent *pDirent;
+    DIR *pDir;
+
+    if (c < 2) {
+        printf ("Usage: testprog <dirname>\n");
+        return 1;
+    }
+    pDir = opendir (v[1]);
+    if (pDir == NULL) {
+        printf ("Cannot open directory '%s'\n", v[1]);
+        return 1;
+    }
+
+    while ((pDirent = readdir(pDir)) != NULL) {
+        if((string)pDirent->d_name != "." && (string)pDirent->d_name != ".."){
+			stringstream ss;
+			ss << v[1] << "/" << pDirent->d_name;
+			fstream datei(ss.str(), ios::in); 
+			string zeile;
+			getline(datei,zeile);
+			s.push_back(zeile);
+			datei.close();
+		}
+    }
+    closedir (pDir);
+    
+ 
+    fstream datei("./Homo_sapiens.GRCh37.75.dna.chromosome.17.dna", ios::in);
+	getline(datei,r);
+    datei.close(); 
+
+
 
 	/*Beispiel aus dem Paper*/
-	string r = "CGATGCATTACGGTAACTGTCTGAAT";
-	string pattern = "HASFD";
-	vector<string> s; // hat alle S-Strings
-	s.push_back("TGATAGACG");
-	s.push_back("GAGTACTA");
-	s.push_back("GTACGT");
-	s.push_back("AGGA");
+	//string r = "CGATGCATTACGGTAACTGTCTGAAT";
+	string pattern = "AGGT";
+	//vector<string> s; // hat alle S-Strings
+	//s.push_back("TGATAGACG");
+	//s.push_back("GAGTACTA");
+	//s.push_back("GTACGT");
+	//s.push_back("AGGA");
 
 	FRLZSI t1(r,s);
 	t1.search_pattern(pattern);
