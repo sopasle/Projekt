@@ -502,12 +502,9 @@ void FRLZSI::m_array(string &pattern){
 				
 			//cout << res.first << " Wert 2D" << endl;
 			for(auto point : res.second){
-<<<<<<< HEAD
-							phase_1(point.second,(-j));
-=======
-							cout << "Aufruf: phase1(" << point.first+1 << "," << (-j) << ")" << endl;
-							phase_1(point.first+1,(-j));
->>>>>>> 0e0dd5eca319cfc7cf6bbbaa19d31ab7a4f99969
+				cout << "muh " << t_reverse_to_t[point.second-1]+1 << endl;
+					phase_1(t_reverse_to_t[point.second-1]+1,j);
+					//phase_1(point.second+1,j);
 				cout << "(" << point.first+1 << "," << point.second << ") ";
 			//cout << endl;
 				}
