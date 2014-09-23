@@ -15,14 +15,45 @@ FRLZSI::FRLZSI(){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	cout << "m_sa:" << endl;
+	for(int i = 1; i<m_sa.size(); i++){
+		cout << m_sa[i] << " 	" << extract(m_sa, m_sa[i], m_sa.size()-1) <<endl;
+	}
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
+	/*m_t_array ausgeben*/
+	cout << "m_t_array:" << endl; 
+	for(int i = 0; i< m_t_array.size(); i++){
+		cout << m_t_array[i].first << "	" << m_t_array[i].second << endl;
+	}
+	/*m_s ausgeben*/
+	cout << "m_s: " << endl;;
+	for(int i = 0; i<m_s.size(); i++){
+		cout << "S" << i+1 << ": ";
+		for(int j = 0; j< m_s[i].size(); j++){
+			cout << m_s[i][j] << " ";
+		}
+		cout << endl;
+	}
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
+	/*m_g ausgeben*/
+	cout << "m_g:" << endl;
+	for(int i = 0; i< m_g.size(); i++){
+		cout << m_g[i] << " " << m_is[i] << " " << m_t_array[m_g[i]-1].second << endl;
+	}
 	d_Strich(d_Array());		//m_ds initialisieren
+	cout << "m_ds" << endl;
+	/*m_ds ausgeben*/
+	for(int i = 0 ; i<m_ds.size(); i++){
+		cout << m_ds[i] << endl;
+	}
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
+	cout << "X(T)" << endl;
 	f_array();				//m_f und m_v initialisieren
+	cout << "m_f" << endl;
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
+	cout << "m_m_array" << endl;
 }
 
 /*Destruktor*/
@@ -135,6 +166,7 @@ void FRLZSI::bcl_erzeugen(){
 	i = 0;
 	int j = 0,k=0;
 	while(i<m_gamma_t.size()){
+		
 		j += m_gamma_t[i].size();  // Anzahl an Faktoren in Gamma um c zu berechnen
 		m_c_t[j-1] = 1;
 		k += m_gamma_tq[i].size();  
@@ -221,7 +253,7 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
 		}else{
          r=x-1;  
 	 }
-       else      
+       else      m_t_array[m_g[factorPosition]-1].second
        if(x == gamma_b.size()-1){
 		   return gamma_b.size();
 	   }else{
@@ -740,7 +772,15 @@ void FRLZSI::test_LZ_factorization(string &R, vector<string> &S){
 	sort(factors.begin(), factors.end());	//sortieren
 	factors.erase(unique(factors.begin(), factors.end()), factors.end()); //doppelte Eintraege loeschen
 	
-	int failure = 1;	//Ueberpruefen
+	for(int i = 0; i<factors.size(); i++){
+		cout << factors[i].second.first << " " << factors[i].second.second << endl;
+	}
+	cout << "m_t_array: " << endl;
+	for(int i = 0; i < m_t_array.size(); i++){
+		cout << m_t_array[i].first << " " << m_t_array[i].second << endl;
+	}
+	
+	/*int failure = 1;	//Ueberpruefen
 	if(m_t_array.size() == factors.size()){	
 		for(uint64_t i = 0; i<factors.size(); i++){
 			if(m_t_array[i].first != factors[i].second.first || m_t_array[i].second != factors[i].second.second){
@@ -754,7 +794,7 @@ void FRLZSI::test_LZ_factorization(string &R, vector<string> &S){
 	}
 	else{
 		cout << "Unterschiedliche Anzahl an Faktoren!" << endl;
-	}
+	}*/
 
 	
 	
