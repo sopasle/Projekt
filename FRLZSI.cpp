@@ -15,18 +15,18 @@ FRLZSI::FRLZSI(){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-	cout << "m_sa:" << endl;
+	/*cout << "m_sa:" << endl;
 	for(int i = 1; i<m_sa.size(); i++){
 		cout << m_sa[i] << " 	" << extract(m_sa, m_sa[i], m_sa.size()-1) <<endl;
-	}
+	}*/
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	/*m_t_array ausgeben*/
-	cout << "m_t_array:" << endl; 
+	/*cout << "m_t_array:" << endl; 
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << m_t_array[i].first << "	" << m_t_array[i].second << endl;
-	}
+	}*/
 	/*m_s ausgeben*/
 	cout << "m_s: " << endl;;
 	for(int i = 0; i<m_s.size(); i++){
@@ -88,10 +88,10 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	}	
 	
 	f_array();				//m_f und m_v initialisieren
-	cout << "m_f" << endl;
+	/*cout << "m_f" << endl;
 	for(int i = 1; i< m_f.size(); i++){
 		cout << m_f[i] << " 	" << extract(m_f, m_f[i], m_f.size()-1) <<endl;
-	}
+	}*/
 	cout << "m_v: " << endl;
 	for(int i = 0; i<m_v_array.size(); i++){
 		cout << m_v_array[i] << " ";
