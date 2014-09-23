@@ -19,7 +19,7 @@ int main(){
 					//012345678901234567890123456
 	std::string str ("TGATAGACGGAGTACTAGTACGTAGGA");
 	
-	int occurrences = 0;
+/*	int occurrences = 0;
 	string::size_type start = 0;
 
 	while ((start = str.find(pattern, start)) != string::npos) {
@@ -27,6 +27,20 @@ int main(){
     ++occurrences;
     start += pattern.length(); // see the note
     
-}
+	}	*/	
+
+	//Test mit find()
+	cout << "Testmethode:" << endl;
+	for(int i = 0; i<s.size(); i++){
+		int occurrences = 0;
+		string::size_type start = 0;
+		while ((start = s[i].find(pattern, start)) != string::npos) {
+			cout << "String: " << i+1 << " Pos: " << start << endl;
+			++occurrences;
+			start += pattern.length(); // see the note
+		}
+	}
+	
+	
 	return EXIT_SUCCESS;
 }
