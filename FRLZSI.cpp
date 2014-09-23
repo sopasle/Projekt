@@ -495,7 +495,7 @@ void FRLZSI::m_array(string &pattern){
 				
 			//cout << res.first << " Wert 2D" << endl;
 			for(auto point : res.second){
-							phase_1(point.first+1,(-j));
+							phase_1(point.second,(-j));
 				cout << "(" << point.first+1 << "," << point.second << ") ";
 			//cout << endl;
 				}
