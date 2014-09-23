@@ -118,6 +118,13 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 		cout << m_m_array[i] << " ";
 	}
 	cout << endl;
+	
+	
+	
+	t_reverse_to_t.resize(t_to_t_reverse.size());
+	for(int i = 0; i< t_to_t_reverse.size(); i++){
+		t_reverse_to_t[t_to_t_reverse[i]] = i;
+	}
 }
 
 /*Destruktor*/
@@ -495,6 +502,7 @@ void FRLZSI::m_array(string &pattern){
 				
 			//cout << res.first << " Wert 2D" << endl;
 			for(auto point : res.second){
+							cout << "Aufruf: phase1(" << point.first+1 << "," << (-j) << ")" << endl;
 							phase_1(point.first+1,(-j));
 				cout << "(" << point.first+1 << "," << point.second << ") ";
 			//cout << endl;
@@ -527,7 +535,7 @@ void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
 	m_exist = 1;
 	if(m_f[factor] == 0){
 		i = 1;
-	cout << "String: " << i << " Pos: " << 0 << endl;
+	cout << "String: " << i << " Pos: " << 0+st_pos << endl;
 	}else{
 	cout << "String: " << i << " Pos: " << m_l[m_f[factor]-1]+st_pos << endl;
 	}
