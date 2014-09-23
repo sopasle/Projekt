@@ -280,7 +280,7 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 		//cout << "lll" << endl;
 		p = binaere_suche(m_b_t_rank(st),c)+1;
 	}else{
-	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c)+1; // +1 Zusatz, da yq es so braucht 
+	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c); // +1 Zusatz, da yq es so braucht 
 	}
 	rank_helper = m_b_t_rank(ed);
 	if(rank_helper == 0){
@@ -296,10 +296,11 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 	uint64_t rank_helper = m_b_tq_rank(st-1);
 	if(rank_helper == 0){
 		//cout << "lll" << binaere_suche(m_b_tq_rank(st),c) << endl;
+		
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
 
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)+1; 
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
@@ -318,7 +319,11 @@ uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
 
 	low = lower_bound(gamma_b.begin(), gamma_b.end(), c);
 	//cout << (low-gamma_b.begin())-1<< "." << gamma_b <<":" << c << '\n';
+	if(low-gamma_b.begin() <= 0){
+		return 0;
+	}else{
 	return (low-gamma_b.begin())-1;
+}
 }
   /* uint64_t l=0;
 
