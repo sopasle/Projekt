@@ -122,6 +122,8 @@ class FRLZSI{
 		rank_support_v<1> m_c_rank;								//		*
 		int_vector<> m_l;									//		*
 		int m_exist;										//		*
+		
+		int_vector<> t_reverse_to_t;
 		/*
 		 * OLI
 		*/
