@@ -280,7 +280,7 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 		//cout << "lll" << endl;
 		p = binaere_suche(m_b_t_rank(st),c)+1;
 	}else{
-	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c); // +1 Zusatz, da yq es so braucht 
+	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c)+1; // +1 Zusatz, da yq es so braucht 
 	}
 	rank_helper = m_b_t_rank(ed);
 	if(rank_helper == 0){
@@ -300,7 +300,7 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
 
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)+1; 
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
@@ -363,22 +363,27 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 	/* Yq */
 	uint64_t st_r = 0, ed_r = m_sa.size()-1;
 	uint64_t l_res, r_res;
-	for(uint64_t i = pattern.size()-1; i>=0; i--){
+	cout <<"pattern" << pattern.size() << endl;
+	for(uint64_t i = pattern.size()-1; i<pattern.size(); i--){
 		backward_search(m_sa, st_r, ed_r, pattern[i], l_res, r_res);
-		if(l_res <= r_res){	//Sub-Pattern existiert
+		if(l_res <= r_res && r_res <= m_sa.size()-1){	//Sub-Pattern existiert
 			st_r = l_res;
 			ed_r = r_res;
 
 			uint64_t st_t,ed_t;
+			cout <<"st_r,ed_r" << st_r << ":" << ed_r << endl;
 			p_zu_t(st_r, ed_r, st_t, ed_t,pattern.size()-i);
+			cout <<" rdy" << endl;
+			if(st_t<=ed_t){
 			yq[i].first = st_t;
 			yq[i].second = ed_t;
+			}
 		}
 		else{
 			break;
 		}
 	}
-	
+	cout << "123" << endl;
 	
 	
 	/*for(uint64_t i = 0; i<pattern.size(); i++){
@@ -492,7 +497,7 @@ void FRLZSI::m_array(string &pattern){
 		while(j < pattern.size()-1){  // pattern.size() muss später geändert werden, in den linken Teil den die querry findet
 			uint64_t st_r_reverse_res, ed_r_reverse_res;
 			backward_search(m_csa_bwd, st_r_reverse, ed_r_reverse,pattern[j], st_r_reverse_res, ed_r_reverse_res);
-			if(st_r_reverse_res <= ed_r_reverse_res){
+			if(st_r_reverse_res <= ed_r_reverse_res && ed_r_reverse_res <= m_sa.size()-1){
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
 				uint64_t st_t,ed_t;
@@ -508,7 +513,7 @@ void FRLZSI::m_array(string &pattern){
 			//cout << res.first << " Wert 2D" << endl;
 			for(auto point : res.second){
 				cout << "muh " << t_reverse_to_t[point.second-1]+1 << endl;
-					phase_1(t_reverse_to_t[point.second-1]+1,j);
+					phase_2(point.first+1,(-j));
 					//phase_1(point.second+1,j);
 				cout << "(" << point.first+1 << "," << point.second << ") ";
 			//cout << endl;

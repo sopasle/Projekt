@@ -9,7 +9,7 @@ int main(){
 
 	/*Beispiel aus dem Paper*/
 	string r = "CGATGCATTACGGTAACTGTCTGAAT";
-	string pattern = "GA";
+	string pattern = "HASFD";
 	vector<string> s; // hat alle S-Strings
 	s.push_back("TGATAGACG");
 	s.push_back("GAGTACTA");
