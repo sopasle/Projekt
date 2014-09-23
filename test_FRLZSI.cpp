@@ -1,10 +1,14 @@
 #include "FRLZSI.hpp"
 #include <string>
+#include <sys/types.h>
+#include <dirent.h>
 
 int main(){
+	
+	//DIR *opendir(const char *dirname);
 
 	/*Beispiel aus dem Paper*/
-	string r = "ACGTGATAG";
+	string r = "CGATGCATTACGGTAACTGTCTGAAT";
 	string pattern = "GA";
 	vector<string> s; // hat alle S-Strings
 	s.push_back("TGATAGACG");

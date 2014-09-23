@@ -46,14 +46,78 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	cout << "m_ds" << endl;
 	/*m_ds ausgeben*/
 	for(int i = 0 ; i<m_ds.size(); i++){
-		cout << m_ds[i] << endl;
+		cout << m_ds[i] << " ";
 	}
+	cout << endl;
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
-	cout << "X(T)" << endl;
+	/*X(T) ausgeben*/
+	cout << "m_b_t: " << endl;
+	for(int i = 0; i<m_b_t.size(); i++){
+		cout << m_b_t[i] << " ";
+	}
+	cout << endl;
+	cout << "m_c_t: " << endl;
+	for(int i = 0; i<m_c_t.size(); i++){
+		cout << m_c_t[i] << " ";
+	}
+	cout << endl;
+	cout << "m_gamma_t: " << endl;
+	for(int i = 0; i<m_gamma_t.size(); i++){
+		for(int j = 0; j<m_gamma_t[i].size(); j++){
+			cout << m_gamma_t[i][j] << " ";
+		}
+		cout << endl;
+	}
+	/* X(T~) ausgeben */
+	cout << "m_b_tq: " << endl;
+	for(int i = 0; i<m_b_tq.size(); i++){
+		cout << m_b_tq[i] << " ";
+	}
+	cout << endl;
+	cout << "m_c_tq: " << endl;
+	for(int i = 0; i< m_c_tq.size(); i++){
+		cout << m_c_tq[i] << " ";
+	}
+	cout << endl;
+	cout << "m_gamma_tq: " << endl;
+	for(int i = 0; i<m_gamma_tq.size(); i++){
+		for(int j = 0; j<m_gamma_tq[i].size(); j++){
+			cout << m_gamma_tq[i][j] << " ";
+		}
+		cout << endl;
+	}	
+	
 	f_array();				//m_f und m_v initialisieren
 	cout << "m_f" << endl;
+	for(int i = 1; i< m_f.size(); i++){
+		cout << m_f[i] << " 	" << extract(m_f, m_f[i], m_f.size()-1) <<endl;
+	}
+	cout << "m_v: " << endl;
+	for(int i = 0; i<m_v_array.size(); i++){
+		cout << m_v_array[i] << " ";
+	}
+	cout << endl;
+	cout << "m_c: " << endl;
+	for(int i = 0; i<m_c.size(); i++){
+		cout << m_c[i] << " ";
+	}
+	cout << endl;
+	cout << "m_l: " << endl;
+	for(int i = 0; i<m_l.size(); i++){
+		cout << m_l[i] << " ";
+	}
+	cout << endl;
+	cout << "t_to_t_reverse: " << endl;
+	for(int i = 0; i< t_to_t_reverse.size(); i++){
+		cout << t_to_t_reverse[i] << " ";
+	}
+	cout << endl;
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
-	cout << "m_m_array" << endl;
+	cout << "m_m_array:" << endl;
+	for(int i = 0; i< m_m_array.size(); i++){
+		cout << m_m_array[i] << " ";
+	}
+	cout << endl;
 }
 
 /*Destruktor*/
@@ -108,7 +172,11 @@ int_vector<> FRLZSI::d_Array(){
 		}
 		posmax = m_ie_rmaxq(0,j-1);
 		//cout << p << " " << j << " " << neuerFaktor << endl;
-		d[p] = m_t_array[m_g[posmax]-1].second - p+1;
+		if(m_t_array[m_g[posmax]-1].second < p){
+			d[p] = 0;
+		}else{
+			d[p] = m_t_array[m_g[posmax]-1].second - p+1;
+		}
 		p++;	
 	}
 	/*cout << "d:  ";
@@ -281,7 +349,27 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 	//bit_vector v_test = {1,1,1,1,1,0,1,0,1,1};		//f.size()
 
 	/* Yq */
-	for(uint64_t i = 0; i<pattern.size(); i++){
+	uint64_t st_r = 0, ed_r = m_sa.size()-1;
+	uint64_t l_res, r_res;
+	for(uint64_t i = pattern.size()-1; i>=0; i--){
+		backward_search(m_sa, st_r, ed_r, pattern[i], l_res, r_res);
+		if(l_res <= r_res){	//Sub-Pattern existiert
+			st_r = l_res;
+			ed_r = r_res;
+
+			uint64_t st_t,ed_t;
+			p_zu_t(st_r, ed_r, st_t, ed_t,pattern.size()-i);
+			yq[i].first = st_t;
+			yq[i].second = ed_t;
+		}
+		else{
+			break;
+		}
+	}
+	
+	
+	
+	/*for(uint64_t i = 0; i<pattern.size(); i++){
 		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
 		uint64_t st_r = 0, ed_r = m_csa_bwd.size()-1, st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
 		
@@ -311,10 +399,11 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 			}
 		}
 
-	}
-	/*for(int i = 0; i<yq.size();i++){
-		cout << yq[i].first << " " << yq[i].second << endl;
 	}*/
+	cout << "yq: " << endl;
+	for(int i = 0; i<yq.size();i++){
+		cout << yq[i].first << " " << yq[i].second << endl;
+	}
 	/* Y */
 	
 	//select_support_mcl<1> v_select(&v_test);	
@@ -331,9 +420,10 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 
 		}
 	}
-	/*for(int i = 0; i<y.size();i++){
-		cout << "y1: " << y[i].first << " " << y[i].second << endl;
-	}*/
+	cout << "y: " << endl;
+	for(int i = 0; i<y.size();i++){
+		cout << i << " y1: " << y[i].first << " " << y[i].second << endl;
+	}
 
 }
 
@@ -374,8 +464,8 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 void FRLZSI::m_array(string &pattern){
 
 	string filename = "int_vector";
-	int_vector<> fff = {7,5,7,0,0,4,1,0,3,0};
-	store_to_file(fff,filename);
+	//int_vector<> fff = {7,5,7,0,0,4,1,0,3,0};
+	store_to_file(m_m_array,filename);
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>	
 	//string pattern = "AGTA";
 	remove("int_vector");
@@ -399,7 +489,7 @@ void FRLZSI::m_array(string &pattern){
 				cout << "st_t, ed_t: " << st_t << " " << ed_t << endl;
 				cout << j << endl;
 				j++;
-				//cout << "q: " << q_first[j] << " " << q_second[j] << endl;
+				cout << "q: " << q_first[j] << " " << q_second[j] << endl;
 				if(q_first[j] > 0){
 					auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t,ed_t);
 				
@@ -454,6 +544,7 @@ void FRLZSI::search_pattern(string &pattern){
 	if(l_res <= r_res && r_res <= m_sa.size()-1){	//Pattern existiert in R
 		searchPattern(l_res-1, r_res-1, pattern.size());
 	}
+	cout << "Suche 2: " << endl;
 	m_array(pattern);
 	if(m_exist != 1){
 		cout << "Das Pattern wurde nicht gefunden!" << endl;
@@ -675,8 +766,8 @@ void FRLZSI::f_array(){
 		length += m_s[i].size();
 	}
 	int_vector<> seg(length+m_s.size());
-	m_c.resize(length+m_s.size());
-	m_l.resize(length+m_s.size());
+	m_c.resize(length+m_s.size());	//m_c => pos. der Trennsymbole
+	m_l.resize(length+m_s.size());	//Laenge des Strings S bis zum Beginn des i-ten Faktors
 	uint64_t counter = 0;
 	for(int i = 0; i< m_s.size(); i++){
 		for(int j = 0; j<m_s[i].size(); j++){
