@@ -43,7 +43,6 @@ int main(int c, char *v[]){
     datei.close(); 
 
 
-
 	/*Beispiel aus dem Paper*/
 	//string r = "CGATGCATTACGGTAACTGTCTGAAT";
 	string pattern = "AGGT";
@@ -52,7 +51,7 @@ int main(int c, char *v[]){
 	//s.push_back("GAGTACTA");
 	//s.push_back("GTACGT");
 	//s.push_back("AGGA");
-
+	
 	FRLZSI t1(r,s);
 	t1.search_pattern(pattern);
 		
@@ -71,7 +70,9 @@ int main(int c, char *v[]){
 	}	*/	
 
 	//Test mit find()
+			cout << endl;
 	cout << "Testmethode:" << endl;
+			cout << endl;
 	for(int i = 0; i<s.size(); i++){
 		int occurrences = 0;
 		string::size_type start = 0;

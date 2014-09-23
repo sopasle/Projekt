@@ -15,10 +15,6 @@ FRLZSI::FRLZSI(){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-	/*cout << "m_sa:" << endl;
-	for(int i = 1; i<m_sa.size(); i++){
-		cout << m_sa[i] << " 	" << extract(m_sa, m_sa[i], m_sa.size()-1) <<endl;
-	}*/
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
@@ -88,10 +84,8 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	}	
 	
 	f_array();				//m_f und m_v initialisieren
-	/*cout << "m_f" << endl;
-	for(int i = 1; i< m_f.size(); i++){
-		cout << m_f[i] << " 	" << extract(m_f, m_f[i], m_f.size()-1) <<endl;
-	}*/
+
+
 	cout << "m_v: " << endl;
 	for(int i = 0; i<m_v_array.size(); i++){
 		cout << m_v_array[i] << " ";
@@ -280,7 +274,7 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 		//cout << "lll" << endl;
 		p = binaere_suche(m_b_t_rank(st),c)+1;
 	}else{
-	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c)+1; // +1 Zusatz, da yq es so braucht 
+	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c); // +1 Zusatz, da yq es so braucht 
 	}
 	rank_helper = m_b_t_rank(ed);
 	if(rank_helper == 0){
@@ -300,7 +294,7 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
 
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)+1; 
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
@@ -363,27 +357,22 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 	/* Yq */
 	uint64_t st_r = 0, ed_r = m_sa.size()-1;
 	uint64_t l_res, r_res;
-	cout <<"pattern" << pattern.size() << endl;
-	for(uint64_t i = pattern.size()-1; i<pattern.size(); i--){
+	for(uint64_t i = pattern.size()-1; i>=0; i--){
 		backward_search(m_sa, st_r, ed_r, pattern[i], l_res, r_res);
-		if(l_res <= r_res && r_res <= m_sa.size()-1){	//Sub-Pattern existiert
+		if(l_res <= r_res){	//Sub-Pattern existiert
 			st_r = l_res;
 			ed_r = r_res;
 
 			uint64_t st_t,ed_t;
-			cout <<"st_r,ed_r" << st_r << ":" << ed_r << endl;
 			p_zu_t(st_r, ed_r, st_t, ed_t,pattern.size()-i);
-			cout <<" rdy" << endl;
-			if(st_t<=ed_t){
 			yq[i].first = st_t;
 			yq[i].second = ed_t;
-			}
 		}
 		else{
 			break;
 		}
 	}
-	cout << "123" << endl;
+	
 	
 	
 	/*for(uint64_t i = 0; i<pattern.size(); i++){
@@ -497,7 +486,7 @@ void FRLZSI::m_array(string &pattern){
 		while(j < pattern.size()-1){  // pattern.size() muss später geändert werden, in den linken Teil den die querry findet
 			uint64_t st_r_reverse_res, ed_r_reverse_res;
 			backward_search(m_csa_bwd, st_r_reverse, ed_r_reverse,pattern[j], st_r_reverse_res, ed_r_reverse_res);
-			if(st_r_reverse_res <= ed_r_reverse_res && ed_r_reverse_res <= m_sa.size()-1){
+			if(st_r_reverse_res <= ed_r_reverse_res){
 				st_r_reverse = st_r_reverse_res;
 				ed_r_reverse = ed_r_reverse_res;
 				uint64_t st_t,ed_t;
