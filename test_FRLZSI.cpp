@@ -52,8 +52,8 @@ int main(int c, char *v[]){
     fstream dat(v[3], ios::in);
 	getline(dat,pattern);
     datei.close();
-    
-   /* 
+   
+   
     //FRLZSI erstellen
     clock_t start;
     float elapsed;
@@ -67,12 +67,11 @@ int main(int c, char *v[]){
 	
 	
 	//Pattern suchen
-	string pattern = "GAGTCAGTCAGCTAGCTACGATCGATCAGCTACGTACGATCGTACGTACGATCGATCGATCGACTAGCTAGCGCCGCCTAGT";
 	start = clock();
 	t1.search_pattern(pattern);
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "Laufzeit Suche: " << elapsed << endl;
-	*/
+	
 	/* Serialize */
 	//cout << "Groesse " << t1.projekt_serialize() << endl;
 	/*Beispiel aus dem Paper*/
@@ -100,8 +99,8 @@ int main(int c, char *v[]){
     start += pattern.length(); // see the note
     
 	}	*/	
-    clock_t start;
-    float elapsed;
+   // clock_t start;
+   // float elapsed;
 	//Test mit find()
 	cout << endl;
 	cout << "Testmethode:" << endl;
