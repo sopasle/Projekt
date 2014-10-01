@@ -874,6 +874,15 @@ uint64_t FRLZSI::projekt_serialize(){
 	return written;
 }
 
+void FRLZSI::projekt_load(){
+		ifstream in("test");
+		load(in);
+		load_vpii(m_t_array, in);
+		load_vpii(m_t_reverse_array, in);
+		load_vintv(m_s, in);
+		load_vvuint(m_gamma_t, in);	
+		load_vvuint(m_gamma_tq, in);
+}
 
 /*
  * Testmethoden
