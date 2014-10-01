@@ -29,13 +29,69 @@ class FRLZSI{
         		int_vector<64> m_tree; 			// Tree
 			// m_offset und m_tree werden hier benötigt, da sonst ein Fehler auftritt, wenn er es in Zeile 53/54 verwenden will
 
+
+
+uint64_t serialize_vpii(vector<pair<int,int>>& vpii, std::ostream& out, structure_tree_node* v, std::string name)
+{
+    structure_tree_node* child = structure_tree::add_child(v, name, "vector<pair<int,int>>");
+    uint64_t written_bytes = 0;
+	uint64_t size=vpii.size();
+	written_bytes += write_member(size, out);
+	out.write((char*)vpii.data(), vpii.size()*sizeof(vpii[0]));
+	written_bytes += vpii.size()*sizeof(vpii[0]);
+    structure_tree::add_size(child, written_bytes);
+    return written_bytes;
+}
+
+uint64_t serialize_vintv(vector<int_vector<>>& viv, std::ostream& out, structure_tree_node* v, std::string name)
+{
+    structure_tree_node* child = structure_tree::add_child(v, name, "vector<int_vector<>>");
+    uint64_t written_bytes = 0;
+	uint64_t size=viv.size();
+	written_bytes += write_member(size, out);
+	out.write((char*)viv.data(), viv.size()*sizeof(viv[0]));
+	written_bytes += viv.size()*sizeof(viv[0]);
+    structure_tree::add_size(child, written_bytes);
+    return written_bytes;
+}
+
+uint64_t serialize_vvuint(vector<vector<uint64_t>>& vvuint, std::ostream& out, structure_tree_node* v, std::string name)
+{
+    structure_tree_node* child = structure_tree::add_child(v, name, "vector<int_vector<>>");
+    uint64_t written_bytes = 0;
+	uint64_t size=vvuint.size();
+	written_bytes += write_member(size, out);
+	out.write((char*)vvuint.data(), vvuint.size()*sizeof(vvuint[0]));
+	written_bytes += vvuint.size()*sizeof(vvuint[0]);
+    structure_tree::add_size(child, written_bytes);
+    return written_bytes;
+}
+
+void load_vpii(vector<pair<int,int>>& vpii, std::istream& in) {
+	uint64_t size;
+	read_member(size, in);
+	vpii.resize(size);
+	in.read((char*)vpii.data(), size*sizeof(vpii[0]));
+}
+void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
+	uint64_t size;
+	read_member(size, in);
+	viv.resize(size);
+	in.read((char*)viv.data(), size*sizeof(viv[0]));
+}
+void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
+	uint64_t size;
+	read_member(size, in);
+	vvuint.resize(size);
+	in.read((char*)vvuint.data(), size*sizeof(vvuint[0]));
+}
+
+
+
 	//! Load the data structure
         void load(std::istream& in) {	
-		//m_t_array.load(in);
-		//m_t_reverse_array.load(in);
 		m_sa.load(in);
 		m_csa_bwd.load(in);
-		//m_s.load(in);
 		m_ds.load(in);
 		m_g.load(in);
 		m_is.load(in);
@@ -43,10 +99,8 @@ class FRLZSI{
 		m_ds_rmaxq.load(in);
 		m_b_t.load(in);
 		m_c_t.load(in);
-		//m_gamma_t.load(in);
 		m_b_tq.load(in);
 		m_c_tq.load(in);
-		//m_gamma_tq.load(in);
 		m_f.load(in);
 		m_v.load(in);
 		m_v_array.load(in);
@@ -55,18 +109,23 @@ class FRLZSI{
 		m_c.load(in);
 		m_c_rank.load(in);
 		m_l.load(in);
-		//m_exist.load(in);
         }
+
+
+/* Fehlende
+ * m_t_array  #
+ * m_t_reverse_array  #
+ * m_s
+ * m_gamma_t
+ * m_gamma_tq
+ */
 
         //! Serialize the data structure
         size_type serialize(std::ostream& out, structure_tree_node* v=nullptr, std::string name="")const {
             structure_tree_node* child = structure_tree::add_child(v, name, util::class_name(*this));
             size_type written_bytes = 0;
-           // written_bytes += m_t_array.serialize(out, child, "t_array");			// Problem
-           // written_bytes += m_t_reverse_array.serialize(out, child, "t_reverse_array");	// Problem
             written_bytes += m_sa.serialize(out, child, "sa");
 	    written_bytes += m_csa_bwd.serialize(out, child, "csa_bwd");
-           // written_bytes += m_s.serialize(out, child, "s");					// Problem
             written_bytes += m_ds.serialize(out, child, "ds");
             written_bytes += m_g.serialize(out, child, "g");
 	    written_bytes += m_is.serialize(out, child, "is");
@@ -74,10 +133,8 @@ class FRLZSI{
             written_bytes += m_ds_rmaxq.serialize(out, child, "ds RMQ");
 	    written_bytes += m_b_t.serialize(out, child, "b_t");
 	    written_bytes += m_c_t.serialize(out, child, "c_t");
-           // written_bytes += m_gamma_t.serialize(out, child, "gamma_t");			// Problem
 	    written_bytes += m_b_tq.serialize(out, child, "b_tq");
 	    written_bytes += m_c_tq.serialize(out, child, "c_tq");
-           // written_bytes += m_gamma_tq.serialize(out, child, "gamma_tq");			// Problem
 	    written_bytes += m_f.serialize(out, child, "f");
 	    written_bytes += m_v.serialize(out, child, "v");
 	    written_bytes += m_v_array.serialize(out, child, "v_array");
@@ -86,7 +143,6 @@ class FRLZSI{
 	    written_bytes += m_c.serialize(out, child, "c");
 	    written_bytes += m_c_rank.serialize(out, child, "c_rank");
 	    written_bytes += m_l.serialize(out, child, "l");
-	   // written_bytes += m_exist.serialize(out, child, "exist"); 				// Problem
             structure_tree::add_size(child, written_bytes);
             return written_bytes;
         }
@@ -121,7 +177,6 @@ class FRLZSI{
 		bit_vector m_c;										//		*
 		rank_support_v<1> m_c_rank;								//		*
 		int_vector<> m_l;									//		*
-		int m_exist;										//		*
 		
 		int_vector<> t_reverse_to_t;
 		/*

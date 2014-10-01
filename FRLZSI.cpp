@@ -5,7 +5,6 @@
 using namespace sdsl;
 using namespace std;
 
-
 /*Default Konstruktor*/
 
 FRLZSI::FRLZSI(){	
@@ -14,6 +13,15 @@ FRLZSI::FRLZSI(){
 
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
+	uint64_t written;
+	ofstream out("test");
+	written += serialize(out,nullptr,"");
+	written += serialize_vpii(m_t_array,out, nullptr, "t_array");
+	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
+	written += serialize_vintv(m_s,out, nullptr, "s");
+	written += serialize_vvuint(m_gamma_t,out, nullptr, "gamma_t");
+	written += serialize_vvuint(m_gamma_tq,out, nullptr, "gamma_t");
+	cout << "Groesse " << written << endl;
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
@@ -527,12 +535,12 @@ void FRLZSI::phase_1(uint64_t factor,uint64_t st_pos){
 	}
 	
 }
-
+	int exist = 0; // 0, es wurde kein pattern gefunden, 1 mindestens ein pattern wurde gefunden
 void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
 	
 	uint64_t i;
 	i = m_c_rank(m_f[factor]+1);
-	m_exist = 1;
+	exist = 1;
 	if(m_f[factor] == 0){
 		i = 1;
 	cout << "String: " << i << " Pos: " << 0+st_pos << endl;
@@ -540,6 +548,8 @@ void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
 	cout << "String: " << i << " Pos: " << m_l[m_f[factor]-1]+st_pos << endl;
 	}
 }
+
+
 
 
 /*
@@ -554,7 +564,7 @@ void FRLZSI::search_pattern(string &pattern){
 	}
 	cout << "Suche 2: " << endl;
 	m_array(pattern);
-	if(m_exist != 1){
+	if(exist != 1){
 		cout << "Das Pattern wurde nicht gefunden!" << endl;
 	}
 	
@@ -842,8 +852,6 @@ void FRLZSI::initialize_m(int_vector<> &t_to_t_reverse){
 		}
 	}
 }
-
-
 
 
 /*
