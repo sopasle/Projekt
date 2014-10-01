@@ -14,16 +14,29 @@ FRLZSI::FRLZSI(){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	cout << "m_sa" << endl;
+	for(int i = 1; i<m_sa.size(); i++){
+		cout << i << "\t" <<m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
+	}
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	cout << "Start" << endl;
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
+	cout << "m_csa_bwd" << endl;
+	for(int i = 1; i<m_csa_bwd.size(); i++){
+		cout << i << "\t" <<m_csa_bwd[i] << "\t" << extract(m_csa_bwd, m_csa_bwd[i], m_csa_bwd.size()-1) << endl;
+	}
 	cout << "Construct" << endl;
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	/*m_t_array ausgeben*/
-	/*cout << "m_t_array:" << endl; 
+	cout << "m_t_array:" << endl; 
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << m_t_array[i].first << "	" << m_t_array[i].second << endl;
-	}*/
+	}
+	/*m_t_reverse_array ausgeben*/
+	cout << "m_t_reverse_array:" << endl; 
+	for(int i = 0; i< m_t_reverse_array.size(); i++){
+		cout << m_t_reverse_array[i].first << "	" << m_t_reverse_array[i].second << endl;
+	}
 	/*m_s ausgeben*/
 	cout << "m_s: " << endl;;
 	for(int i = 0; i<m_s.size(); i++){
@@ -86,6 +99,10 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	}	
 	
 	f_array();				//m_f und m_v initialisieren
+	cout << "m_f: " << endl;
+	for(int i = 1; i< m_f.size(); i++){
+		cout << i << "\t" <<  m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
+	}
 
 
 	cout << "m_v: " << endl;
@@ -282,13 +299,13 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 		//cout << "lll" << endl;
 		p = binaere_suche(m_b_t_rank(st),c)+1;
 	}else{
-	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c); // +1 Zusatz, da yq es so braucht 
+	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c)+1; // +1 Zusatz, da yq es so braucht 
 	}
 	rank_helper = m_b_t_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-	q = m_c_t_select(m_b_t_rank(ed))+1;
+	q = m_c_t_select(m_b_t_rank(ed-1))+1;
 	}
 }
 
@@ -302,13 +319,14 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 		p = binaere_suche(m_b_tq_rank(st),c)+1;
 	}else{
 
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)+1; 
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-	q = m_c_tq_select(m_b_tq_rank(ed))+1;
+		cout << "m_b_tq_rank(ed): " << m_b_tq_rank(ed-1) << endl;
+	q = m_c_tq_select(m_b_tq_rank(ed-1))+1;
 	}
 }
 
@@ -505,7 +523,7 @@ void FRLZSI::m_array(string &pattern){
 				j++;
 				cout << "q: " << q_first[j] << " " << q_second[j] << endl;
 				if(q_first[j] > 0){
-					auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t,ed_t);
+					auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t+1,ed_t+1);
 				
 			//cout << res.first << " Wert 2D" << endl;
 			for(auto point : res.second){
