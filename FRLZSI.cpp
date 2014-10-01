@@ -577,16 +577,19 @@ void FRLZSI::searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength){
 	//Berechnung des Wertes d_Strich[maxPosition]
 	int_vector<>::iterator up;
 	up = upper_bound(m_is.begin(), m_is.end(), m_sa[maxPosition+1]);	//endIndex für rmaxq in ie (binaere Suche)
-	uint64_t gIndex = m_ie_rmaxq(0,up-m_is.begin()-1);
-	uint64_t dsValue = m_t_array[m_g[gIndex]-1].second - m_sa[maxPosition+1] + 1;
+	
+	if(up-m_is.begin()-1 >= 0){	//Abbruch, wenn kein Pattern an der Stelle beginnt
+		uint64_t gIndex = m_ie_rmaxq(0,up-m_is.begin()-1);
+		uint64_t dsValue = m_t_array[m_g[gIndex]-1].second - m_sa[maxPosition+1] + 1;
 
-	if(dsValue >= patternLength){	//Abbruch, wenn Faktorlaenge < Patternlaenge
-		getFactors(m_sa[maxPosition+1], patternLength, 0, up-m_is.begin()-1);
-		if(st < maxPosition){
-			searchPattern(st, maxPosition-1, patternLength);
-		}
-		if(ed > maxPosition){
-			searchPattern(maxPosition+1, ed, patternLength);
+		if(dsValue >= patternLength){	//Abbruch, wenn Faktorlaenge < Patternlaenge
+			getFactors(m_sa[maxPosition+1], patternLength, 0, up-m_is.begin()-1);
+			if(st < maxPosition){
+				searchPattern(st, maxPosition-1, patternLength);
+			}
+			if(ed > maxPosition){
+				searchPattern(maxPosition+1, ed, patternLength);
+			}
 		}
 	}
 }
@@ -596,9 +599,7 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 	uint64_t factorPosition = m_ie_rmaxq(ieStartIndex,ieEndIndex);	//naechster moeglicher Faktor beim Maximum von ie
 	if(m_t_array[m_g[factorPosition]-1].second >= startIndex+patternLength-1){	//Abbruch falls Pattern nicht mehr im Faktor liegt
 		//cout << "Faktor: " << m_g[factorPosition] << " " << startIndex-m_is[factorPosition] << "-" << startIndex-m_is[factorPosition]+patternLength-1 << endl;
-		cout << "phase_1(" << m_g[factorPosition] << "," << startIndex-m_is[factorPosition] << ")" << endl;
 		phase_1(m_g[factorPosition],startIndex-m_is[factorPosition]);
-		cout << "phase_1 ende";
 		if(factorPosition < ieEndIndex){
 			getFactors(startIndex, patternLength, factorPosition+1, ieEndIndex);
 		}
