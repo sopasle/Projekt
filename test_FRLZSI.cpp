@@ -4,10 +4,11 @@
 #include <dirent.h>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 int main(int c, char *v[]){
 	
-	string r = "ACGTCGATTAG";
+	string r;
 	vector<string> s;
 	
     int len;
@@ -19,12 +20,13 @@ int main(int c, char *v[]){
         return 1;
     }
     
-    
+    //R einlesen
     fstream datei(v[1], ios::in);
 	getline(datei,r);
     datei.close();
     
     
+    // S einlesen
     pDir = opendir (v[2]);
     if (pDir == NULL) {
         printf ("Cannot open directory '%s'\n", v[2]);
@@ -44,22 +46,38 @@ int main(int c, char *v[]){
 		}
     }
     closedir (pDir);
-     
+    
+    
+    //FRLZSI erstellen
+    clock_t start;
+    float elapsed;
+    start = clock();
+    FRLZSI t1(r,s);
+    elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	cout << "FRLZSI erstellt, Laufzeit: " << elapsed << endl;
+    
+    
 
+	
+	
+	//Pattern suchen
+	string pattern = "GA";
+	start = clock();
+	t1.search_pattern(pattern);
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	cout << "Laufzeit Suche: " << elapsed << endl;
 
 	/*Beispiel aus dem Paper*/
 	//string r = "CGATGCATTACGGTAACTGTCTGAAT";
-	string pattern = "AGGTTGACTGACTGACGGT";
+	
 	//vector<string> s; // hat alle S-Strings
 	//s.push_back("TGATAGACG");
 	//s.push_back("GAGTACTA");
 	//s.push_back("GTACGT");
 	//s.push_back("AGGA");
 	
-	cout << "FRLZSI t1(r,s)" << endl;
-	FRLZSI t1(r,s);
-	cout << "FRLZSI erstellt" << endl;
-	t1.search_pattern(pattern);
+
+	
 		
 		/* find als TEstmethode */
 					//012345678901234567890123456
@@ -76,9 +94,9 @@ int main(int c, char *v[]){
 	}	*/	
 
 	//Test mit find()
-			cout << endl;
+	cout << endl;
 	cout << "Testmethode:" << endl;
-			cout << endl;
+	start = clock();
 	for(int i = 0; i<s.size(); i++){
 		int occurrences = 0;
 		string::size_type start = 0;
@@ -88,6 +106,8 @@ int main(int c, char *v[]){
 			start += pattern.length(); // see the note
 		}
 	}
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	cout << "Laufzeit mit find(): " << elapsed << endl;
 	
 	
 	return EXIT_SUCCESS;
