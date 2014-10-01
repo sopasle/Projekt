@@ -66,7 +66,9 @@ int main(int c, char *v[]){
 	t1.search_pattern(pattern);
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "Laufzeit Suche: " << elapsed << endl;
-
+	
+	/* Serialize */
+	cout << "Groesse " << t1.projekt_serialize() << endl;
 	/*Beispiel aus dem Paper*/
 	//string r = "CGATGCATTACGGTAACTGTCTGAAT";
 	
