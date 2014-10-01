@@ -170,6 +170,7 @@ int_vector<> FRLZSI::d_Array(){
 	int_vector<> d(m_sa.size()-1);	
 	uint64_t posmax = 0;	// Position des Maximums an bis zur aktuellen Stelle
 	while(p<d.size()){
+		cout << "muh " << p << "d: " << d.size() << endl;
 		while(m_is[j]<=p && j<m_is.size()){ 
 		j++;
 		}
