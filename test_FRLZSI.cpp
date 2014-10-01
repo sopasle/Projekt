@@ -61,7 +61,7 @@ int main(int c, char *v[]){
 	
 	
 	//Pattern suchen
-	string pattern = "GA";
+	string pattern = "AGGA";
 	start = clock();
 	t1.search_pattern(pattern);
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
