@@ -294,6 +294,28 @@ void FRLZSI::bcl_erzeugen(){
 void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c){
 	rank_support_v<1> m_b_t_rank(&m_b_t);
 	select_support_mcl<1> m_c_t_select(&m_c_t);	
+	if(st > 2){	
+		if(m_b_t_rank(st-2) == 0){
+			p = 1+ 0 + binaere_suche(m_b_t_rank(st-1),c)+1;
+		}else{
+			p = 1+ m_c_t_select(m_b_t_rank(st-2)) + binaere_suche(m_b_t_rank(st-1),c)+1;
+		}
+	}else if(st > 1){	//st == 2
+		p = 1+ m_gamma_t[st-2].size() + binaere_suche(m_b_t_rank(st-1),c)+1;
+	}else{ //st == 1
+		p = 1+ 0 + binaere_suche(m_b_t_rank(st-1),c)+1;
+	}
+	if(ed < 2){
+		q = m_gamma_t[0].size();
+	}else{
+		if(m_b_t_rank(ed-1) == 0){
+			q = 0;
+		}else{
+			q = m_c_t_select(m_b_t_rank(ed-1))+1;
+		}
+	}
+		
+	/*
 	uint64_t rank_helper = m_b_t_rank(st-1);
 	if(rank_helper == 0){
 		//cout << "lll" << endl;
@@ -306,12 +328,33 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 		q = 0;
 	}else{
 	q = m_c_t_select(m_b_t_rank(ed));
-	}
+	}*/
 }
 
 void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c){
 	rank_support_v<1> m_b_tq_rank(&m_b_tq);
-	select_support_mcl<1> m_c_tq_select(&m_c_tq);	
+	select_support_mcl<1> m_c_tq_select(&m_c_tq);
+	if(st > 2){	
+		if(m_b_tq_rank(st-2) == 0){
+			p = 1+ 0 + binaere_suche(m_b_tq_rank(st-1),c)+1;
+		}else{
+			p = 1+ m_c_tq_select(m_b_tq_rank(st-2)) + binaere_suche(m_b_tq_rank(st-1),c)+1;
+		}
+	}else if(st > 1){	//st == 2
+		p = 1+ m_gamma_tq[st-2].size() + binaere_suche(m_b_tq_rank(st-1),c)+1;
+	}else{ //st == 1
+		p = 1+ 0 + binaere_suche(m_b_tq_rank(st-1),c)+1;
+	}
+	if(ed < 2){
+		q = m_gamma_tq[0].size();
+	}else{
+		if(m_b_tq_rank(ed-1) == 0){
+			q = 0;
+		}else{
+			q = m_c_tq_select(m_b_tq_rank(ed-1))+1;
+		}
+	}
+	/*
 	uint64_t rank_helper = m_b_tq_rank(st-1);
 	if(rank_helper == 0){
 		//cout << "lll" << binaere_suche(m_b_tq_rank(st),c) << endl;
@@ -326,7 +369,7 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 		q = 0;
 	}else{
 	q = m_c_tq_select(m_b_tq_rank(ed));
-	}
+	}*/
 }
 
 uint64_t FRLZSI::binaere_suche(uint64_t b_rank,uint64_t c) {
@@ -530,7 +573,7 @@ void FRLZSI::m_array(string &pattern){
 				j++;
 				cout << "q: " << q_first[j] << " " << q_second[j] << endl;
 				if(q_first[j] > 0){
-					auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t+1,ed_t+1);
+					auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t,ed_t);
 				
 			//cout << res.first << " Wert 2D" << endl;
 			for(auto point : res.second){
