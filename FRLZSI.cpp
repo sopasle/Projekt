@@ -297,15 +297,15 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 	uint64_t rank_helper = m_b_t_rank(st-1);
 	if(rank_helper == 0){
 		//cout << "lll" << endl;
-		p = binaere_suche(m_b_t_rank(st),c)+1;
+		p = binaere_suche(m_b_t_rank(st),c);
 	}else{
-	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c)+1; // +1 Zusatz, da yq es so braucht 
+	p = 1+m_c_t_select(m_b_t_rank(st-1)) + binaere_suche(m_b_t_rank(st),c); // +1 Zusatz, da yq es so braucht 
 	}
 	rank_helper = m_b_t_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-	q = m_c_t_select(m_b_t_rank(ed-1))+1;
+	q = m_c_t_select(m_b_t_rank(ed));
 	}
 }
 
@@ -316,17 +316,16 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 	if(rank_helper == 0){
 		//cout << "lll" << binaere_suche(m_b_tq_rank(st),c) << endl;
 		
-		p = binaere_suche(m_b_tq_rank(st),c)+1;
+		p = binaere_suche(m_b_tq_rank(st),c);
 	}else{
 
-	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c)+1; 
+	p = 1+m_c_tq_select(m_b_tq_rank(st-1)) + binaere_suche(m_b_tq_rank(st),c); 
 	}
 	rank_helper = m_b_tq_rank(ed);
 	if(rank_helper == 0){
 		q = 0;
 	}else{
-		cout << "m_b_tq_rank(ed): " << m_b_tq_rank(ed-1) << endl;
-	q = m_c_tq_select(m_b_tq_rank(ed-1))+1;
+	q = m_c_tq_select(m_b_tq_rank(ed));
 	}
 }
 
@@ -465,7 +464,13 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a_length;
 	int_vector<> a = a_array(pattern,a_length);
+	cout << "a: " << a << endl;
+	cout << "a_length: " << a_length << endl;
 	y_array(pattern,y);
+	cout << "y: " << endl;
+	for(int i = 0; i < y.size(); i++){
+		cout << y[i].first << " " << y[i].second << endl;
+	}
 	cout << "a: " << a << endl;
 	for(uint64_t i = q_first.size()-1; i <q_first.size();i--){
 		if(y[i].first != 0){
@@ -474,6 +479,8 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 			}else if(a[i] != 0){
 				uint64_t st_a_res=0, ed_a_res=0;
 				backward_search(m_f,q_first[i+a_length[i]],q_second[i+a_length[i]],a[i],st_a_res, ed_a_res);
+				cout << "st_a_res: " << st_a_res << endl;
+				cout << "ed_a_res: " << ed_a_res << endl;
 				if(st_a_res > ed_a_res){
 					q_first[i] = 0;
 					q_second[i] = 0;
@@ -488,7 +495,7 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 	}	
 	int i = 0;
 	while(i<q_first.size()){
-	//cout << "q_array: " << q_first[i] << " " << q_second[i] << endl;
+	cout << "q_array: " << q_first[i] << " " << q_second[i] << endl;
 	i++;
 }
 }
@@ -648,7 +655,9 @@ int_vector<> FRLZSI::a_array(string pattern, int_vector<> &length){
 				ed_r_reverse = ed_r_reverse_res;
 				
 				uint64_t st_t, ed_t, c;
+				cout << st_r << "-" << ed_r<< endl;
 				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
+				cout << i << " " << j << " " << st_t << ": " << ed_t << endl;
 				if(st_t <= ed_t){	//P[i..j] ist moeglicherweise ein Faktor in T
 					for(int k = st_t; k<=ed_t; k++){
 						if(j+1 == m_t_array[k-1].second - m_t_array[k-1].first + 1){		//Faktor existiert
@@ -666,7 +675,6 @@ int_vector<> FRLZSI::a_array(string pattern, int_vector<> &length){
 				break;
 			}
 		}
-
 	}
 	return a;
 }
