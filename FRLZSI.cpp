@@ -179,13 +179,18 @@ int_vector<> FRLZSI::d_Array(){
 		while(m_is[j]<=p && j<m_is.size()){ 
 		j++;
 		}
-		posmax = m_ie_rmaxq(0,j-1);
-		//cout << p << " " << j << " " << neuerFaktor << endl;
-		if(m_t_array[m_g[posmax]-1].second < p){
-			d[p] = 0;
+		if(j > 0){
+			posmax = m_ie_rmaxq(0,j-1);
+			//cout << p << " " << j << " " << neuerFaktor << endl;
+			if(m_t_array[m_g[posmax]-1].second < p){
+				d[p] = 0;
+			}else{
+				d[p] = m_t_array[m_g[posmax]-1].second - p+1;
+			}
 		}else{
-			d[p] = m_t_array[m_g[posmax]-1].second - p+1;
+			d[p] = 0;
 		}
+		
 		p++;	
 	}
 	/*cout << "d:  ";
@@ -560,6 +565,7 @@ void FRLZSI::search_pattern(string &pattern){
 	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
 	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	// Rueckwaertssuche => startIndex, endIndex
 	if(l_res <= r_res && r_res <= m_sa.size()-1){	//Pattern existiert in R
+		cout << "Suche 1: " << endl;
 		searchPattern(l_res-1, r_res-1, pattern.size());
 	}
 	cout << "Suche 2: " << endl;
@@ -596,7 +602,9 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 	uint64_t factorPosition = m_ie_rmaxq(ieStartIndex,ieEndIndex);	//naechster moeglicher Faktor beim Maximum von ie
 	if(m_t_array[m_g[factorPosition]-1].second >= startIndex+patternLength-1){	//Abbruch falls Pattern nicht mehr im Faktor liegt
 		//cout << "Faktor: " << m_g[factorPosition] << " " << startIndex-m_is[factorPosition] << "-" << startIndex-m_is[factorPosition]+patternLength-1 << endl;
+		cout << "phase_1(" << m_g[factorPosition] << "," << startIndex-m_is[factorPosition] << ")" << endl;
 		phase_1(m_g[factorPosition],startIndex-m_is[factorPosition]);
+		cout << "phase_1 ende";
 		if(factorPosition < ieEndIndex){
 			getFactors(startIndex, patternLength, factorPosition+1, ieEndIndex);
 		}
