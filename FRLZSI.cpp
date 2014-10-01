@@ -13,18 +13,11 @@ FRLZSI::FRLZSI(){
 
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
-	uint64_t written;
-	ofstream out("test");
-	written += serialize(out,nullptr,"");
-	written += serialize_vpii(m_t_array,out, nullptr, "t_array");
-	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
-	written += serialize_vintv(m_s,out, nullptr, "s");
-	written += serialize_vvuint(m_gamma_t,out, nullptr, "gamma_t");
-	written += serialize_vvuint(m_gamma_tq,out, nullptr, "gamma_t");
-	cout << "Groesse " << written << endl;
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 	string R_r(r.rbegin(), r.rend());	//R reverse
+	cout << "Start" << endl;
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
+	cout << "Construct" << endl;
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	/*m_t_array ausgeben*/
 	/*cout << "m_t_array:" << endl; 
@@ -46,6 +39,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	for(int i = 0; i< m_g.size(); i++){
 		cout << m_g[i] << " " << m_is[i] << " " << m_t_array[m_g[i]-1].second << endl;
 	}
+	cout << "g ende" << endl;
 	d_Strich(d_Array());		//m_ds initialisieren
 	cout << "m_ds" << endl;
 	/*m_ds ausgeben*/
@@ -851,6 +845,23 @@ void FRLZSI::initialize_m(int_vector<> &t_to_t_reverse){
 			m_m_array[i] = t_to_t_reverse[t-1]+1;
 		}
 	}
+}
+
+
+/*
+ * Serialize
+ */
+
+uint64_t FRLZSI::projekt_serialize(){
+	uint64_t written;
+	ofstream out("test");
+	written += serialize(out,nullptr,"");
+	written += serialize_vpii(m_t_array,out, nullptr, "t_array");
+	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
+	written += serialize_vintv(m_s,out, nullptr, "s");
+	written += serialize_vvuint(m_gamma_t,out, nullptr, "gamma_t");
+	written += serialize_vvuint(m_gamma_tq,out, nullptr, "gamma_t");
+	return written;
 }
 
 
