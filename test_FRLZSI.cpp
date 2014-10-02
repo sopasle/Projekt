@@ -63,7 +63,8 @@ int main(int c, char *v[]){
 	cout << "FRLZSI erstellt, Laufzeit: " << elapsed << endl;
     
     
-
+	cout << endl;
+	cout << endl;
 	
 	
 	//Pattern suchen
