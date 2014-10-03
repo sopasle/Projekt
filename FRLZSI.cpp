@@ -378,6 +378,7 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 	/* Yq */
 	uint64_t st_r = 0, ed_r = m_sa.size()-1;
 	uint64_t l_res, r_res;
+	cout << "111" << endl;
 	for(uint64_t i = pattern.size()-1; i<pattern.size(); i--){
 		backward_search(m_sa, st_r, ed_r, pattern[i], l_res, r_res);
 		if(l_res <= r_res){	//Sub-Pattern existiert
@@ -394,7 +395,7 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 		}
 	}
 	
-	
+		cout << "211" << endl;
 	
 	/*for(uint64_t i = 0; i<pattern.size(); i++){
 		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
@@ -435,18 +436,20 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 	
 	//select_support_mcl<1> v_select(&v_test);	
 	for(uint64_t i = 0; i<yq.size();i++){
-
+	cout << "a" << i << endl;
 		if(yq[i].first != 0){
+	cout << "1"  << i << endl;
 			if(yq[i].first-1 == 0){
 				y[i].first = 1;
 			}else{
-				y[i].first = m_v(yq[i].first)+1;
+				y[i].first = m_v(yq[i].first+1);
 			}
-
+	cout << "b" << endl;
 		y[i].second =m_v(yq[i].second+1);
-
+	cout << "c" << endl;
 		}
 	}
+	cout << "311" << endl;
 	/*cout << "y: " << endl;
 	for(int i = 0; i<y.size();i++){
 		cout << i << " y1: " << y[i].first << " " << y[i].second << endl;
@@ -459,10 +462,13 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 	//vector<pair<uint64_t,uint64_t>> q(pattern.size());
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a_length;
+	cout << "11" << endl;
 	int_vector<> a = a_array(pattern,a_length);
+	cout << "21" << endl;
 	//cout << "a: " << a << endl;
 	//cout << "a_length: " << a_length << endl;
 	y_array(pattern,y);
+	cout << "31" << endl;
 	/*cout << "y: " << endl;
 	for(int i = 0; i < y.size(); i++){
 		cout << y[i].first << " " << y[i].second << endl;
@@ -497,16 +503,22 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 }
 
 void FRLZSI::m_array(string &pattern){
-
+	cout << "1" << endl;
 	string filename = "int_vector";
 	//int_vector<> fff = {7,5,7,0,0,4,1,0,3,0};
+	cout << "2" << endl;
 	store_to_file(m_m_array,filename);
+	cout << "3" << endl;
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>	
+	cout << "4" << endl;
 	//string pattern = "AGTA";
 	remove("int_vector");
+	cout << "5" << endl;
 	int_vector<> q_first(pattern.size());
 	int_vector<> q_second(pattern.size());
+	cout << "6" << endl;
 	q_array(pattern,q_first,q_second);
+	cout << "7" << endl;
 	//cout << pattern << ":" << q_first << ":" << q_second<< endl;
 		uint64_t j = 0;
 		uint64_t st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
