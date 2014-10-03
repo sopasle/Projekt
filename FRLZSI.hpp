@@ -30,7 +30,7 @@ class FRLZSI{
 			// m_offset und m_tree werden hier benötigt, da sonst ein Fehler auftritt, wenn er es in Zeile 53/54 verwenden will
 		uint64_t projekt_serialize();
 		void projekt_load();
-
+		void return_treffer(vector<pair<int,int>> &treffer);
 
 uint64_t serialize_vpii(vector<pair<int,int>>& vpii, std::ostream& out, structure_tree_node* v, std::string name)
 {

@@ -118,6 +118,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 FRLZSI::~FRLZSI(){
 }
 
+int anzahl_treffer;
 
 /*Methoden*/
 
@@ -587,20 +588,27 @@ void FRLZSI::phase_1(uint64_t factor,uint64_t st_pos){
 	
 }
 	int exist = 0; // 0, es wurde kein pattern gefunden, 1 mindestens ein pattern wurde gefunden
+	vector<pair<int,int>> projekt_treffer;
 void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
 	
 	uint64_t i;
 	i = m_c_rank(m_f[factor]+1);
 	exist = 1;
+	anzahl_treffer++;
 	if(m_f[factor] == 0){
 		i = 1;
 	cout << "String: " << i << " Pos: " << 0+st_pos << endl;
+	projekt_treffer.push_back(std::make_pair(i,st_pos));
 	}else{
 	cout << "String: " << i << " Pos: " << m_l[m_f[factor]-1]+st_pos << endl;
+	projekt_treffer.push_back(std::make_pair(i,m_l[m_f[factor]-1]+st_pos));
 	}
 }
 
 
+void FRLZSI::return_treffer(vector<pair<int,int>> &treffer){
+	treffer = std::move(projekt_treffer);	
+}
 
 
 /*
@@ -619,6 +627,7 @@ void FRLZSI::search_pattern(string &pattern){
 	if(exist != 1){
 		cout << "Das Pattern wurde nicht gefunden!" << endl;
 	}
+cout << "Treffer: " << anzahl_treffer << endl;
 	
 }
 
