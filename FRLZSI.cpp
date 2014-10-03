@@ -15,9 +15,9 @@ FRLZSI::FRLZSI(string &r){
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 	cout << "m_sa" << endl;
-	for(int i = 1; i < m_sa.size(); i++){
+	/*for(int i = 1; i < m_sa.size(); i++){
 		cout << i << "\t" << m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
-	}
+	}*/
 
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	cout << "Start" << endl;
@@ -585,6 +585,7 @@ void FRLZSI::phase_1(uint64_t factor,uint64_t st_pos){
 	
 }
 	int exist = 0; // 0, es wurde kein pattern gefunden, 1 mindestens ein pattern wurde gefunden
+	vector<pair<int,int>> projekt_treffer;
 void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
 	
 	uint64_t i;
@@ -594,12 +595,17 @@ void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
 	if(m_f[factor] == 0){
 		i = 1;
 	cout << "String: " << i << " Pos: " << 0+st_pos << endl;
+	projekt_treffer.push_back(std::make_pair(i,st_pos));
 	}else{
 	cout << "String: " << i << " Pos: " << m_l[m_f[factor]-1]+st_pos << endl;
+	projekt_treffer.push_back(std::make_pair(i,m_l[m_f[factor]-1]+st_pos));
 	}
 }
 
 
+void FRLZSI::return_treffer(vector<pair<int,int>> &treffer){
+	treffer = std::move(projekt_treffer);	
+}
 
 
 /*
