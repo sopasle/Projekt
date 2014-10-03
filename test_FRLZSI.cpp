@@ -59,7 +59,7 @@ int main(int c, char *v[]){
     float elapsed;
     start = clock();
     FRLZSI t1(r,s);
-    FRLZSI t2(r);
+    //FRLZSI t2(r);
     elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "FRLZSI erstellt, Laufzeit: " << elapsed << endl;
     
