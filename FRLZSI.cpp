@@ -27,15 +27,15 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	/*m_t_array ausgeben*/
 	cout << "m_t_array:" << endl;
-	for(int i = 0; i< m_t_array.size(); i++){
+	/*for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << "\t" << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
-	}
+	}*/
 
 	/*m_t_reverse_array ausgeben*/
 	cout << "m_t_reverse_array:" << endl; 
-	for(int i = 0; i< m_t_reverse_array.size(); i++){
+	/*for(int i = 0; i< m_t_reverse_array.size(); i++){
 		cout << i+1 << "\t" << m_t_reverse_array[i].first << "\t" << m_t_reverse_array[i].second << "\t" << extract(m_csa_bwd, m_t_reverse_array[i].first, m_t_reverse_array[i].second) << endl;
-	}
+	}*/
 
 	/*m_s ausgeben*/
 	cout << "m_s: " << endl;;
