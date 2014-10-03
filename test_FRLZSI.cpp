@@ -114,7 +114,7 @@ int main(int c, char *v[]){
 		while ((start = s[i].find(pattern, start)) != string::npos) {
 			cout << "String: " << i+1 << " Pos: " << start << endl;
 			++occurrences;
-			start += pattern.length(); // see the note
+			start += 1; // see the note
 		}
 	}
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
