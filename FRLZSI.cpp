@@ -15,9 +15,9 @@ FRLZSI::FRLZSI(string &r){
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 	cout << "m_sa" << endl;
-	for(int i = 1; i < m_sa.size(); i++){
+	/*for(int i = 1; i < m_sa.size(); i++){
 		cout << i << "\t" << m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
-	}
+	}*/
 
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	cout << "Start" << endl;
@@ -27,15 +27,15 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	/*m_t_array ausgeben*/
 	cout << "m_t_array:" << endl;
-	/*for(int i = 0; i< m_t_array.size(); i++){
+	for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << "\t" << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
-	}*/
+	}
 
 	/*m_t_reverse_array ausgeben*/
 	cout << "m_t_reverse_array:" << endl; 
-	/*for(int i = 0; i< m_t_reverse_array.size(); i++){
+	for(int i = 0; i< m_t_reverse_array.size(); i++){
 		cout << i+1 << "\t" << m_t_reverse_array[i].first << "\t" << m_t_reverse_array[i].second << "\t" << extract(m_csa_bwd, m_t_reverse_array[i].first, m_t_reverse_array[i].second) << endl;
-	}*/
+	}
 
 	/*m_s ausgeben*/
 	cout << "m_s: " << endl;;
@@ -202,8 +202,8 @@ void FRLZSI::bcl_erzeugen(){
 	m_c_t.resize(m_t_array.size());
 	m_b_tq.resize(m_sa.size());
 	m_c_tq.resize(m_t_array.size());
-	vector<vector <uint64_t> > gamma_t(m_sa.size());
-	vector<vector <uint64_t> > gamma_tq(m_sa.size());
+	vector<vector <uint64_t> > gamma_t(m_sa.size()-1);
+	vector<vector <uint64_t> > gamma_tq(m_sa.size()-1);
 	
 	cout << "a" << endl;
 	int i = 0;
@@ -239,11 +239,14 @@ cout << "c" << endl;
 	i = 0;
 	int j = 0,k=0;
 	while(i<m_gamma_t.size()){
-		
 		j += m_gamma_t[i].size();  // Anzahl an Faktoren in Gamma um c zu berechnen
 		if(j != 0){
 			m_c_t[j-1] = 1;
 		}
+		i++;
+	}
+	i = 0;
+	while(i < m_gamma_tq.size()){
 		k += m_gamma_tq[i].size();  
 		if(k != 0){
 		m_c_tq[k-1] = 1;
