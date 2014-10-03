@@ -59,6 +59,7 @@ int main(int c, char *v[]){
     float elapsed;
     start = clock();
     FRLZSI t1(r,s);
+    FRLZSI t2(r);
     elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "FRLZSI erstellt, Laufzeit: " << elapsed << endl;
     
@@ -74,7 +75,7 @@ int main(int c, char *v[]){
 	cout << "Laufzeit Suche: " << elapsed << endl;
 	
 	/* Serialize */
-	//cout << "Groesse " << t1.projekt_serialize() << endl;
+	cout << "Groesse " << t1.projekt_serialize() << endl;
 	/*Beispiel aus dem Paper*/
 	//string r = "CGATGCATTACGGTAACTGTCTGAAT";
 	
@@ -84,8 +85,8 @@ int main(int c, char *v[]){
 	//s.push_back("GTACGT");
 	//s.push_back("AGGA");
 	
-
-	
+	//t2.projekt_load();
+	//t2.search_pattern(pattern);
 		
 		/* find als Testmethode */
 

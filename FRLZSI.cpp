@@ -7,7 +7,7 @@ using namespace std;
 
 /*Default Konstruktor*/
 
-FRLZSI::FRLZSI(){	
+FRLZSI::FRLZSI(string &r){	
 }
 
 
@@ -15,121 +15,71 @@ FRLZSI::FRLZSI(){
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 	cout << "m_sa" << endl;
-	for(int i = 1; i<m_sa.size(); i++){
-		cout << i << "\t" <<m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
-	}
+
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	cout << "Start" << endl;
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	cout << "m_csa_bwd" << endl;
-	for(int i = 1; i<m_csa_bwd.size(); i++){
-		cout << i << "\t" <<m_csa_bwd[i] << "\t" << extract(m_csa_bwd, m_csa_bwd[i], m_csa_bwd.size()-1) << endl;
-	}
 	cout << "Construct" << endl;
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	/*m_t_array ausgeben*/
 	cout << "m_t_array:" << endl; 
-	for(int i = 0; i< m_t_array.size(); i++){
-		cout << m_t_array[i].first << "	" << m_t_array[i].second << endl;
-	}
+
 	/*m_t_reverse_array ausgeben*/
 	cout << "m_t_reverse_array:" << endl; 
-	for(int i = 0; i< m_t_reverse_array.size(); i++){
-		cout << m_t_reverse_array[i].first << "	" << m_t_reverse_array[i].second << endl;
-	}
+
 	/*m_s ausgeben*/
 	cout << "m_s: " << endl;;
-	for(int i = 0; i<m_s.size(); i++){
-		cout << "S" << i+1 << ": ";
-		for(int j = 0; j< m_s[i].size(); j++){
-			cout << m_s[i][j] << " ";
-		}
-		cout << endl;
-	}
+
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	/*m_g ausgeben*/
 	cout << "m_g:" << endl;
-	for(int i = 0; i< m_g.size(); i++){
-		cout << m_g[i] << " " << m_is[i] << " " << m_t_array[m_g[i]-1].second << endl;
-	}
+
 	cout << "g ende" << endl;
 	d_Strich(d_Array());		//m_ds initialisieren
 	cout << "m_ds" << endl;
 	/*m_ds ausgeben*/
-	for(int i = 0 ; i<m_ds.size(); i++){
-		cout << m_ds[i] << " ";
-	}
-	cout << endl;
+
+	cout << "d ende" << endl;
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	/*X(T) ausgeben*/
 	cout << "m_b_t: " << endl;
-	for(int i = 0; i<m_b_t.size(); i++){
-		cout << m_b_t[i] << " ";
-	}
-	cout << endl;
+
+
 	cout << "m_c_t: " << endl;
-	for(int i = 0; i<m_c_t.size(); i++){
-		cout << m_c_t[i] << " ";
-	}
-	cout << endl;
+
 	cout << "m_gamma_t: " << endl;
-	for(int i = 0; i<m_gamma_t.size(); i++){
-		for(int j = 0; j<m_gamma_t[i].size(); j++){
-			cout << m_gamma_t[i][j] << " ";
-		}
-		cout << endl;
-	}
+
 	/* X(T~) ausgeben */
 	cout << "m_b_tq: " << endl;
-	for(int i = 0; i<m_b_tq.size(); i++){
-		cout << m_b_tq[i] << " ";
-	}
+
 	cout << endl;
 	cout << "m_c_tq: " << endl;
-	for(int i = 0; i< m_c_tq.size(); i++){
-		cout << m_c_tq[i] << " ";
-	}
+
 	cout << endl;
 	cout << "m_gamma_tq: " << endl;
-	for(int i = 0; i<m_gamma_tq.size(); i++){
-		for(int j = 0; j<m_gamma_tq[i].size(); j++){
-			cout << m_gamma_tq[i][j] << " ";
-		}
-		cout << endl;
-	}	
+	
 	
 	f_array();				//m_f und m_v initialisieren
 	cout << "m_f: " << endl;
-	for(int i = 1; i< m_f.size(); i++){
-		cout << i << "\t" <<  m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
-	}
+
 
 
 	cout << "m_v: " << endl;
-	for(int i = 0; i<m_v_array.size(); i++){
-		cout << m_v_array[i] << " ";
-	}
+
 	cout << endl;
 	cout << "m_c: " << endl;
-	for(int i = 0; i<m_c.size(); i++){
-		cout << m_c[i] << " ";
-	}
+
 	cout << endl;
 	cout << "m_l: " << endl;
-	for(int i = 0; i<m_l.size(); i++){
-		cout << m_l[i] << " ";
-	}
+
 	cout << endl;
 	cout << "t_to_t_reverse: " << endl;
-	for(int i = 0; i< t_to_t_reverse.size(); i++){
-		cout << t_to_t_reverse[i] << " ";
-	}
+
 	cout << endl;
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
 	cout << "m_m_array:" << endl;
-	for(int i = 0; i< m_m_array.size(); i++){
-		cout << m_m_array[i] << " ";
-	}
+
 	cout << endl;
 	
 	
@@ -187,7 +137,7 @@ int_vector<> FRLZSI::d_Array(){
 	int_vector<> d(m_sa.size()-1);	
 	uint64_t posmax = 0;	// Position des Maximums an bis zur aktuellen Stelle
 	while(p<d.size()){
-		cout << "muh " << p << "d: " << d.size() << endl;
+		//cout << "muh " << p << "d: " << d.size() << endl;
 		while(m_is[j]<=p && j<m_is.size()){ 
 		j++;
 		}
@@ -228,18 +178,22 @@ void FRLZSI::bcl_erzeugen(){
 	m_c_t.resize(m_t_array.size());
 	m_b_tq.resize(m_sa.size());
 	m_c_tq.resize(m_t_array.size());
-	vector<vector <uint64_t> > gamma_t(m_sa.size()-1);
-	vector<vector <uint64_t> > gamma_tq(m_sa.size()-1);
+	vector<vector <uint64_t> > gamma_t(m_sa.size());
+	vector<vector <uint64_t> > gamma_tq(m_sa.size());
 	
-	
+	cout << "a" << endl;
 	int i = 0;
 	while(i < m_t_array.size()){
+//cout << "i: " << i << endl;
+//cout << m_t_array[0].first << "-" << m_sa.size() << endl;
+
 		gamma_t[m_t_array[i].first].push_back(m_t_array[i].second-m_t_array[i].first +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
+
 		gamma_tq[m_t_reverse_array[i].first].push_back(m_t_reverse_array[i].second-m_t_reverse_array[i].first +1);
 		i++;
 	}
 
-
+cout << "b" << gamma_t.size() << endl;
 	i = 0;
 	while(i < gamma_t.size()){
 		if(!gamma_t[m_sa[i+1]].empty()){
@@ -257,7 +211,7 @@ void FRLZSI::bcl_erzeugen(){
 	
 	i++;
 	}
-
+cout << "c" << endl;
 	i = 0;
 	int j = 0,k=0;
 	while(i<m_gamma_t.size()){
@@ -553,7 +507,7 @@ void FRLZSI::m_array(string &pattern){
 	int_vector<> q_first(pattern.size());
 	int_vector<> q_second(pattern.size());
 	q_array(pattern,q_first,q_second);
-	cout << pattern << ":" << q_first << ":" << q_second<< endl;
+	//cout << pattern << ":" << q_first << ":" << q_second<< endl;
 		uint64_t j = 0;
 		uint64_t st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
 		
@@ -878,6 +832,7 @@ void FRLZSI::f_array(){
 			m_l[counter] = 0;
 			counter++;
 	}	
+cout << "f" << endl;
 	rank_support_v<1> c_rank(&m_c);
 	m_c_rank = std::move(c_rank);
 	construct_im(m_f, seg, 0);
@@ -885,6 +840,7 @@ void FRLZSI::f_array(){
 	//m_v initialisieren
 	bit_vector v(length);
 	v[0] = 1;
+cout << "f1 size m_f: " << m_f.size() << endl;
 	for(int i=2; i<m_f.size(); i++){
 		if(seg[m_f[i]] != seg[m_f[i-1]]){
 			v[i-1] = 1;
@@ -893,10 +849,11 @@ void FRLZSI::f_array(){
 			v[i-1] = 0;
 		}
 	}
+cout << "f2" << endl;
 	m_v_array = std::move(v);
 	select_support_mcl<1> v_select(&m_v_array);
 	m_v = std::move(v_select);
-	
+cout << "f3" << endl;	
 	/*cout << "seg: ";
 	for(int i = 0; i< seg.size(); i++){
 		cout << seg[i] << " " ;
@@ -952,6 +909,7 @@ void FRLZSI::projekt_load(){
 		load_vintv(m_s, in);
 		load_vvuint(m_gamma_t, in);	
 		load_vvuint(m_gamma_tq, in);
+cout << "is: " << m_is << endl;
 }
 
 /*
