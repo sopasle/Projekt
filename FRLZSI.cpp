@@ -203,8 +203,8 @@ void FRLZSI::bcl_erzeugen(){
 	m_c_t.resize(m_t_array.size());
 	m_b_tq.resize(m_sa.size());
 	m_c_tq.resize(m_t_array.size());
-	vector<vector <uint64_t> > gamma_t(m_sa.size());
-	vector<vector <uint64_t> > gamma_tq(m_sa.size());
+	vector<vector <uint64_t> > gamma_t(m_sa.size()-1);
+	vector<vector <uint64_t> > gamma_tq(m_sa.size()-1);
 	
 	cout << "a" << endl;
 	int i = 0;
@@ -240,11 +240,14 @@ cout << "c" << endl;
 	i = 0;
 	int j = 0,k=0;
 	while(i<m_gamma_t.size()){
-		
 		j += m_gamma_t[i].size();  // Anzahl an Faktoren in Gamma um c zu berechnen
 		if(j != 0){
 			m_c_t[j-1] = 1;
 		}
+		i++;
+	}
+	i = 0;
+	while(i < m_gamma_tq.size()){
 		k += m_gamma_tq[i].size();  
 		if(k != 0){
 		m_c_tq[k-1] = 1;
