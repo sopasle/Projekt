@@ -93,7 +93,7 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
         void load(std::istream& in) {	
 		m_sa.load(in);
 		m_csa_bwd.load(in);
-		m_ds.load(in);
+		//m_ds.load(in);
 		m_g.load(in);
 		m_is.load(in);
 		m_ie_rmaxq.load(in);
@@ -103,12 +103,12 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		m_b_tq.load(in);
 		m_c_tq.load(in);
 		m_f.load(in);
-		m_v.load(in);
+		//m_v.load(in);
 		m_v_array.load(in);
 		m_m.load(in);
-		m_m_array.load(in);
+		//m_m_array.load(in);
 		m_c.load(in);
-		m_c_rank.load(in);
+		//m_c_rank.load(in);
 		m_l.load(in);
         }
 
@@ -127,7 +127,7 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
             size_type written_bytes = 0;
             written_bytes += m_sa.serialize(out, child, "sa");
 	    written_bytes += m_csa_bwd.serialize(out, child, "csa_bwd");
-            written_bytes += m_ds.serialize(out, child, "ds");
+           // written_bytes += m_ds.serialize(out, child, "ds"); // -
             written_bytes += m_g.serialize(out, child, "g");
 	    written_bytes += m_is.serialize(out, child, "is");
             written_bytes += m_ie_rmaxq.serialize(out, child, "ie RMQ");
@@ -137,12 +137,12 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 	    written_bytes += m_b_tq.serialize(out, child, "b_tq");
 	    written_bytes += m_c_tq.serialize(out, child, "c_tq");
 	    written_bytes += m_f.serialize(out, child, "f");
-	    written_bytes += m_v.serialize(out, child, "v");
+	   // written_bytes += m_v.serialize(out, child, "v");
 	    written_bytes += m_v_array.serialize(out, child, "v_array");
 	    written_bytes += m_m.serialize(out, child, "m");
-	    written_bytes += m_m_array.serialize(out, child, "m_array");
+	  //  written_bytes += m_m_array.serialize(out, child, "m_array"); // -
 	    written_bytes += m_c.serialize(out, child, "c");
-	    written_bytes += m_c_rank.serialize(out, child, "c_rank");
+	   // written_bytes += m_c_rank.serialize(out, child, "c_rank");
 	    written_bytes += m_l.serialize(out, child, "l");
             structure_tree::add_size(child, written_bytes);
             return written_bytes;
