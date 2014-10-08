@@ -499,9 +499,7 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 
 	//cout << "a: " << a << endl;
 	//cout << "a_length: " << a_length << endl;
-cout << "asd" << endl;	
 	y_array(pattern,y);
-cout << "asd" << endl;	
 	/*cout << "y: " << endl;
 	for(int i = 0; i < y.size(); i++){
 		cout << y[i].first << " " << y[i].second << endl;
