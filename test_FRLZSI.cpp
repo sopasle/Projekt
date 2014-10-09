@@ -40,9 +40,14 @@ int main(int c, char *v[]){
 			stringstream ss;
 			ss << v[2] << "/" << pDirent->d_name;
 			fstream datei(ss.str(), ios::in); 
+			stringstream content;
 			string zeile;
-			getline(datei,zeile);
-			s.push_back(zeile);
+			while(!datei.eof()){
+				getline(datei,zeile);
+				content << zeile;
+			}
+			cout << content.str() << endl;
+			s.push_back(content.str());
 			datei.close();
 		}
     }

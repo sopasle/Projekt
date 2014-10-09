@@ -178,8 +178,6 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		bit_vector m_c;										//		*
 		rank_support_v<1> m_c_rank;								//		*
 		int_vector<> m_l;									//		*
-		
-		int_vector<> t_reverse_to_t;
 		/*
 		 * OLI
 		*/
@@ -191,7 +189,7 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		void p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c);			// Funktion für die Datenstruktur X(TQ)
 		/* für X(T) */
 		void bcl_erzeugen();		
-		uint64_t binaere_suche(vector<uint64_t> gamma, uint64_t c);
+		uint64_t binaere_suche(vector<uint64_t> &gamma, uint64_t c);
 		
 		/* y(F,T)*/
 		void y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y);
@@ -205,7 +203,7 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		*/
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
-		int_vector<> a_array(string pattern, int_vector<> &length);
+		int_vector<> a_array(string &pattern, int_vector<> &length);
 
 		int_vector<> LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
 		void f_array();	//F-Array erzeugen
