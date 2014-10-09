@@ -23,8 +23,14 @@ int main(int c, char *v[]){
     
     //R einlesen
     fstream datei(v[1], ios::in);
-	getline(datei,r);
-    datei.close();
+	stringstream content;
+	string zeile;
+	while(!datei.eof()){
+		getline(datei,zeile);
+		content << zeile;
+	}
+	r = content.str();
+	datei.close();
     
     
     // S einlesen
@@ -46,7 +52,6 @@ int main(int c, char *v[]){
 				getline(datei,zeile);
 				content << zeile;
 			}
-			cout << content.str() << endl;
 			s.push_back(content.str());
 			datei.close();
 		}
