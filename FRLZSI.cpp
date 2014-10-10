@@ -103,6 +103,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	cout << endl;
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
 	cout << "m_m_array:" << endl;
+	//cout << m_m_array << endl;
 
 	cout << endl;
 }
@@ -439,7 +440,7 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 		if(y[i].first != 0){
 			q_first[i] = y[i].first;
 			q_second[i] = y[i].second;
-			}else if(a[i] != 0){
+			}else if(a[i] != 0 && q_first[i+a_length[i]] != 0 && q_second[i+a_length[i]] != 0){
 				uint64_t st_a_res=0, ed_a_res=0;
 				backward_search(m_f,q_first[i+a_length[i]],q_second[i+a_length[i]],a[i],st_a_res, ed_a_res);
 				//cout << "st_a_res: " << st_a_res << endl;
@@ -466,7 +467,8 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 void FRLZSI::m_array(string &pattern){
 
 	string filename = "int_vector";
-	//int_vector<> fff = {7,5,7,0,0,4,1,0,3,0};
+	cout << "m_m_array: " << m_m_array << endl;
+
 	store_to_file(m_m_array,filename);
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
 

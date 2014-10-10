@@ -58,61 +58,107 @@ int main(int c, char *v[]){
     }
     closedir (pDir);
     
-    //Pattern einlesen
-    fstream dat(v[3], ios::in);
-	getline(dat,pattern);
-    datei.close();
+	
    
-   string k = "ABCDE";
-cout << "k: " << k.size() << "s: " << s[0].size() << endl;
-cout << "k: " << k.size() << "s: " << s[1].size() << endl;
-cout << "k: " << k.size() << "s: " << s[2].size() << endl;
-    //FRLZSI erstellen
-    clock_t start;
-    float elapsed;
-    start = clock();
-    FRLZSI t1(r,s);
-
-    elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	//FRLZSI erstellen
+	clock_t start;
+	float elapsed;
+	start = clock();
+	FRLZSI t1(r,s);
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "FRLZSI erstellt, Laufzeit: " << elapsed << endl;
     
-    
 	cout << endl;
 	cout << endl;
+	
 	
 	
 	//Pattern suchen
 	//start = clock();
-	t1.search_pattern(pattern);
+	//t1.search_pattern(pattern);
 	//elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	//cout << "Laufzeit Suche: " << elapsed << endl;
 	
 	// treffer vergleichen
 
-	vector<pair<int,int>> projekt_treffer;
-	t1.return_treffer(projekt_treffer);
+	//vector<pair<int,int>> projekt_treffer;
+	//t1.return_treffer(projekt_treffer);
 
 	/* Serialize */
-	cout << "Groesse " << t1.projekt_serialize() << endl;
-	/*Beispiel aus dem Paper*/
-	//string r = "CGATGCATTACGGTAACTGTCTGAAT";
-	
-	//vector<string> s; // hat alle S-Strings
-	//s.push_back("TGATAGACG");
-	//s.push_back("GAGTACTA");
-	//s.push_back("GTACGT");
-	//s.push_back("AGGA");
+	cout << "Groesse " << t1.projekt_serialize() << endl;	
 	FRLZSI t2(r);
 	t2.projekt_load();
-	start = clock();
-	t2.search_pattern(pattern);
-	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-	cout << "Laufzeit Suche: " << elapsed << endl;
+
+	//Pattern einlesen + suchen
+	fstream dat(v[3], ios::in);
+	while(!dat.eof()){
+		getline(dat,pattern);
+		if(!pattern.empty()){
+			cout << "Pattern: " << pattern << endl;
+			start = clock();
+			t2.search_pattern(pattern);
+			elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+			vector<pair<int,int>> projekt_treffer;
+			t2.return_treffer(projekt_treffer);
+			cout << "Laufzeit Suche: " << elapsed << " Treffer: " << projekt_treffer.size() << endl;
+
+			/*Testmethode*/
+			vector<pair<int,int>> find_treffer;
+			cout << "Testmethode:" << endl;
+			start = clock();
+			int occurrences = 0;
+			for(int i = 0; i<s.size(); i++){
+				string::size_type start = 0;
+				while ((start = s[i].find(pattern, start)) != string::npos) {
+
+					find_treffer.push_back(std::make_pair(i+1,start));
+					++occurrences;
+					start += 1; // see the note
+				}
+			}
+			elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+			cout << "Laufzeit mit find(): " << elapsed << " Treffer: " << occurrences << endl;
+
+
+			/*Vergleich*/
+			if(projekt_treffer.size() == find_treffer.size()){
+				sort(projekt_treffer.begin(), projekt_treffer.end());
+				sort(find_treffer.begin(), find_treffer.end());
+				int laufvariable = 0;
+				while(projekt_treffer[laufvariable].first == find_treffer[laufvariable].first && projekt_treffer[laufvariable].second == find_treffer[laufvariable].second && laufvariable < projekt_treffer.size()){
+					laufvariable++;
+				}
+				if(laufvariable == projekt_treffer.size()){
+					cout << "Erfolg " << laufvariable << endl;
+				}else{
+					cout << "Fehler " << laufvariable << endl;
+					for(int i = 0; i<projekt_treffer.size(); i++){
+						cout << projekt_treffer[i]. first << " " << projekt_treffer[i].second << "\t" << find_treffer[i].first << " " << find_treffer[i].second << endl;
+					}	
+				}	
+			
+			}else{
+				cout << "Fehler " << endl;
+				for(int i = 0; i<projekt_treffer.size(); i++){
+						cout << projekt_treffer[i]. first << " " << projekt_treffer[i].second << endl;
+				}
+				cout << endl;
+				for(int i = 0; i<find_treffer.size(); i++){
+						cout << find_treffer[i].first << " " << find_treffer[i].second << endl;
+				}		
+			}
+			cout << "--------------------------------" << endl;
+		}
+	}
+	dat.close();
+
+	//start = clock();
+	//t2.search_pattern(pattern);
+	//elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	//cout << "Laufzeit Suche: " << elapsed << endl;
 	//t2.return_treffer(projekt_treffer);	
 		/* find als Testmethode */
 
-	//pattern = "CCTTGAGTGGCTGGTGTGGGGCTCATGCCTGTCATCCCAGCAGTTTGGGAGGCCGAAGCAGATGGATCACTTGAGCTCAGGAGTTCGAGACCAGCCTGGCCAACATGGCAACAAAAACTACAAAAATGGCCGGGTGTGGTGGCTCACGCCTATAATCCCAGCACTTTGGGAGGCTGAGACGGGTGGATCACTTGAGCCCAGGATTTCAAGACCGGCCTGGCCAACATGGAAACACCCATTTCTACAAAAAATACAAAAATAGCCGGGCATGGTGGCGCATGCCTGTGGTCCCAGCTACTCGGGAGGCTGAGGTGGGAGGACCGCTTGAGCCCAGGAAGTTGAGGCTACAGTGAGTGTGATTGTGCCACTGCATCCAACCTAGGCGACAGAGCGAGATCCTGTCTCAAAAAAATAAATAAATACTAGGTCTTGAGTGAAGCCTGAGGCACGTTCTCCTGAGCAGGGTATGTGTGCAGCAGCAATAGCTGTAGCTGGCCTTCAGCTGCCTGCATGCTAGCTGCCATCTCCACACCAGGCAGGTGAGGCTGCTGGAAGGGAGGTGTATCCCACTGCTCCTGCAGCAATGAACACAGCCACAGCCCGAGATGCACCAATCTGTACTTTTGTAACAATATTCTCTGAAGCTGTTGGCTTTACATGATAGTAAATGGATCTGCTGTTCAGGTCAGGCCTACCTGGGGTTTGTTCCCCCAACGAATTAGCCCCCTGAGCACAGGGACCATGCCTTGGCCACACCTGTGAGACCAACAAACAGCAGATGCAGACACACATGGCTGGTCCATTCAAACCAACTTGCCCTCCAGGTGCTCCCAGGAGCTGGGATCTGGTGTGACACCCAAGTGTAAAAATGCACATTCTGATTTCTGCCTGTTTCCCAACCCCAGAGAAGGACAGCCAGAAGACAGAGCGGCTGCCTGCTCCCCCTGGGACACCCAGCTCCTGGAGGGGAGAAGCCCCTGCACTGGCTCTACAGAAACCCCTGTCCAAGGAGGGCAGCGATCTTCTCCAACTGCCTGGGGGGAAAACTGACACCCGTCACCACCTCCTGGGAAGGAACAGCACACCCAGTGTGTCACCAGGAAGGGACTGATGAATTTCTTTGAACTCCACTGGAAGGTCTGTAAGAAATGATAGTTTATAAATAGAAGCTCGGTCACAGTTTTGAGAGGCTGGTGAAGCTCTCTTACGGAGCACATGGCCCAAACTCTTCATTTCCCTTTAGAGAAATGAGGCTCAGAGAGGGGAGGGGAGCTGCTCAGCGTGGCCCAGCAGACCCAGGCACAGAATCTAGGCCTCTTCACTTCCATCCTGATAGTTTCTCCCTTAAAGCCTACTGGCTCCCAAGAAGTTTTTTTTTTTTGAGACAGGGTCTTGTTCTGTTACCCAGGCTGGAGTACAGTGGTGCGATCACAGTTCAGCCTCCCAGGCTCAAACGATCCTCTCACCTCAGCCTCCCAAGTAGCTGGGACTACAGGCGCCCACCACCATGCCCGGCTAACTTAAAAAATATATTTACAAAAAAAGAGACAGTGGTGTTGGTGCGGGGGGTGCGGGGGGGTAGGTCTCACTACGTTGCTCAGGCTGGTCTTGAACTCCCGGGCTCAAGCAATCCTCCCGCCTTCACCTCCCAAAGTGCTGGGATTACAGGCACACACGGGCCACTCTGCCCTGGTCCAAAAAGCTTTTTTTTGGCCACTTTGTTTAGCTGAAATCTTAGGAGGATGCAACTAAGAAACAAAAAGAGAGAAAAGCAGAGTTGCTCTAGGGGAAGGAGAGTGGGGGCTCAGCCGCTGCCCTGGAGAGCCCTCCGAGTTGGAAAAGCACCTTGGGCTTGTGCTGGGCGTGAGGAGGGCCCTAAGGGCAGGAGAAGGTGCTTCTCTGTGACCCACAGTGCCCTGCCCTTGGAGCGCTCCAATCACATGACCCCACTGAAGTTTACATCTTCGGAAAAATAATGAGGGTTGGTCACTAATGGGCCTTTGAGAGTTGTCACCCGCTTGTCGATAATTACAGAGCTTTAATGGGGCTAATTCAGAGAAAATCAAGCTCAAGCCCCTGTTGGCTCCTCTAAGGCCGAGCACCCCCTGCTTGGCTGATGTAGACCTGACAGCATCATCATAACCTTGGTTTGCACCTGGACTTTCCTGACACCCTTGGGAATAGGAAATCTGCCCTGATTTTTTTTTTTTTTTTTTTTAAGAAAAATGTCAGGCTCTCAAATACTTTAAAAAAAACAAAACAATTGTGGCAAGGACCATAGAAAATCATCAAGCTTGTGTTGAAAGCATTTTATAGTTGGGGAAACAGCCATTCAGCCAGGCCGGCACTGCAGGGGGGACAGAGAGAAATGAGCCATCATCCCTGCTTCCCAGGAGCTTAGAGACGAGTGTTAAGATTTTTATAAACATCTTCATTCATCTGCTTTAAATTGTTGAAAGGTTCTCCATCAACTCCTGGACTCAGTTCAACCTCCTTGGTGTGGCATTCAAGACCTTGTGTGATATGACCACTTTGGCCTCCTCATAGGTCTCTTCCCCTTCTTTGAGCCACTTGGCTCTACTGTTTTGCCTACACTGGGCTGAGTTTCTGACACTTCAGGACCTGTGTACACAGCTGTCCCTCTGCGAAGAGCACCTCCCTTTCCTCTTTTCCCTCTGTCAGCCCACCTCCTCCCTCCTCCCAGTCTTAGGGCTGAGCCCTCTCTGTGAGTGACCTCCGCCTGCCAGAGCTTTCCATCTGGGTTCTTGCCTCCCTGTCCCTCGCTGTGGGGTCACCTGTTTGTCTTGGTTTTGATGAACACCCTCAGGTCAGAGGTTGCCTCTCAGCATTCTTGTATCTCTGTGCCTAACACAGAGCCTGCCACATAGTTGGTGCCGTAACATCGAGTGCATTACAAATATCACAGGTCCAGGTAGAACATGACTGGGGCCAAAGAGGTTCTGGGCTCAAAGGAAGGGGCACCACAGCCCATGGGGGCTGGAATATGCCCCCTAACACGGAGAACCTTTGTGGTGGACTCAACCCCTTGTCCTTGCTCCAGACCTGCACAGGCATCGGTCCTGACCCGGTCCTGGGTGAACCACACAGGGCAGGTTTAACACGGGCATGTGATCCAATTCTGGCCAATGAGACAAAAGGACAGGTCTCCTGGGGACTTCTGGGAGAGGTTTCCTCGCTCTTAAACTGAGACATGAGAAAAGGAATCGGTCCTTACCAATTCCTTACCCAGTCAAGGACCTTATTGTTACATGTGATGCCTGGACCTGCAGCAGCCACCTTGGACCTGAGGGTCCTGCTTGGCTGATGGAGACTGACAGCGTCATTCTGACTTTGGTCTGCACCTGAACCTTCCTCACCCAGACACCCTTAGGAATAGGAAACGGGCCTTGATTTTGCTCTACAAGGAAAAACGCACAGCCACGAGCAAAGATGGACAGAACCATCACCCCAACAGTGCTGAGGGGCTGCTGCATTGGTGCACCCTGGTGCAGCAAGACCTCAGCTGTCCTCATTGTTTAAGCCACTCTGAGTTGGTTATCTGTCACTTGCAACCCATGGCACTCTAGTGATTACAGCTTTGAAGAATGGACTGGGCTTCCACAGGTGGGTGCCGGGCAGGAGAGCCTCTCAGGTAGGGGCAGCGTGTGGGGTGTGTGGCCCACGGCCCACCTGGAGGGCAGCACGCCACAGAGGCCACCCTAGGAGAACTGGCAGGGCCGACACTGGGTCCTGCTCCTCATTGGGACATTCACTGCCTTTCCTCCCTGTCATCGCCCCTCTTCGAGATCTGCTGGGAACATGCGAGTTATGTGCTTGTGCTTTGACATGACTTAATAAAGAAAGGGCTTTAAAAAGCCAGGAGAAAAGGCTGAGTAAATAAACAGCACTTCACTCTCTGCCTTGGACAACAGAGCAACCGCCCTCATTTCTTTTTGTCAGAACAGAGATAATCCAATAATTAGGGCAGCAAATAGCATAACCCTGGCTAAAGCCGTAATGAACCATCTGGCTTGAATCATTGAGGCTTATTCTAAGGATCTGGTTGTCACAGCCCAGAGGGGGGCACCGCCTGGGGTACTGGGTGGAA";
-	
 /*	int occurrences = 0;
 	string::size_type start = 0;
 
@@ -125,7 +171,7 @@ cout << "k: " << k.size() << "s: " << s[2].size() << endl;
    // clock_t start;
    // float elapsed;
 	//Test mit find()
-	vector<pair<int,int>> find_treffer;
+	/*vector<pair<int,int>> find_treffer;
 	cout << endl;
 	cout << "Testmethode:" << endl;
 	start = clock();
@@ -139,20 +185,20 @@ cout << "k: " << k.size() << "s: " << s[2].size() << endl;
 			++occurrences;
 			start += 1; // see the note
 		}
-	}
-	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-	cout << "Laufzeit mit find(): " << elapsed << " Treffer: " << occurrences << endl;
+	}*/
+	//elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	//cout << "Laufzeit mit find(): " << elapsed << " Treffer: " << occurrences << endl;
 	//cout << find_treffer[0].first << " " << find_treffer[0].second << endl;
 	//cout << find_treffer[1].first << " " << find_treffer[1].second << endl;
 
-	sort(projekt_treffer.begin(), projekt_treffer.end());
-	sort(find_treffer.begin(), find_treffer.end());
+	//sort(projekt_treffer.begin(), projekt_treffer.end());
+	//sort(find_treffer.begin(), find_treffer.end());
 	
 	/*for(int i = 1; i<projekt_treffer.size()-1;i++){
 		cout << projekt_treffer[i].first << " " << projekt_treffer[i].second << endl;
 	}*/
 
-	int laufvariable = 0;
+	/*int laufvariable = 0;
 	while(projekt_treffer[laufvariable].first == find_treffer[laufvariable].first && projekt_treffer[laufvariable].second == find_treffer[laufvariable].second && laufvariable < projekt_treffer.size()){
 		laufvariable++;
 	}
@@ -160,11 +206,11 @@ cout << "k: " << k.size() << "s: " << s[2].size() << endl;
 		cout << "Erfolg " << laufvariable << endl;
 	}else{
 		cout << "Fehler " << laufvariable << endl;	
-	}	
-	cout << projekt_treffer[laufvariable].first << " " << projekt_treffer[laufvariable].second << endl;
-	cout << find_treffer[laufvariable].first << " " << find_treffer[laufvariable].second << endl;
-	cout << projekt_treffer[laufvariable+1].first << " " << projekt_treffer[laufvariable+1].second << endl;
-	cout << find_treffer[laufvariable+1].first << " " << find_treffer[laufvariable+1].second << endl;
+	}*/	
+	//cout << projekt_treffer[laufvariable].first << " " << projekt_treffer[laufvariable].second << endl;
+	//cout << find_treffer[laufvariable].first << " " << find_treffer[laufvariable].second << endl;
+	//cout << projekt_treffer[laufvariable+1].first << " " << projekt_treffer[laufvariable+1].second << endl;
+	//cout << find_treffer[laufvariable+1].first << " " << find_treffer[laufvariable+1].second << endl;
 
 	return EXIT_SUCCESS;
 }
