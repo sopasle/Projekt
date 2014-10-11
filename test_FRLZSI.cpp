@@ -119,11 +119,11 @@ int main(int c, char *v[]){
 			elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 			cout << "Laufzeit mit find(): " << elapsed << " Treffer: " << occurrences << endl;
 
-
+sort(projekt_treffer.begin(), projekt_treffer.end());
+				sort(find_treffer.begin(), find_treffer.end());
 			/*Vergleich*/
 			if(projekt_treffer.size() == find_treffer.size()){
-				sort(projekt_treffer.begin(), projekt_treffer.end());
-				sort(find_treffer.begin(), find_treffer.end());
+				
 				int laufvariable = 0;
 				while(projekt_treffer[laufvariable].first == find_treffer[laufvariable].first && projekt_treffer[laufvariable].second == find_treffer[laufvariable].second && laufvariable < projekt_treffer.size()){
 					laufvariable++;
@@ -133,18 +133,18 @@ int main(int c, char *v[]){
 				}else{
 					cout << "Fehler " << laufvariable << endl;
 					for(int i = 0; i<projekt_treffer.size(); i++){
-						cout << projekt_treffer[i]. first << " " << projekt_treffer[i].second << "\t" << find_treffer[i].first << " " << find_treffer[i].second << endl;
+						cout << i << " Treffer: " << projekt_treffer[i]. first << " " << projekt_treffer[i].second << "\t" << find_treffer[i].first << " " << find_treffer[i].second << " " << projekt_treffer[i].second-find_treffer[i].second << endl;
 					}	
 				}	
 			
 			}else{
 				cout << "Fehler " << endl;
 				for(int i = 0; i<projekt_treffer.size(); i++){
-						cout << projekt_treffer[i]. first << " " << projekt_treffer[i].second << endl;
+						cout << i << " Treffer: " << projekt_treffer[i]. first << " " << projekt_treffer[i].second << "\t" << find_treffer[i].first << " " << find_treffer[i].second << " " << projekt_treffer[i].second-find_treffer[i].second << endl;
 				}
 				cout << endl;
 				for(int i = 0; i<find_treffer.size(); i++){
-						cout << find_treffer[i].first << " " << find_treffer[i].second << endl;
+					//	cout << find_treffer[i].first << " " << find_treffer[i].second << endl;
 				}		
 			}
 			cout << "--------------------------------" << endl;

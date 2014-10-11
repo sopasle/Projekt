@@ -189,7 +189,9 @@ void FRLZSI::d_Strich(int_vector<> d){
 	}
 	m_ds = std::move(d_1);
 	rmq_succinct_sct<false> rmaxq(&m_ds);
+cout << "ds" << rmaxq.size() << endl;
 	m_ds_rmaxq = std::move(rmaxq);
+cout << "ds" << m_ds_rmaxq.size() << endl;
 }
 
 void FRLZSI::bcl_erzeugen(){
@@ -467,7 +469,7 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 void FRLZSI::m_array(string &pattern){
 
 	string filename = "int_vector";
-	cout << "m_m_array: " << m_m_array << endl;
+	//cout << "m_m_array: " << m_m_array << endl;
 
 	store_to_file(m_m_array,filename);
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
@@ -520,7 +522,6 @@ void FRLZSI::phase_1(uint64_t factor,uint64_t st_pos){
 	uint64_t st,ed;
 	st = m_v(factor)+1;
 	ed = m_v(factor+1)+1;
-//cout << "aaa" << endl;
 	for(int i = 0; i< ed-st; i++){
 		phase_2(st+i,st_pos);
 	}
@@ -555,8 +556,7 @@ void FRLZSI::return_treffer(vector<pair<int,int>> &treffer){
 */
 /*oeffentlich aufrufbare Methode zum auffinden eines Patterns in S*/
 void FRLZSI::search_pattern(string &pattern){
-	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0;
-	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	// Rueckwaertssuche => startIndex, endIndex
+
 select_support_mcl<1> v_select(&m_v_array);
 
 	m_v = std::move(v_select);
@@ -564,9 +564,24 @@ select_support_mcl<1> v_select(&m_v_array);
 rank_support_v<1> c_rank(&m_c);
 
 	m_c_rank = std::move(c_rank);
+
+	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0,l_res_help,r_res_help;
+	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	// Rueckwaertssuche => startIndex, endIndex
+
 	if(l_res <= r_res && r_res <= m_sa.size()-1){	//Pattern existiert in R
 		cout << "Suche 1: " << endl;
-		searchPattern(l_res-1, r_res-1, pattern.size());
+		if(l_res == 0){
+			l_res_help = 0;
+		}else{
+			l_res_help = l_res;
+		}
+		if(r_res == 0){
+			r_res_help = 0;
+		}else{
+			r_res_help = r_res;
+		}
+		searchPattern(l_res_help,r_res_help, pattern.size());
+cout << "Suche 1 Ende" << endl;
 	}
 	cout << "Suche 2: " << endl;
 	m_array(pattern);
@@ -580,10 +595,8 @@ cout << "Treffer: " << anzahl_treffer << endl;
 /*sucht solange das Maximum in d_Strich bis Faktorlaenge < Patternlaenge und berechnet jeweils die zugehoerigen Faktoren mittels getFactors.*/
 void FRLZSI::searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength){
 	uint64_t maxPosition = m_ds_rmaxq(st,ed);	//Maximum von d_Strich innerhalb des Bereichst st,ed
-
 	//Berechnung des Wertes d_Strich[maxPosition]
 	int_vector<>::iterator up;
-
 	up = upper_bound(m_is.begin(), m_is.end(), m_sa[maxPosition+1]);	//endIndex für rmaxq in ie (binaere Suche)
 
 	if(up-m_is.begin()-1 >= 0){	//Abbruch, wenn kein Pattern an der Stelle beginnt
@@ -610,11 +623,9 @@ void FRLZSI::searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength){
 void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex){
 
 	uint64_t factorPosition = m_ie_rmaxq(ieStartIndex,ieEndIndex);	//naechster moeglicher Faktor beim Maximum von ie
-
 	if(m_t_array[m_g[factorPosition]-1].second >= startIndex+patternLength-1){	//Abbruch falls Pattern nicht mehr im Faktor liegt
 
 		phase_1(m_g[factorPosition],startIndex-m_is[factorPosition]);
-
 	
 		if(factorPosition < ieEndIndex){
 
@@ -884,11 +895,24 @@ void FRLZSI::projekt_load(){
 		//load_vintv(m_s, in);
 		load_vvuint(m_gamma_t, in);	
 		load_vvuint(m_gamma_tq, in);
-/*
-cout << "is: " << m_is << endl;
-for( int i = 0; i<m_t_array.size(); i++){
-cout << "t_array: " << m_t_array[i].first << endl;
+
+cout << "sizes: " << m_sa.size() << endl;
+cout << "sizes: " << m_b_t.size() << endl;
+cout << "sizes: " << m_b_tq.size() << endl;
+cout << "---" << endl;
+cout << "sizes: " << m_t_array.size()<< endl;
+cout << "sizes: " << m_c_t.size()<< endl;
+cout << "sizes: " << m_c_tq.size()<< endl;
+
+
+//rmq_succinct_sct<false> m_ds_rmaxq(&m_ds);
+/*cout << "is: " << m_is << endl;
+cout << "" << m_ds.size() << " " << m_ds_rmaxq.size() << endl;
+for( int i = 0; i<m_ds.size(); i++){
+cout << i<< " t_array: " << m_ds[i] << endl;
+cout << m_ds_rmaxq(0,i) << endl;
 }
+
 for( int i = 0; i<m_t_reverse_array.size(); i++){
 cout << "m_t_reverse_array: " << m_t_reverse_array[i].first << endl;
 }

@@ -103,10 +103,10 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		m_b_tq.load(in);
 		m_c_tq.load(in);
 		m_f.load(in);
-		//m_v.load(in);
+		m_v.load(in);
 		m_v_array.load(in);
-		m_m.load(in);
-		//m_m_array.load(in);
+		//m_m.load(in);
+		m_m_array.load(in);
 		m_c.load(in);
 		//m_c_rank.load(in);
 		m_l.load(in);
@@ -137,10 +137,10 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 	    written_bytes += m_b_tq.serialize(out, child, "b_tq");
 	    written_bytes += m_c_tq.serialize(out, child, "c_tq");
 	    written_bytes += m_f.serialize(out, child, "f");
-	   // written_bytes += m_v.serialize(out, child, "v");
+	    written_bytes += m_v.serialize(out, child, "v");
 	    written_bytes += m_v_array.serialize(out, child, "v_array");
-	    written_bytes += m_m.serialize(out, child, "m");
-	  //  written_bytes += m_m_array.serialize(out, child, "m_array"); // -
+	   // written_bytes += m_m.serialize(out, child, "m");
+	    written_bytes += m_m_array.serialize(out, child, "m_array"); // -
 	    written_bytes += m_c.serialize(out, child, "c");
 	   // written_bytes += m_c_rank.serialize(out, child, "c_rank");
 	    written_bytes += m_l.serialize(out, child, "l");
