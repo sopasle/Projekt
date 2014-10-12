@@ -8,6 +8,7 @@
 
 int main(int c, char *v[]){
 	
+	string r;
 	string pattern;
 	vector<string> s;
 	
@@ -16,13 +17,24 @@ int main(int c, char *v[]){
     DIR *pDir;
 
     if (c < 3) {
-        printf ("Usage: testprog <dirname> pattern\n");
+        printf ("Usage: testprog <filename> <dirname>\n");
         return 1;
     }
     
+    //R einlesen
+    fstream datei(v[1], ios::in);
+	stringstream content;
+	string zeile;
+	while(!datei.eof()){
+		getline(datei,zeile);
+		content << zeile;
+	}
+	r = content.str();
+	datei.close();
+    
     
     // S einlesen
-    pDir = opendir (v[1]);
+    pDir = opendir (v[2]);
     if (pDir == NULL) {
         printf ("Cannot open directory '%s'\n", v[2]);
         return 1;
@@ -32,7 +44,7 @@ int main(int c, char *v[]){
         if((string)pDirent->d_name != "." && (string)pDirent->d_name != ".."){
 			cout << "Datei " << pDirent->d_name << " einlesen" << endl;
 			stringstream ss;
-			ss << v[1] << "/" << pDirent->d_name;
+			ss << v[2] << "/" << pDirent->d_name;
 			fstream datei(ss.str(), ios::in); 
 			stringstream content;
 			string zeile;
@@ -45,27 +57,15 @@ int main(int c, char *v[]){
 		}
     }
     closedir (pDir);
+    
+	
+   
+	//FRLZSI erstellen
+	FRLZSI t1(r,s);
 
-	//Pattern einlesen + suchen
-	fstream dat(v[2], ios::in);
-	while(!dat.eof()){
-		getline(dat,pattern);
-		if(!pattern.empty()){
-			cout << "Pattern: " << pattern << endl;
 
-			/*Testmethode*/
-			vector<pair<int,int>> find_treffer;
-			for(int i = 0; i<s.size(); i++){
-				string::size_type start = 0;
-				while ((start = s[i].find(pattern, start)) != string::npos) {
+	/* Serialize */
+	t1.projekt_serialize();	
 
-					find_treffer.push_back(std::make_pair(i+1,start));
-					start += 1; // see the note
-				}
-			}
-		}
-	}
-
-	dat.close();
-	return EXIT_SUCCESS;
+return EXIT_SUCCESS;
 }
