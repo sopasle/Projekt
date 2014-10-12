@@ -25,9 +25,6 @@ class FRLZSI{
 		void test_LZ_factorization(string &r, vector<string> &s);
 		void test_bcl_erzeugen();
 		typedef uint64_t size_type;
-		      int_vector<64> m_offset;	 	// Number of nodes to skip on each level
-        		int_vector<64> m_tree; 			// Tree
-			// m_offset und m_tree werden hier benötigt, da sonst ein Fehler auftritt, wenn er es in Zeile 53/54 verwenden will
 		uint64_t projekt_serialize();
 		void projekt_load();
 		void return_treffer(vector<pair<int,int>> &treffer);
@@ -50,20 +47,20 @@ uint64_t serialize_vintv(vector<int_vector<>>& viv, std::ostream& out, structure
     uint64_t written_bytes = 0;
 	uint64_t size=viv.size();
 	written_bytes += write_member(size, out);
-	out.write((char*)viv.data(), viv.size()*sizeof(viv[0]));
-	written_bytes += viv.size()*sizeof(viv[0]);
+	out.write((char*)viv.data(), viv.size()*sizeof(viv[0])*viv[0].size());
+	written_bytes += viv.size()*sizeof(viv[0])*viv[0].size();
     structure_tree::add_size(child, written_bytes);
     return written_bytes;
 }
 
 uint64_t serialize_vvuint(vector<vector<uint64_t>>& vvuint, std::ostream& out, structure_tree_node* v, std::string name)
 {
-    structure_tree_node* child = structure_tree::add_child(v, name, "vector<int_vector<>>");
+    structure_tree_node* child = structure_tree::add_child(v, name, "vector<vector<uint64_t>>");
     uint64_t written_bytes = 0;
 	uint64_t size=vvuint.size();
 	written_bytes += write_member(size, out);
-	out.write((char*)vvuint.data(), vvuint.size()*sizeof(vvuint[0]));
-	written_bytes += vvuint.size()*sizeof(vvuint[0]);
+	out.write((char*)vvuint.data(), vvuint.size()*sizeof(vvuint[0])*vvuint[0].size());
+	written_bytes += vvuint.size()*sizeof(vvuint[0])*vvuint[0].size();
     structure_tree::add_size(child, written_bytes);
     return written_bytes;
 }
@@ -78,13 +75,13 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 	uint64_t size;
 	read_member(size, in);
 	viv.resize(size);
-	in.read((char*)viv.data(), size*sizeof(viv[0]));
+	in.read((char*)viv.data(), size*sizeof(viv[0])*viv[0].size());
 }
 void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 	uint64_t size;
 	read_member(size, in);
 	vvuint.resize(size);
-	in.read((char*)vvuint.data(), size*sizeof(vvuint[0]));
+	in.read((char*)vvuint.data(), size*sizeof(vvuint[0])*vvuint[0].size());
 }
 
 
@@ -111,15 +108,6 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		//m_c_rank.load(in);
 		m_l.load(in);
         }
-
-
-/* Fehlende
- * m_t_array  #
- * m_t_reverse_array  #
- * m_s
- * m_gamma_t
- * m_gamma_tq
- */
 
         //! Serialize the data structure
         size_type serialize(std::ostream& out, structure_tree_node* v=nullptr, std::string name="")const {

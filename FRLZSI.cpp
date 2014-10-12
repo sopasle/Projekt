@@ -573,12 +573,12 @@ rank_support_v<1> c_rank(&m_c);
 		if(l_res == 0){
 			l_res_help = 0;
 		}else{
-			l_res_help = l_res;
+			l_res_help = l_res-1;
 		}
 		if(r_res == 0){
 			r_res_help = 0;
 		}else{
-			r_res_help = r_res;
+			r_res_help = r_res-1;
 		}
 		searchPattern(l_res_help,r_res_help, pattern.size());
 cout << "Suche 1 Ende" << endl;
@@ -881,9 +881,10 @@ uint64_t FRLZSI::projekt_serialize(){
 	written += serialize(out,nullptr,"");
 	written += serialize_vpii(m_t_array,out, nullptr, "t_array");
 	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
-	//written += serialize_vintv(m_s,out, nullptr, "s");
 	written += serialize_vvuint(m_gamma_t,out, nullptr, "gamma_t");
 	written += serialize_vvuint(m_gamma_tq,out, nullptr, "gamma_t");
+	written += serialize_vintv(m_s,out, nullptr, "s");
+
 	return written;
 }
 
@@ -892,17 +893,11 @@ void FRLZSI::projekt_load(){
 		load(in);
 		load_vpii(m_t_array, in);
 		load_vpii(m_t_reverse_array, in);
-		//load_vintv(m_s, in);
 		load_vvuint(m_gamma_t, in);	
 		load_vvuint(m_gamma_tq, in);
+		load_vintv(m_s, in);
+		
 
-cout << "sizes: " << m_sa.size() << endl;
-cout << "sizes: " << m_b_t.size() << endl;
-cout << "sizes: " << m_b_tq.size() << endl;
-cout << "---" << endl;
-cout << "sizes: " << m_t_array.size()<< endl;
-cout << "sizes: " << m_c_t.size()<< endl;
-cout << "sizes: " << m_c_tq.size()<< endl;
 
 
 //rmq_succinct_sct<false> m_ds_rmaxq(&m_ds);

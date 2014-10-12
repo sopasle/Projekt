@@ -64,7 +64,7 @@ int main(int c, char *v[]){
 	clock_t start;
 	float elapsed;
 	start = clock();
-	FRLZSI t1(r,s);
+	//FRLZSI t1(r,s);
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	cout << "FRLZSI erstellt, Laufzeit: " << elapsed << endl;
     
@@ -85,7 +85,7 @@ int main(int c, char *v[]){
 	//t1.return_treffer(projekt_treffer);
 
 	/* Serialize */
-	cout << "Groesse " << t1.projekt_serialize() << endl;	
+	//cout << "Groesse " << t1.projekt_serialize() << endl;	
 	FRLZSI t2(r);
 	t2.projekt_load();
 
@@ -133,8 +133,10 @@ sort(projekt_treffer.begin(), projekt_treffer.end());
 				}else{
 					cout << "Fehler " << laufvariable << endl;
 					for(int i = 0; i<projekt_treffer.size(); i++){
+						//if(projekt_treffer[i].second-find_treffer[i].second == 0){
+						//}else{
 						cout << i << " Treffer: " << projekt_treffer[i]. first << " " << projekt_treffer[i].second << "\t" << find_treffer[i].first << " " << find_treffer[i].second << " " << projekt_treffer[i].second-find_treffer[i].second << endl;
-					}	
+					}	//}
 				}	
 			
 			}else{
@@ -150,8 +152,9 @@ sort(projekt_treffer.begin(), projekt_treffer.end());
 			cout << "--------------------------------" << endl;
 		}
 	}
-	dat.close();
 
+	dat.close();
+	//delete[] v;
 	//start = clock();
 	//t2.search_pattern(pattern);
 	//elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
