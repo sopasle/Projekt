@@ -70,14 +70,14 @@ int_vector<> FRLZSI::d_Array(){
 	int p = 0; // Aktuelle Stelle in d
 	int j = 0; // Laufvariable fuer die maximale Distanz
 	int_vector<> d(m_sa.size()-1);	
-	uint64_t posmax = 0;	// Position des Maximums an bis zur aktuellen Stelle
+	uint64_t posmax = 0;	// Position des Maximums bis zur aktuellen Stelle
 	while(p<d.size()){
 		while(m_is[j]<=p && j<m_is.size()){ 
 		j++;
 		}
 		if(j > 0){
-			posmax = m_ie_rmaxq(0,j-1);
-			if(m_t_array[m_g[posmax]-1].second < p){
+			posmax = m_ie_rmaxq(0,j-1); // Maxpos berechnen mit m_ie
+			if(m_t_array[m_g[posmax]-1].second < p){ // Prüfen, ob aktueller Faktor bis zur Stelle p geht oder nicht
 				d[p] = 0;
 			}else{
 				d[p] = m_t_array[m_g[posmax]-1].second - p+1;
@@ -92,6 +92,10 @@ int_vector<> FRLZSI::d_Array(){
 }
 
 void FRLZSI::d_Strich(int_vector<> d){
+	/*
+	* Erwartet Initialisierung von m_d, m_sa
+	* erstellt d-strich
+	*/
 	int_vector<> d_1(d.size());
 	for(int i = 0; i < d.size();i++){
 		d_1[i]=(d[m_sa[i+1]]);	// Berechnung von d', Laenge des laengsten Intervalls an der Position SAr[i]
@@ -102,6 +106,10 @@ void FRLZSI::d_Strich(int_vector<> d){
 }
 
 void FRLZSI::bcl_erzeugen(){
+	/*
+	* Erwartet Initialisierung von m_t_array, m_sa
+	* erstellt m_b,m_c,m_gamma jeweils für t und tq
+	*/
 	m_b_t.resize(m_sa.size());
 	m_c_t.resize(m_t_array.size());
 	m_b_tq.resize(m_sa.size());
@@ -157,6 +165,10 @@ void FRLZSI::bcl_erzeugen(){
 
 
 void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c){
+	/*
+	* Erwartet Initialisierung von m_b_t, m_c_t bzw rank und select Strukturen
+	* erstellt q und p, Umrechnung von Range in m_sa zu Faktoren in t
+	*/
 	rank_support_v<1> m_b_t_rank(&m_b_t);	//exklusiv
 	select_support_mcl<1> m_c_t_select(&m_c_t);	//inklusiv	
 	uint64_t rank_helper_ed = m_b_t_rank(ed);
@@ -184,6 +196,10 @@ void FRLZSI::p_zu_t(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t
 }
 
 void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c){
+	/*
+	* Erwartet Initialisierung von m_b_tq, m_c_tq bzw rank und select Strukturen
+	* erstellt q und p, Umrechnung von Range in m_sa zu Faktoren in tq
+	*/
 	rank_support_v<1> m_b_tq_rank(&m_b_tq);	//exklusiv
 	select_support_mcl<1> m_c_tq_select(&m_c_tq);	//inklusiv
 	uint64_t rank_helper_ed = m_b_tq_rank(ed);
@@ -223,6 +239,10 @@ uint64_t FRLZSI::binaere_suche(vector<uint64_t> &gamma, uint64_t c) {
 
 
 void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
+	/*
+	* Erwartet Initialisierung von m_sa
+	* erstellt y, Anfang und Ende der Range in m_f
+	*/
 	y.resize(pattern.size()); // jeweils pattern.size()-1
 	vector<pair<uint64_t,uint64_t>> yq(pattern.size());
 	/* Yq */
@@ -262,19 +282,22 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 
 
 void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_second){
-
+	/*
+	* Erwartet Initialisierung von y, a, m_f
+	* erstellt q, Anfang und Ende der Range in m_f, Zusammensetzung von a und y
+	*/
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a_length;
 	int_vector<> a = a_array(pattern,a_length);
 	y_array(pattern,y);
 	
 	for(uint64_t i = q_first.size()-1; i <q_first.size();i--){
-		if(y[i].first != 0){
+		if(y[i].first != 0){ // Übernehmen der Werte von y, falls ungleich 0
 			q_first[i] = y[i].first;
 			q_second[i] = y[i].second;
-			}else if(a[i] != 0 && q_first[i+a_length[i]] != 0 && q_second[i+a_length[i]] != 0){
+			}else if(a[i] != 0 && q_first[i+a_length[i]] != 0 && q_second[i+a_length[i]] != 0){ // Übernehmen der Werte von a, fall ungleich 0
 				uint64_t st_a_res=0, ed_a_res=0;
-				backward_search(m_f,q_first[i+a_length[i]],q_second[i+a_length[i]],a[i],st_a_res, ed_a_res);
+				backward_search(m_f,q_first[i+a_length[i]],q_second[i+a_length[i]],a[i],st_a_res, ed_a_res); // backward_search um den Faktor von a vorne in m_f zu finden, anhand von q
 				if(st_a_res > ed_a_res){
 					q_first[i] = 0;
 					q_second[i] = 0;
@@ -290,7 +313,10 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 }
 
 void FRLZSI::m_array(string &pattern){
-
+	/*
+	* Erwartet Initialisierung von m_m_array, q, m_csa_bwd,
+	* erstellt m für die Suche2
+	*/
 	string filename = "int_vector";
 	store_to_file(m_m_array,filename);
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
@@ -313,7 +339,7 @@ void FRLZSI::m_array(string &pattern){
 				j++;
 				if(st_t <= ed_t && st_t != 0){	//T~ exitstiert
 					if(q_first[j] > 0){
-						auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t,ed_t);
+						auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t,ed_t); // 2d Suche um m_t_array und m_f zu verknüpfen und Treffer zu finden
 						for(auto point : res.second){
 							phase_2(point.first+1,(-j));
 						}
@@ -329,6 +355,10 @@ void FRLZSI::m_array(string &pattern){
 }
 
 void FRLZSI::phase_1(uint64_t factor,uint64_t st_pos){
+	/*
+	* Erwartet Initialisierung von m_v
+	* Berechnet m_f range aus m_t_array von Suche 1
+	*/
 	uint64_t st,ed;
 	st = m_v(factor)+1;
 	ed = m_v(factor+1)+1;
@@ -340,7 +370,10 @@ void FRLZSI::phase_1(uint64_t factor,uint64_t st_pos){
 	int exist = 0; // 0, es wurde kein pattern gefunden, 1 mindestens ein pattern wurde gefunden
 	vector<pair<int,int>> projekt_treffer;
 void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
-	
+	/*
+	* Erwartet Initialisierung von m_c_rank,m_f
+	* Berechnet die Positionen der Treffer
+	*/
 	uint64_t i;
 	i = m_c_rank(m_f[factor]+1);
 	exist = 1;
@@ -678,7 +711,6 @@ uint64_t FRLZSI::projekt_serialize(){
 	written += serialize_vvuint(m_gamma_t,out, nullptr, "gamma_t");
 	written += serialize_vvuint(m_gamma_tq,out, nullptr, "gamma_t");
 	written += serialize_vintv(m_s,out, nullptr, "s");
-
 	return written;
 }
 
