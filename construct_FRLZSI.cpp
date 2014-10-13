@@ -65,8 +65,8 @@ int main(int c, char *v[]){
 	
 
 	/* Serialize */
-	t1.projekt_serialize();	
-fstream f("speicher.html", ios::out);
+	cout << t1.projekt_serialize() << endl;	
+	fstream f("speicher.html", ios::out);
 	write_structure<HTML_FORMAT>(t1,f);
 return EXIT_SUCCESS;
 }

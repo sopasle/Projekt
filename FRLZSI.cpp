@@ -116,7 +116,7 @@ void FRLZSI::bcl_erzeugen(){
 	m_c_tq.resize(m_t_array.size());
 	vector<vector <uint64_t> > gamma_t(m_sa.size()-1);
 	vector<vector <uint64_t> > gamma_tq(m_sa.size()-1);
-		
+	
 	int i = 0;
 	while(i < m_t_array.size()){
 
@@ -129,13 +129,23 @@ void FRLZSI::bcl_erzeugen(){
 	i = 0;
 	while(i < gamma_t.size()){
 		if(!gamma_t[m_sa[i+1]].empty()){
-			m_gamma_t.push_back(gamma_t[m_sa[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+			int_vector<> gamma_help(gamma_t[m_sa[i+1]].size());
+			for(int j = 0; j < gamma_t[m_sa[i+1]].size();j++){
+				gamma_help[j] = gamma_t[m_sa[i+1]][j];
+			}
+			m_gamma_t.push_back(gamma_help);
+			//m_gamma_t.push_back(gamma_t[m_sa[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
 			m_b_t[i] = 1;		// Faktor fängt an dieser Stelle an
 		}else{
 			m_b_t[i] = 0;
 			}
 		if(!gamma_tq[m_csa_bwd[i+1]].empty()){
-			m_gamma_tq.push_back(gamma_tq[m_csa_bwd[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
+			int_vector<> gammaq_help(gamma_tq[m_csa_bwd[i+1]].size());
+			for(int j = 0; j < gamma_tq[m_csa_bwd[i+1]].size();j++){
+				gammaq_help[j] = gamma_tq[m_csa_bwd[i+1]][j];
+			}
+			m_gamma_tq.push_back(gammaq_help);
+			//m_gamma_tq.push_back(gamma_tq[m_csa_bwd[i+1]]);		// Umtragen in die Membervariable im Zusammenhang mit SA
 			m_b_tq[i] = 1;		// Faktor fängt an dieser Stelle an
 		}else{
 			m_b_tq[i] = 0;
@@ -226,8 +236,8 @@ void FRLZSI::p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_
 	}
 }
 
-uint64_t FRLZSI::binaere_suche(vector<uint64_t> &gamma, uint64_t c) {
-	vector<uint64_t>::iterator low;
+uint64_t FRLZSI::binaere_suche(int_vector<> &gamma, uint64_t c) {
+	int_vector<>::iterator low;
 	low = lower_bound(gamma.begin(), gamma.end(), c);
 
 	if(low-gamma.begin() <= 0){
@@ -317,10 +327,6 @@ void FRLZSI::m_array(string &pattern){
 	* Erwartet Initialisierung von m_m_array, q, m_csa_bwd,
 	* erstellt m für die Suche2
 	*/
-	string filename = "int_vector";
-	store_to_file(m_m_array,filename);
-	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
-	remove("int_vector");
 	int_vector<> q_first(pattern.size());
 	int_vector<> q_second(pattern.size());
 	q_array(pattern,q_first,q_second);
@@ -695,6 +701,10 @@ void FRLZSI::initialize_m(int_vector<> &t_to_t_reverse){
 			m_m_array[i] = t_to_t_reverse[t-1]+1;
 		}
 	}
+	string filename = "int_vector";
+	store_to_file(m_m_array,filename);
+	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
+	remove("int_vector");
 }
 
 
@@ -706,21 +716,19 @@ uint64_t FRLZSI::projekt_serialize(){
 	uint64_t written;
 	ofstream out("test");
 	written += serialize(out,nullptr,"");
-	written += serialize_vpii(m_t_array,out, nullptr, "t_array");
-	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
-	written += serialize_vvuint(m_gamma_t,out, nullptr, "gamma_t");
-	written += serialize_vvuint(m_gamma_tq,out, nullptr, "gamma_t");
-	//written += serialize_vintv(m_s,out, nullptr, "s");
+	//written += serialize_vpii(m_t_array,out, nullptr, "t_array");
+	//written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
+	//written += serialize_vintv(m_gamma_t,out, nullptr, "gamma_t");
+	//written += serialize_vintv(m_gamma_tq,out, nullptr, "gamma_t");
 	return written;
 }
 
 void FRLZSI::projekt_load(){
 		ifstream in("test");
 		load(in);
-		load_vpii(m_t_array, in);
-		load_vpii(m_t_reverse_array, in);
-		load_vvuint(m_gamma_t, in);	
-		load_vvuint(m_gamma_tq, in);
-		//load_vintv(m_s, in);
+		//load_vpii(m_t_array, in);
+		//load_vpii(m_t_reverse_array, in);
+		//load_vintv(m_gamma_t, in);	
+		//load_vintv(m_gamma_tq, in);
 		
 }
