@@ -18,7 +18,6 @@ int main(int c, char *v[]){
     
     FRLZSI t2(pattern);
 	t2.projekt_load();
-    
     //Pattern einlesen + suchen
 	fstream dat(v[1], ios::in);
 	while(!dat.eof()){

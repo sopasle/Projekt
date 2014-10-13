@@ -29,7 +29,7 @@ class FRLZSI{
 		void projekt_load();
 		void return_treffer(vector<pair<int,int>> &treffer);
 
-uint64_t serialize_vpii(vector<pair<int,int>>& vpii, std::ostream& out, structure_tree_node* v, std::string name)
+size_type serialize_vpii(const vector<pair<int,int>>& vpii, std::ostream& out, structure_tree_node* v, std::string name="")const 
 {
     structure_tree_node* child = structure_tree::add_child(v, name, "vector<pair<int,int>>");
     uint64_t written_bytes = 0;
@@ -41,29 +41,32 @@ uint64_t serialize_vpii(vector<pair<int,int>>& vpii, std::ostream& out, structur
     return written_bytes;
 }
 
-uint64_t serialize_vintv(vector<int_vector<>>& viv, std::ostream& out, structure_tree_node* v, std::string name)
+size_type serialize_vintv(const vector<int_vector<>>& viv, std::ostream& out, structure_tree_node* v, std::string name="")const 
 {
     structure_tree_node* child = structure_tree::add_child(v, name, "vector<int_vector<>>");
     uint64_t written_bytes = 0;
 	uint64_t size=viv.size();
 	written_bytes += write_member(size, out);
-	out.write((char*)viv.data(), viv.size()*sizeof(viv[0])*viv[0].size());
-	written_bytes += viv.size()*sizeof(viv[0])*viv[0].size();
+	for(int i = 0; i < viv.size();i++){
+		written_bytes +=  viv[i].serialize(out, child, "viv");
+	}
+	//out.write((char*)viv.data(), viv.size()*sizeof(viv[0])*viv[0].size());
+	//written_bytes += viv.size()*sizeof(viv[0])*viv[0].size();
     structure_tree::add_size(child, written_bytes);
     return written_bytes;
 }
 
-uint64_t serialize_vvuint(vector<vector<uint64_t>>& vvuint, std::ostream& out, structure_tree_node* v, std::string name)
-{
-    structure_tree_node* child = structure_tree::add_child(v, name, "vector<vector<uint64_t>>");
-    uint64_t written_bytes = 0;
-	uint64_t size=vvuint.size();
-	written_bytes += write_member(size, out);
-	out.write((char*)vvuint.data(), vvuint.size()*sizeof(vvuint[0])*vvuint[0].size());
-	written_bytes += vvuint.size()*sizeof(vvuint[0])*vvuint[0].size();
-    structure_tree::add_size(child, written_bytes);
-    return written_bytes;
-}
+//uint64_t serialize_vvuint(vector<vector<uint64_t>>& vvuint, std::ostream& out, structure_tree_node* v, std::string name)
+//{
+    //structure_tree_node* child = structure_tree::add_child(v, name, "vector<vector<uint64_t>>");
+    //uint64_t written_bytes = 0;
+	//uint64_t size=vvuint.size();
+	//written_bytes += write_member(size, out);
+	//out.write((char*)vvuint.data(), vvuint.size()*sizeof(vvuint[0])*vvuint[0].size());
+	//written_bytes += vvuint.size()*sizeof(vvuint[0])*vvuint[0].size();
+    //structure_tree::add_size(child, written_bytes);
+    //return written_bytes;
+//}
 
 void load_vpii(vector<pair<int,int>>& vpii, std::istream& in) {
 	uint64_t size;
@@ -75,14 +78,18 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 	uint64_t size;
 	read_member(size, in);
 	viv.resize(size);
-	in.read((char*)viv.data(), size*sizeof(viv[0])*viv[0].size());
+	for(int i = 0; i < viv.size();i++){
+		viv[i].load(in);
+	}
+	//in.read((char*)viv.data(), size*sizeof(viv[0])*viv[0].size());
 }
-void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
+
+/*void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 	uint64_t size;
 	read_member(size, in);
 	vvuint.resize(size);
 	in.read((char*)vvuint.data(), size*sizeof(vvuint[0])*vvuint[0].size());
-}
+}*/
 
 
 
@@ -100,13 +107,17 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		m_b_tq.load(in);
 		m_c_tq.load(in);
 		m_f.load(in);
-		m_v.load(in);
+		//m_v.load(in);
 		m_v_array.load(in);
-		//m_m.load(in);
-		m_m_array.load(in);
+		m_m.load(in);
+		//m_m_array.load(in);
 		m_c.load(in);
 		//m_c_rank.load(in);
 		m_l.load(in);
+		load_vpii(m_t_array, in);
+		load_vpii(m_t_reverse_array, in);
+		load_vintv(m_gamma_t, in);	
+		load_vintv(m_gamma_tq, in);
         }
 
         //! Serialize the data structure
@@ -125,13 +136,18 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 	    written_bytes += m_b_tq.serialize(out, child, "b_tq");
 	    written_bytes += m_c_tq.serialize(out, child, "c_tq");
 	    written_bytes += m_f.serialize(out, child, "f");
-	    written_bytes += m_v.serialize(out, child, "v");
+	   // written_bytes += m_v.serialize(out, child, "v");
 	    written_bytes += m_v_array.serialize(out, child, "v_array");
-	   // written_bytes += m_m.serialize(out, child, "m");
-	    written_bytes += m_m_array.serialize(out, child, "m_array"); // -
+	    written_bytes += m_m.serialize(out, child, "m");
+	   // written_bytes += m_m_array.serialize(out, child, "m_array"); // -
 	    written_bytes += m_c.serialize(out, child, "c");
 	   // written_bytes += m_c_rank.serialize(out, child, "c_rank");
 	    written_bytes += m_l.serialize(out, child, "l");
+	    string t="t_array";
+	    written_bytes += serialize_vpii(m_t_array,out, nullptr, t);
+		written_bytes += serialize_vpii(m_t_reverse_array,out, nullptr, t);
+		written_bytes += serialize_vintv(m_gamma_t,out, nullptr, t);
+		written_bytes += serialize_vintv(m_gamma_tq,out, nullptr, t);
             structure_tree::add_size(child, written_bytes);
             return written_bytes;
         }
@@ -152,11 +168,11 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		/* X(T) Datenstruktur */
 		bit_vector m_b_t;			// B-Bitvektor							*
 		bit_vector m_c_t;			// C-Bitvektor							*
-		vector<vector<uint64_t>> m_gamma_t;		// Gamma-Array						*
+		vector<int_vector<>> m_gamma_t;		// Gamma-Array						*
 		/* X(T~) Datenstruktur */
 		bit_vector m_b_tq;			// B-Bitvektor							*
 		bit_vector m_c_tq;			// C-Bitvektor							*
-		vector<vector<uint64_t>> m_gamma_tq;		// Gamma-Array						*
+		vector<int_vector<>> m_gamma_tq;		// Gamma-Array						*
 		
 		csa_wt<wt_int<>, 32, 512, sa_order_sa_sampling<>, int_vector<>, int_alphabet<>> m_f;	//F-Array	*
 		select_support_mcl<1> m_v; //V-Bitvektor								*
@@ -177,7 +193,7 @@ void load_vvuint(vector<vector<uint64_t>>& vvuint, std::istream& in) {
 		void p_zu_tq(uint64_t st, uint64_t ed, uint64_t& p, uint64_t& q, uint64_t c);			// Funktion für die Datenstruktur X(TQ)
 		/* für X(T) */
 		void bcl_erzeugen();		
-		uint64_t binaere_suche(vector<uint64_t> &gamma, uint64_t c);
+		uint64_t binaere_suche(int_vector<> &gamma, uint64_t c);
 		
 		/* y(F,T)*/
 		void y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y);
