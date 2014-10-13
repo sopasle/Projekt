@@ -14,13 +14,33 @@ FRLZSI::FRLZSI(string &r){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	/*cout << "m_sa: " << endl;
+	for(int i = 1; i< m_sa.size(); i++){
+		cout << i << "\t" << m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
+	}*/
+	
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
+	/*cout << "m_t: " << endl;
+	for(int i = 0; i< m_t_array.size(); i++){
+		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
+	}*/
+	cout << "m_s: " << endl;
+	for(int i = 0; i< m_s.size(); i++){
+		cout << m_s[i] << endl;
+	}
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
+	/*cout << "m_gammaq: " << endl;
+	for(int i = 0; i<m_gamma_tq.size(); i++){
+		cout << m_gamma_tq[i] << endl;
+	}*/
 	f_array();				//m_f und m_v initialisieren
+	/*for(int i= 1; i< m_f.size(); i++){
+		cout << i << "\t" << m_f.bwt[i] << "\t" << m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
+	}*/
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
 }
 
@@ -274,7 +294,11 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 			}else{
 				y[i].first = m_v(yq[i].first)+1;
 			}
-		y[i].second =m_v(yq[i].second+1);
+			if(yq[i].second+1 > m_t_array.size()){
+				y[i].second = m_v_array.size();
+			}else{
+				y[i].second =m_v(yq[i].second+1);
+			}
 		}
 	}
 
@@ -290,6 +314,7 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 	int_vector<> a_length;
 	int_vector<> a = a_array(pattern,a_length);
 	y_array(pattern,y);
+	
 	
 	for(uint64_t i = q_first.size()-1; i <q_first.size();i--){
 		if(y[i].first != 0){ // Übernehmen der Werte von y, falls ungleich 0
@@ -381,8 +406,10 @@ void FRLZSI::phase_2(uint64_t factor,uint64_t st_pos){
 	if(m_f[factor] == 0){
 		i = 1;
 	projekt_treffer.push_back(std::make_pair(i,st_pos));
+		//cout << "String: " << i << " Pos.: " << st_pos << endl;
 	}else{
 	projekt_treffer.push_back(std::make_pair(i,m_l[m_f[factor]-1]+st_pos));
+		//cout << "String: " << i << " Pos.: " << m_l[m_f[factor]-1]+st_pos << endl;
 	}
 }
 
