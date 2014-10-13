@@ -710,7 +710,7 @@ uint64_t FRLZSI::projekt_serialize(){
 	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
 	written += serialize_vvuint(m_gamma_t,out, nullptr, "gamma_t");
 	written += serialize_vvuint(m_gamma_tq,out, nullptr, "gamma_t");
-	written += serialize_vintv(m_s,out, nullptr, "s");
+	//written += serialize_vintv(m_s,out, nullptr, "s");
 	return written;
 }
 
@@ -721,6 +721,6 @@ void FRLZSI::projekt_load(){
 		load_vpii(m_t_reverse_array, in);
 		load_vvuint(m_gamma_t, in);	
 		load_vvuint(m_gamma_tq, in);
-		load_vintv(m_s, in);
+		//load_vintv(m_s, in);
 		
 }
