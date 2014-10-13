@@ -716,19 +716,19 @@ uint64_t FRLZSI::projekt_serialize(){
 	uint64_t written;
 	ofstream out("test");
 	written += serialize(out,nullptr,"");
-	//written += serialize_vpii(m_t_array,out, nullptr, "t_array");
-	//written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
-	//written += serialize_vintv(m_gamma_t,out, nullptr, "gamma_t");
-	//written += serialize_vintv(m_gamma_tq,out, nullptr, "gamma_t");
+	written += serialize_vpii(m_t_array,out, nullptr, "t_array");
+	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
+	written += serialize_vintv(m_gamma_t,out, nullptr, "gamma_t");
+	written += serialize_vintv(m_gamma_tq,out, nullptr, "gamma_t");
 	return written;
 }
 
 void FRLZSI::projekt_load(){
 		ifstream in("test");
 		load(in);
-		//load_vpii(m_t_array, in);
-		//load_vpii(m_t_reverse_array, in);
-		//load_vintv(m_gamma_t, in);	
-		//load_vintv(m_gamma_tq, in);
+		load_vpii(m_t_array, in);
+		load_vpii(m_t_reverse_array, in);
+		load_vintv(m_gamma_t, in);	
+		load_vintv(m_gamma_tq, in);
 		
 }

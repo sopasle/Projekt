@@ -27,7 +27,10 @@ int main(int c, char *v[]){
 			t2.search_pattern(pattern);
 			vector<pair<int,int>> projekt_treffer;
 			t2.return_treffer(projekt_treffer);
-
+			sort(projekt_treffer.begin(), projekt_treffer.end());
+			for(int i = 0; i < projekt_treffer.size();i++){
+			cout << "T: " << projekt_treffer[i].first << " " << projekt_treffer[i].second<< endl;
+			}
 			/*Testmethode*/
 			/*vector<pair<int,int>> find_treffer;
 			cout << "Testmethode:" << endl;

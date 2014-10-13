@@ -63,6 +63,11 @@ int main(int c, char *v[]){
 					start += 1; // see the note
 				}
 			}
+			cout << "Treffer: " << find_treffer.size() << endl;
+			sort(find_treffer.begin(), find_treffer.end());
+			for(int i = 0; i < find_treffer.size();i++){
+			cout << "T: " << find_treffer[i].first << " " << find_treffer[i].second<< endl;
+			}
 		}
 	}
 
