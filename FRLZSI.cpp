@@ -13,16 +13,21 @@ FRLZSI::FRLZSI(string &r){
 
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
+	cout << "construct sa" << endl;
 	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+		cout << "construct sa Ende" << endl;
 	/*cout << "m_sa: " << endl;
 	for(int i = 1; i< m_sa.size(); i++){
 		cout << i << "\t" << m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
 	}*/
 	
 	string R_r(r.rbegin(), r.rend());	//R reverse
+		cout << "construct m_csa_bws" << endl;
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
+		cout << "construct m_csa_bws Ende" << endl;
+		cout << "m_t: Start" << endl;
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
-	/*cout << "m_t: " << endl;
+	cout << "m_t: Ende" << endl;/*
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
 	}*/
@@ -34,15 +39,23 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	for(int i = 0; i< m_s.size(); i++){
 		cout << m_s[i] << endl;
 	}*/
+	cout << "m_g: Start" << endl;
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
+	cout << "m_g: Ende" << endl;
+	cout << "d_strich: Start" << endl;
 	d_Strich(d_Array());		//m_ds initialisieren
+	cout << "d_strich: Ende" << endl;
+	cout << "bcl: Start" << endl;
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
+	cout << "bcl: Ende" << endl;
+	
 	/*cout << "m_gammaq: " << endl;
 	for(int i = 0; i<m_gamma_tq.size(); i++){
 		cout << m_gamma_tq[i] << endl;
 	}*/
+	cout << "m_f: Start" << endl;
 	f_array();				//m_f und m_v initialisieren
-	/*cout << "m_f: " << endl;
+	cout << "m_f: Ende" << endl;/*
 	for(int i= 1; i< m_f.size(); i++){
 		cout << i << "\t" << m_f.bwt[i] << "\t" << m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
 	}*/
@@ -157,6 +170,7 @@ void FRLZSI::bcl_erzeugen(){
 	vector<vector <uint64_t> > gamma_tq(m_sa.size()-1);
 	
 	int i = 0;
+	cout << "gamma: Start" << endl;
 	while(i < m_t_array.size()){
 
 		gamma_t[m_t_array[i].first].push_back(m_t_array[i].second-m_t_array[i].first +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
@@ -170,7 +184,8 @@ void FRLZSI::bcl_erzeugen(){
 		
 		i++;
 	}
-
+cout << "gamma: Ende" << endl;
+	cout << "gamma_t: Start" << endl;
 	i = 0;
 	while(i < gamma_t.size()){
 		if(!gamma_t[m_sa[i+1]].empty()){
@@ -186,7 +201,8 @@ void FRLZSI::bcl_erzeugen(){
 		}
 		i++;
 	}
-	
+	cout << "gamma_t: Ende" << endl;
+	cout << "gamma_tq: Start" << endl;
 	i= 0;
 	while(i < gamma_tq.size()){
 		if(!gamma_tq[m_csa_bwd[i+1]].empty()){
@@ -203,6 +219,8 @@ void FRLZSI::bcl_erzeugen(){
 	
 		i++;
 	}
+	cout << "gamma_tq: Ende" << endl;
+	cout << "m_c: Start" << endl;
 	i = 0;
 	int j = 0,k=0;
 	while(i<m_gamma_t.size()){
@@ -212,6 +230,8 @@ void FRLZSI::bcl_erzeugen(){
 		}
 		i++;
 	}
+	cout << "m_c: Ende" << endl;
+	cout << "m_cq: Start" << endl;
 	i = 0;
 	while(i < m_gamma_tq.size()){
 		k += m_gamma_tq[i].size();  
@@ -220,7 +240,7 @@ void FRLZSI::bcl_erzeugen(){
 		}
 		i++;
 	}
-
+	cout << "m_cq: Ende" << endl;
 }
 
 
@@ -708,7 +728,9 @@ void FRLZSI::f_array(){
 	for(int i = 0; i< m_s.size(); i++){
 		length += m_s[i].size();
 	}
+	cout << "m_f_length 1" << endl;
 	int_vector<> seg(length+m_s.size());
+	m_l.width(32);
 	m_c.resize(length+m_s.size());	//m_c => pos. der Trennsymbole
 	m_l.resize(length+m_s.size());	//Laenge des Strings S bis zum Beginn des i-ten Faktors
 	uint64_t counter = 0;
@@ -729,6 +751,7 @@ void FRLZSI::f_array(){
 			m_l[counter] = 0;
 			counter++;
 	}	
+	cout << "m_v" << endl;
 	rank_support_v<1> c_rank(&m_c);
 	m_c_rank = std::move(c_rank);
 	construct_im(m_f, seg, 0);
