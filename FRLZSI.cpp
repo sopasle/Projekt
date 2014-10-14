@@ -22,9 +22,13 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	string R_r(r.rbegin(), r.rend());	//R reverse
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
-	/*cout << "m_t: " << endl;
+	cout << "m_t: " << endl;
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
+	}
+	/*cout << "m_t_reverse: " << endl;
+	for(int i = 0; i< m_t_reverse_array.size(); i++){
+		cout << i+1 << "\t" << m_t_reverse_array[i].first << " " << m_t_reverse_array[i].second << "\t" << extract(m_csa_bwd, m_t_reverse_array[i].first, m_t_reverse_array[i].second) << endl;
 	}*/
 	/*cout << "m_s: " << endl;
 	for(int i = 0; i< m_s.size(); i++){
@@ -38,18 +42,25 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 		cout << m_gamma_tq[i] << endl;
 	}*/
 	f_array();				//m_f und m_v initialisieren
-	/*for(int i= 1; i< m_f.size(); i++){
+	/*cout << "m_f: " << endl;
+	for(int i= 1; i< m_f.size(); i++){
 		cout << i << "\t" << m_f.bwt[i] << "\t" << m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
 	}*/
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
 	/*for(int i = 0; i<m_l.size(); i++){
 		cout << i << "-" << m_l[i] << endl;
 	}*/
-	
+	/*cout << "s0: " << s[0].size() << endl;
+	cout << "s1: " << s[1].size() << endl;
+	cout << "s2: " << s[2].size() << endl;
+	cout << "s3: " << s[3].size() << endl;
 	cout << "m_t: " << m_t_array.size() << endl;
 	cout << "m_s: " << m_s.size() << endl;
-	cout << "m_s: " << m_s[0].size() << endl;
-	cout << "m_l: " << m_l.size() << endl;
+	cout << "m_s0: " << m_s[0].size() << endl;
+	cout << "m_s1: " << m_s[1].size() << endl;
+	cout << "m_s2: " << m_s[2].size() << endl;
+	cout << "m_s3: " << m_s[3].size() << endl;
+	cout << "m_l: " << m_l.size() << endl;*/
 }
 
 /*Destruktor*/
@@ -331,7 +342,13 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a_length;
 	int_vector<> a = a_array(pattern,a_length);
+	//cout << "a: " << a << endl;
+	//cout << "al: " << a_length << endl;
 	y_array(pattern,y);
+	/*cout << "y: " << endl;
+	for(int i = 0; i<y.size(); i++){
+		cout << y[i].first << " - " << y[i].second << endl;
+	}*/
 	
 	
 	for(uint64_t i = q_first.size()-1; i <q_first.size();i--){
@@ -353,6 +370,12 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 					q_second[i] = 0;
 					}
 	}	
+	
+	/*cout << "q: " << endl;
+	for(int i = 0; i<q_first.size(); i++){
+		cout << q_first[i] << " - " << q_second[i] << endl;
+	}*/
+	
 }
 
 void FRLZSI::m_array(string &pattern){
