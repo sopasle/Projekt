@@ -65,7 +65,7 @@ int main(int c, char *v[]){
 	
 
 	/* Serialize */
-	cout << t1.projekt_serialize() << endl;	
+	store_to_file(t1,"test");
 	fstream f("speicher.html", ios::out);
 	write_structure<HTML_FORMAT>(t1,f);
 return EXIT_SUCCESS;

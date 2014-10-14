@@ -17,20 +17,22 @@ int main(int c, char *v[]){
     }
     
     FRLZSI t2(pattern);
-	t2.projekt_load();
+    load_from_file(t2,"test");
+	//t2.projekt_load();
     //Pattern einlesen + suchen
 	fstream dat(v[1], ios::in);
 	while(!dat.eof()){
 		getline(dat,pattern);
 		if(!pattern.empty()){
-			cout << "Pattern: " << pattern << endl;
+			cout << "Pattern: " << pattern.size() << endl;
 			t2.search_pattern(pattern);
 			vector<pair<int,int>> projekt_treffer;
 			t2.return_treffer(projekt_treffer);
-			sort(projekt_treffer.begin(), projekt_treffer.end());
-			for(int i = 0; i < projekt_treffer.size();i++){
+			cout << "Treffer: " << projekt_treffer.size() << endl;
+			//sort(projekt_treffer.begin(), projekt_treffer.end());
+			/*for(int i = 0; i < projekt_treffer.size();i++){
 			cout << "T: " << projekt_treffer[i].first << " " << projekt_treffer[i].second<< endl;
-			}
+			}*/
 			/*Testmethode*/
 			/*vector<pair<int,int>> find_treffer;
 			cout << "Testmethode:" << endl;

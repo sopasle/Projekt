@@ -26,10 +26,10 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
 	}*/
-	cout << "m_s: " << endl;
+	/*cout << "m_s: " << endl;
 	for(int i = 0; i< m_s.size(); i++){
 		cout << m_s[i] << endl;
-	}
+	}*/
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
 	d_Strich(d_Array());		//m_ds initialisieren
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
@@ -42,6 +42,14 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 		cout << i << "\t" << m_f.bwt[i] << "\t" << m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
 	}*/
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
+	/*for(int i = 0; i<m_l.size(); i++){
+		cout << i << "-" << m_l[i] << endl;
+	}*/
+	
+	cout << "m_t: " << m_t_array.size() << endl;
+	cout << "m_s: " << m_s.size() << endl;
+	cout << "m_s: " << m_s[0].size() << endl;
+	cout << "m_l: " << m_l.size() << endl;
 }
 
 /*Destruktor*/
@@ -450,9 +458,7 @@ rank_support_v<1> c_rank(&m_c);
 	m_array(pattern);
 	if(exist != 1){
 		cout << "Das Pattern wurde nicht gefunden!" << endl;
-	}
-cout << "Treffer: " << anzahl_treffer << endl;
-	
+	}	
 }
 
 /*sucht solange das Maximum in d_Strich bis Faktorlaenge < Patternlaenge und berechnet jeweils die zugehoerigen Faktoren mittels getFactors.*/
@@ -732,30 +738,4 @@ void FRLZSI::initialize_m(int_vector<> &t_to_t_reverse){
 	store_to_file(m_m_array,filename);
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
 	remove("int_vector");
-}
-
-
-/*
- * Serialize
- */
-
-uint64_t FRLZSI::projekt_serialize(){
-	uint64_t written;
-	ofstream out("test");
-	written += serialize(out,nullptr,"");
-	written += serialize_vpii(m_t_array,out, nullptr, "t_array");
-	written += serialize_vpii(m_t_reverse_array,out, nullptr, "t_reverse");
-	written += serialize_vintv(m_gamma_t,out, nullptr, "gamma_t");
-	written += serialize_vintv(m_gamma_tq,out, nullptr, "gamma_t");
-	return written;
-}
-
-void FRLZSI::projekt_load(){
-		ifstream in("test");
-		load(in);
-		load_vpii(m_t_array, in);
-		load_vpii(m_t_reverse_array, in);
-		load_vintv(m_gamma_t, in);	
-		load_vintv(m_gamma_tq, in);
-		
 }
