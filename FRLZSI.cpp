@@ -352,6 +352,7 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 	uint64_t l_res, r_res;
 	
 	for(uint64_t i = pattern.size()-1; i<pattern.size(); i--){
+		// Idee zur Laufzeitverbesserung, rmaxq von ds auf längsten Faktor, wenn pattern.size()-i größer als der längste Faktor, muss der Rest 0 sein
 		backward_search(m_sa, st_r, ed_r, pattern[i], l_res, r_res);
 		if(l_res <= r_res){	//Sub-Pattern existiert
 			st_r = l_res;
@@ -404,7 +405,7 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 		if(y[i].first != 0){ // Übernehmen der Werte von y, falls ungleich 0
 			q_first[i] = y[i].first;
 			q_second[i] = y[i].second;
-			}else if(a[i] != 0 && q_first[i+a_length[i]] != 0 && q_second[i+a_length[i]] != 0){ // Übernehmen der Werte von a, fall ungleich 0
+			}else if(a[i] != 0 && q_first[i+a_length[i]] != 0 && q_second[i+a_length[i]] != 0){ // Übernehmen der Werte von a, falls ungleich 0
 				uint64_t st_a_res=0, ed_a_res=0;
 				backward_search(m_f,q_first[i+a_length[i]],q_second[i+a_length[i]],a[i],st_a_res, ed_a_res); // backward_search um den Faktor von a vorne in m_f zu finden, anhand von q
 				if(st_a_res > ed_a_res){
@@ -414,10 +415,10 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 				q_first[i] = st_a_res;
 				q_second[i] = ed_a_res;
 				}
-				}else{
-					q_first[i] = 0;
-					q_second[i] = 0;
-					}
+			}else{
+				q_first[i] = 0;
+				q_second[i] = 0;
+			}
 	}	
 	
 }
