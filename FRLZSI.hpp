@@ -29,7 +29,7 @@ class FRLZSI{
 		void projekt_load();
 		void return_treffer(vector<pair<int,int>> &treffer);
 
-size_type serialize_vpii( vector<pair<int,int>>& vpii, std::ostream& out, structure_tree_node* v, std::string name="")
+size_type serialize_vpii(const vector<pair<int,int>>& vpii, std::ostream& out, structure_tree_node* v, std::string name="")const
 {
     structure_tree_node* child = structure_tree::add_child(v, name, "vector<pair<int,int>>");
     uint64_t written_bytes = 0;
@@ -41,7 +41,7 @@ size_type serialize_vpii( vector<pair<int,int>>& vpii, std::ostream& out, struct
     return written_bytes;
 }
 
-size_type serialize_vintv(vector<int_vector<>>& viv, std::ostream& out, structure_tree_node* v, std::string name="")
+size_type serialize_vintv(const vector<int_vector<>>& viv, std::ostream& out, structure_tree_node* v, std::string name="")const
 {
     structure_tree_node* child = structure_tree::add_child(v, name, "vector<int_vector<>>");
     uint64_t written_bytes = 0;
@@ -114,10 +114,10 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 		m_c.load(in);
 		//m_c_rank.load(in);
 		m_l.load(in);
-		//load_vpii(m_t_array, in);
-		//load_vpii(m_t_reverse_array, in);
-		//load_vintv(m_gamma_t, in);	
-		//load_vintv(m_gamma_tq, in);
+		load_vpii(m_t_array, in);
+		load_vpii(m_t_reverse_array, in);
+		load_vintv(m_gamma_t, in);	
+		load_vintv(m_gamma_tq, in);
         }
 
         //! Serialize the data structure
@@ -144,10 +144,10 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 	   // written_bytes += m_c_rank.serialize(out, child, "c_rank");
 	    written_bytes += m_l.serialize(out, child, "l");
 	    string t="t_array";
-	   // written_bytes += serialize_vpii(m_t_array,out, nullptr, t);
-		//written_bytes += serialize_vpii(m_t_reverse_array,out, nullptr, t);
-		//written_bytes += serialize_vintv(m_gamma_t,out, nullptr, t);
-		//written_bytes += serialize_vintv(m_gamma_tq,out, nullptr, t);
+	    written_bytes += serialize_vpii(m_t_array,out, nullptr, t);
+		written_bytes += serialize_vpii(m_t_reverse_array,out, nullptr, t);
+		written_bytes += serialize_vintv(m_gamma_t,out, nullptr, t);
+		written_bytes += serialize_vintv(m_gamma_tq,out, nullptr, t);
             structure_tree::add_size(child, written_bytes);
             return written_bytes;
         }
@@ -210,7 +210,7 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 		int_vector<> a_array(string &pattern, int_vector<> &length);
 
 		int_vector<> LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
-		void f_array();	//F-Array erzeugen
+		void f_array(uint64_t max);	//F-Array erzeugen
 		void initialize_m(int_vector<> &t_to_t_reverse);	//M-Vektor erzeugen
 	
 };

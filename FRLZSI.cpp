@@ -7,7 +7,7 @@ using namespace std;
 
 /*Default Konstruktor*/
 
-FRLZSI::FRLZSI(string &r){	
+FRLZSI::FRLZSI(string &pattern){
 }
 
 
@@ -54,7 +54,24 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 		cout << m_gamma_tq[i] << endl;
 	}*/
 	cout << "m_f: Start" << endl;
-	f_array();				//m_f und m_v initialisieren
+	uint64_t max = s[0].size();			// maximale Größe für int_vector in m_l herausfinden, um Speicherplatz zu sparen
+	for(int i = 1; i<s.size()-1;i++){
+		if(max < s[i].size()){
+			max = s[i].size();
+		}
+	}
+	max = log(max)/log(2);	
+	if(max < 8){
+		max = 8;
+	}else if(max < 16){
+		max = 16;
+	}else if(max < 32){
+		max = 32;
+	}else{
+		max = 64;
+	}
+	cout << "max: " << max << endl;
+	f_array(max);				//m_f und m_v initialisieren
 	cout << "m_f: Ende" << endl;/*
 	for(int i= 1; i< m_f.size(); i++){
 		cout << i << "\t" << m_f.bwt[i] << "\t" << m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
@@ -121,7 +138,8 @@ int_vector<> FRLZSI::d_Array(){
 	*/
 	int p = 0; // Aktuelle Stelle in d
 	int j = 0; // Laufvariable fuer die maximale Distanz
-	int_vector<> d(m_sa.size()-1);	
+	int_vector<> d(m_sa.size()-1);
+	cout << "d size: " << d.size() << endl;
 	uint64_t posmax = 0;	// Position des Maximums bis zur aktuellen Stelle
 	while(p<d.size()){
 		while(m_is[j]<=p && j<m_is.size()){ 
@@ -138,7 +156,7 @@ int_vector<> FRLZSI::d_Array(){
 			d[p] = 0;
 		}
 		
-		p++;	
+		p++;
 	}
 	return d;	
 }
@@ -171,6 +189,7 @@ void FRLZSI::bcl_erzeugen(){
 	
 	int i = 0;
 	cout << "gamma: Start" << endl;
+	cout << "gamma size: " << gamma_t.size() << endl;
 	while(i < m_t_array.size()){
 
 		gamma_t[m_t_array[i].first].push_back(m_t_array[i].second-m_t_array[i].first +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
@@ -374,9 +393,12 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 	*/
 	vector<pair<uint64_t,uint64_t>> y;
 	int_vector<> a_length;
+	cout << "a beginn" << endl;
 	int_vector<> a = a_array(pattern,a_length);
+	cout << "a fertig" << endl;
+	cout << "y beginn" << endl;
 	y_array(pattern,y);
-	
+	cout << "y fertig" << endl;
 	
 	for(uint64_t i = q_first.size()-1; i <q_first.size();i--){
 		if(y[i].first != 0){ // Übernehmen der Werte von y, falls ungleich 0
@@ -405,9 +427,11 @@ void FRLZSI::m_array(string &pattern){
 	* Erwartet Initialisierung von m_m_array, q, m_csa_bwd,
 	* erstellt m für die Suche2
 	*/
+	cout << "q beginn" << endl;
 	int_vector<> q_first(pattern.size());
 	int_vector<> q_second(pattern.size());
 	q_array(pattern,q_first,q_second);
+	cout << "q fertig" << endl;
 		uint64_t j = 0;
 		uint64_t st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
 		
@@ -492,7 +516,6 @@ select_support_mcl<1> v_select(&m_v_array);
 rank_support_v<1> c_rank(&m_c);
 
 	m_c_rank = std::move(c_rank);
-
 	uint64_t i=0, j=m_sa.size()-1, l_res=0, r_res=0,l_res_help,r_res_help;
 	backward_search(m_sa, i, j, pattern.begin(), pattern.end(), l_res, r_res);	// Rueckwaertssuche => startIndex, endIndex
 
@@ -721,18 +744,19 @@ int_vector<> FRLZSI::LZ_factorization(string &R, vector<string> &S){
 }
 
 /*Erzeugt das F-Array*/
-void FRLZSI::f_array(){
+void FRLZSI::f_array(uint64_t max){
 	uint64_t eos = m_t_array.size()+1;
 	uint64_t length = 0;
 	//csa der einzelnen S-Zerlegungen -> int_vectoren zusammenfassen
 	for(int i = 0; i< m_s.size(); i++){
 		length += m_s[i].size();
 	}
-	cout << "m_f_length 1" << endl;
+	cout << "m_f_length 1: " << length << endl;
 	int_vector<> seg(length+m_s.size());
-	m_l.width(32);
+	m_l.width(max);
 	m_c.resize(length+m_s.size());	//m_c => pos. der Trennsymbole
 	m_l.resize(length+m_s.size());	//Laenge des Strings S bis zum Beginn des i-ten Faktors
+	cout << "m_l size: " << m_l.size() << endl;
 	uint64_t counter = 0;
 	for(int i = 0; i< m_s.size(); i++){
 		for(int j = 0; j<m_s[i].size(); j++){
@@ -775,6 +799,7 @@ void FRLZSI::f_array(){
 /*Erzeugt den M-Vektor*/
 void FRLZSI::initialize_m(int_vector<> &t_to_t_reverse){
 	m_m_array.resize(m_v_array.size());
+	cout << "m_m_array: " << m_m_array.size() << endl;
 	for(int i=0; i<m_m_array.size(); i++){
 		int t = m_f.bwt[i+1];
 		if(t == m_t_array.size()+1 || t == 0){	//$
