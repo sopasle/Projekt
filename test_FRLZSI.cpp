@@ -51,7 +51,7 @@ int main(int c, char *v[]){
 	while(!dat.eof()){
 		getline(dat,pattern);
 		if(!pattern.empty()){
-			cout << "Pattern: " << pattern << endl;
+			cout << "Pattern: " << pattern.size() << endl;
 
 			/*Testmethode*/
 			vector<pair<int,int>> find_treffer;
@@ -65,9 +65,9 @@ int main(int c, char *v[]){
 			}
 			cout << "Treffer: " << find_treffer.size() << endl;
 			sort(find_treffer.begin(), find_treffer.end());
-			for(int i = 0; i < find_treffer.size();i++){
+			/*for(int i = 0; i < find_treffer.size();i++){
 			cout << "T: " << find_treffer[i].first << " " << find_treffer[i].second<< endl;
-			}
+			}*/
 		}
 	}
 
