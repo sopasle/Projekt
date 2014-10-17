@@ -178,8 +178,7 @@ void FRLZSI::d_Strich(int_vector<> d){
 	for(int i = 0; i < d.size();i++){
 		d_1[i]=(d[m_sa[i+1]]);	// Berechnung von d', Laenge des laengsten Intervalls an der Position SAr[i]
 	}
-	rmq_succinct_sct<false> rmaxq(&d1);
-	d1.clear();
+	rmq_succinct_sct<false> rmaxq(&d_1);
 	m_ds_rmaxq = std::move(rmaxq);
 }
 
