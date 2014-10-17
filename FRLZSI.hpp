@@ -207,7 +207,7 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 		*/
 		void searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength);	// Patternsuche
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
-		int_vector<> a_array(string &pattern, int_vector<> &length);
+		uint64_t a_array(string &pattern, uint64_t pos, uint64_t &length);
 
 		int_vector<> LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
 		void f_array(uint64_t max);	//F-Array erzeugen
