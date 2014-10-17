@@ -345,13 +345,13 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 	* erstellt y, Anfang und Ende der Range in m_f
 	*/
 	y.resize(pattern.size()); // jeweils pattern.size()-1
-	vector<pair<uint64_t,uint64_t>> yq(pattern.size());
+	vector<pair<uint64_t,uint64_t>> yq(pattern.size(),{0,0});
 	/* Yq */
 
 	uint64_t st_r = 0, ed_r = m_sa.size()-1;
 	uint64_t l_res, r_res;
-	
-	for(uint64_t i = pattern.size()-1; i<pattern.size(); i--){
+	int max_factor = m_ds_rmaxq(0,m_ds_rmaxq.size()-1);
+	for(uint64_t i = pattern.size()-1; i>=pattern.size()-1-max_factor; i--){
 		// Idee zur Laufzeitverbesserung, rmaxq von ds auf längsten Faktor, wenn pattern.size()-i größer als der längste Faktor, muss der Rest 0 sein
 		backward_search(m_sa, st_r, ed_r, pattern[i], l_res, r_res);
 		if(l_res <= r_res){	//Sub-Pattern existiert
@@ -368,7 +368,7 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 		}
 	}
 
-	for(uint64_t i = 0; i<yq.size();i++){
+	for(uint64_t i = pattern.size()-1-max_factor; i<yq.size();i++){
 		if(yq[i].first != 0 && yq[i].first <= yq[i].second){
 
 			if(yq[i].first-1 == 0){
