@@ -158,7 +158,6 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 		csa_wt<> m_sa;				// Suffix-Array							*
 		csa_wt<wt_hutu<>> m_csa_bwd;	// Suffix-Array von R reverse						*
 		vector<int_vector<>> m_s;		// Faktorzerlegung der einzelnen S				*
-		int_vector<> m_ds;			// D'-Array, für Ausgabetests					*
 		/* I(T) Datenstruktur */
 		int_vector<> m_g;			// G-Array							*
 		int_vector<> m_is;			// IS-Array = Faktoranfang im Referenzstring			*

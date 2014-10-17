@@ -14,7 +14,11 @@ FRLZSI::FRLZSI(string &pattern){
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	cout << "construct sa" << endl;
-	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
+	string filename = "sa";
+	store_to_file(r.c_str(),filename);
+	construct(m_sa,filename, 1); // 0=Serialisierter int_vector<>
+	remove("sa");
+	//construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
 		cout << "construct sa Ende" << endl;
 	/*cout << "m_sa: " << endl;
 	for(int i = 1; i< m_sa.size(); i++){
@@ -23,8 +27,12 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	
 	string R_r(r.rbegin(), r.rend());	//R reverse
 		cout << "construct m_csa_bws" << endl;
-	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
-		cout << "construct m_csa_bws Ende" << endl;
+	string filename1 = "csa";
+	store_to_file(R_r.c_str(),filename1);
+	construct(m_csa_bwd,filename1, 1); // 0=Serialisierter int_vector<>
+	remove("csa");
+	//construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
+	cout << "construct m_csa_bws Ende" << endl;
 		cout << "m_t: Start" << endl;
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
 	cout << "m_t: Ende" << endl;/*
@@ -170,8 +178,8 @@ void FRLZSI::d_Strich(int_vector<> d){
 	for(int i = 0; i < d.size();i++){
 		d_1[i]=(d[m_sa[i+1]]);	// Berechnung von d', Laenge des laengsten Intervalls an der Position SAr[i]
 	}
-	m_ds = std::move(d_1);
-	rmq_succinct_sct<false> rmaxq(&m_ds);
+	rmq_succinct_sct<false> rmaxq(&d1);
+	d1.clear();
 	m_ds_rmaxq = std::move(rmaxq);
 }
 
@@ -220,6 +228,7 @@ cout << "gamma: Ende" << endl;
 		}
 		i++;
 	}
+	gamma_t.clear();
 	cout << "gamma_t: Ende" << endl;
 	cout << "gamma_tq: Start" << endl;
 	i= 0;
@@ -238,6 +247,7 @@ cout << "gamma: Ende" << endl;
 	
 		i++;
 	}
+	gamma_tq.clear();
 	cout << "gamma_tq: Ende" << endl;
 	cout << "m_c: Start" << endl;
 	i = 0;
@@ -782,7 +792,11 @@ void FRLZSI::f_array(uint64_t max){
 	cout << "m_v" << endl;
 	rank_support_v<1> c_rank(&m_c);
 	m_c_rank = std::move(c_rank);
-	construct_im(m_f, seg, 0);
+	string filename = "m_f";
+	store_to_file(seg,filename);
+	construct(m_f,filename, 0); // 0=Serialisierter int_vector<>
+	remove("m_f");
+	//construct_im(m_f, seg, 0);
 	
 	//m_v initialisieren
 	bit_vector v(length);
