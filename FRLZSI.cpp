@@ -10,12 +10,16 @@ using namespace std;
 FRLZSI::FRLZSI(string &pattern){
 }
 
+clock_t start;
+float elapsed;
 
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	cout << "construct sa" << endl;
-	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-		cout << "construct sa Ende" << endl;
+	start = clock();
+	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren	
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_sa erstellt, Laufzeit: " << elapsed << "\n";
 	/*cout << "m_sa: " << endl;
 	for(int i = 1; i< m_sa.size(); i++){
 		cout << i << "\t" << m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
@@ -23,11 +27,19 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	
 	string R_r(r.rbegin(), r.rend());	//R reverse
 		cout << "construct m_csa_bws" << endl;
+		start = clock();
+
 	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
-		cout << "construct m_csa_bws Ende" << endl;
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
+
 		cout << "m_t: Start" << endl;
+			start = clock();
+	
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
-	cout << "m_t: Ende" << endl;/*
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_t erstellt, Laufzeit: " << elapsed << "\n";
+		/*
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
 	}*/
@@ -40,20 +52,32 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 		cout << m_s[i] << endl;
 	}*/
 	cout << "m_g: Start" << endl;
+				start = clock();
+	
 	g_Array(); 			//m_g, m_is, m_ie_rmaxq() initialisieren
-	cout << "m_g: Ende" << endl;
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_f erstellt, Laufzeit: " << elapsed << "\n";
 	cout << "d_strich: Start" << endl;
+				start = clock();
+	
 	d_Strich(d_Array());		//m_ds initialisieren
-	cout << "d_strich: Ende" << endl;
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_ds erstellt, Laufzeit: " << elapsed << "\n";
+	
 	cout << "bcl: Start" << endl;
+				start = clock();
+	
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
-	cout << "bcl: Ende" << endl;
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "bcl erstellt, Laufzeit: " << elapsed << "\n";
 	
 	/*cout << "m_gammaq: " << endl;
 	for(int i = 0; i<m_gamma_tq.size(); i++){
 		cout << m_gamma_tq[i] << endl;
 	}*/
 	cout << "m_f: Start" << endl;
+				start = clock();
+	
 	uint64_t max = s[0].size();			// maximale Größe für int_vector in m_l herausfinden, um Speicherplatz zu sparen
 	for(int i = 1; i<s.size()-1;i++){
 		if(max < s[i].size()){
@@ -70,10 +94,12 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	}else{
 		max = 64;
 	}
-	cout << "max: " << max << endl;
+	 
 	f_array(max);				//m_f und m_v initialisieren
-	cout << "m_f: Ende" << endl;/*
-	for(int i= 1; i< m_f.size(); i++){
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_f erstellt, Laufzeit: " << elapsed << "\n";
+
+	/*for(int i= 1; i< m_f.size(); i++){
 		cout << i << "\t" << m_f.bwt[i] << "\t" << m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
 	}*/
 	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
@@ -138,8 +164,10 @@ int_vector<> FRLZSI::d_Array(){
 	*/
 	int p = 0; // Aktuelle Stelle in d
 	int j = 0; // Laufvariable fuer die maximale Distanz
+	
+
 	int_vector<> d(m_sa.size()-1);
-	cout << "d size: " << d.size() << endl;
+		
 	uint64_t posmax = 0;	// Position des Maximums bis zur aktuellen Stelle
 	while(p<d.size()){
 		while(m_is[j]<=p && j<m_is.size()){ 
@@ -166,7 +194,10 @@ void FRLZSI::d_Strich(int_vector<> d){
 	* Erwartet Initialisierung von m_d, m_sa
 	* erstellt d-strich
 	*/
+	start = clock();
 	int_vector<> d_1(d.size());
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "d erstellt, Laufzeit: " << elapsed << "\n";
 	for(int i = 0; i < d.size();i++){
 		d_1[i]=(d[m_sa[i+1]]);	// Berechnung von d', Laenge des laengsten Intervalls an der Position SAr[i]
 	}
@@ -189,7 +220,8 @@ void FRLZSI::bcl_erzeugen(){
 	
 	int i = 0;
 	cout << "gamma: Start" << endl;
-	cout << "gamma size: " << gamma_t.size() << endl;
+				start = clock();
+	
 	while(i < m_t_array.size()){
 
 		gamma_t[m_t_array[i].first].push_back(m_t_array[i].second-m_t_array[i].first +1); // Vektor mit Länge aller an der aktuellen Stelle beginnenden Strings
@@ -203,8 +235,11 @@ void FRLZSI::bcl_erzeugen(){
 		
 		i++;
 	}
-cout << "gamma: Ende" << endl;
+elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "gamma erstellt, Laufzeit: " << elapsed << "\n";
 	cout << "gamma_t: Start" << endl;
+				start = clock();
+	
 	i = 0;
 	while(i < gamma_t.size()){
 		if(!gamma_t[m_sa[i+1]].empty()){
@@ -220,8 +255,10 @@ cout << "gamma: Ende" << endl;
 		}
 		i++;
 	}
-	cout << "gamma_t: Ende" << endl;
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "gamma_t erstellt, Laufzeit: " << elapsed << "\n";
 	cout << "gamma_tq: Start" << endl;
+	start = clock();
 	i= 0;
 	while(i < gamma_tq.size()){
 		if(!gamma_tq[m_csa_bwd[i+1]].empty()){
@@ -238,8 +275,12 @@ cout << "gamma: Ende" << endl;
 	
 		i++;
 	}
-	cout << "gamma_tq: Ende" << endl;
+				
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "gamma_tq erstellt, Laufzeit: " << elapsed << "\n";
 	cout << "m_c: Start" << endl;
+				start = clock();
+
 	i = 0;
 	int j = 0,k=0;
 	while(i<m_gamma_t.size()){
@@ -249,8 +290,11 @@ cout << "gamma: Ende" << endl;
 		}
 		i++;
 	}
-	cout << "m_c: Ende" << endl;
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_c erstellt, Laufzeit: " << elapsed << "\n";
 	cout << "m_cq: Start" << endl;
+				start = clock();
+	
 	i = 0;
 	while(i < m_gamma_tq.size()){
 		k += m_gamma_tq[i].size();  
@@ -259,7 +303,8 @@ cout << "gamma: Ende" << endl;
 		}
 		i++;
 	}
-	cout << "m_cq: Ende" << endl;
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_cq erstellt, Laufzeit: " << elapsed << "\n";
 }
 
 
