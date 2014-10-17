@@ -27,10 +27,10 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 		cout << "construct m_csa_bws Ende" << endl;
 		cout << "m_t: Start" << endl;
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
-	cout << "m_t: Ende" << endl;/*
+	cout << "m_t: Ende" << endl;
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
-	}*/
+	}
 	/*cout << "m_t_reverse: " << endl;
 	for(int i = 0; i< m_t_reverse_array.size(); i++){
 		cout << i+1 << "\t" << m_t_reverse_array[i].first << " " << m_t_reverse_array[i].second << "\t" << extract(m_csa_bwd, m_t_reverse_array[i].first, m_t_reverse_array[i].second) << endl;
@@ -350,8 +350,7 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 
 	uint64_t st_r = 0, ed_r = m_sa.size()-1;
 	uint64_t l_res, r_res;
-	int max_factor = m_ds_rmaxq(0,m_ds_rmaxq.size()-1);
-	for(uint64_t i = pattern.size()-1; i>=pattern.size()-1-max_factor; i--){
+	for(uint64_t i = pattern.size()-1; i<pattern.size(); i--){
 		// Idee zur Laufzeitverbesserung, rmaxq von ds auf längsten Faktor, wenn pattern.size()-i größer als der längste Faktor, muss der Rest 0 sein
 		backward_search(m_sa, st_r, ed_r, pattern[i], l_res, r_res);
 		if(l_res <= r_res){	//Sub-Pattern existiert
@@ -368,7 +367,7 @@ void FRLZSI::y_array(string &pattern,vector<pair<uint64_t,uint64_t>> &y){
 		}
 	}
 
-	for(uint64_t i = pattern.size()-1-max_factor; i<yq.size();i++){
+	for(uint64_t i = 0; i<yq.size();i++){
 		if(yq[i].first != 0 && yq[i].first <= yq[i].second){
 
 			if(yq[i].first-1 == 0){
@@ -407,9 +406,9 @@ void FRLZSI::q_array(string &pattern,int_vector<> &q_first , int_vector<> &q_sec
 			q_second[i] = y[i].second;
 		}else{
 			uint64_t a_length;
-			cout << "a beginn" << endl;
+			//cout << "a beginn" << endl;
 			uint64_t a = a_array(pattern, i, a_length);		//Berechnung des Wertes a[i]
-			cout << "a fertig" << endl;
+			//cout << "a fertig" << endl;
 			if(a != 0 && q_first[i+a_length] != 0 && q_second[i+a_length] != 0){ // Übernehmen der Werte von a, falls ungleich 0
 				uint64_t st_a_res=0, ed_a_res=0;
 				backward_search(m_f,q_first[i+a_length],q_second[i+a_length],a,st_a_res, ed_a_res); // backward_search um den Faktor von a vorne in m_f zu finden, anhand von q
