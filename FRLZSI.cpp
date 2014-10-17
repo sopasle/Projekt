@@ -581,7 +581,7 @@ void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ie
 /*a-Array fuer die Suche im 2.Fall*/
 int_vector<> FRLZSI::a_array(string &pattern, int_vector<> &length){
 	length.resize(pattern.size());
-	int_vector<> a(pattern.size());
+	int_vector<> a(pattern.size(),0);
 	for(uint64_t i = 0; i<pattern.size(); i++){
 		uint64_t j = 0;	//in for-Schleife, da kein delet_back()
 		uint64_t st_r = 0, ed_r = m_csa_bwd.size()-1, st_r_reverse = 0, ed_r_reverse = m_csa_bwd.size()-1;
@@ -598,11 +598,14 @@ int_vector<> FRLZSI::a_array(string &pattern, int_vector<> &length){
 				uint64_t st_t, ed_t, c;
 				p_zu_t(st_r, ed_r, st_t, ed_t,j+1);
 				if(st_t <= ed_t && st_t != 0){	//P[i..j] ist moeglicherweise ein Faktor in T
-					for(int k = st_t; k<=ed_t; k++){
-						if(j+1 == m_t_array[k-1].second - m_t_array[k-1].first + 1){		//Faktor existiert
-							a[i] = k;
+					if(j+1 == m_t_array[st_t-1].second - m_t_array[st_t-1].first + 1){ //Faktor existiert (Nur ersten Faktor ueberpruefen, da die Faktoren in T lexikographisch sortiert sind)
+					//for(int k = st_t; k<=ed_t; k++){
+						//if(j+1 == m_t_array[k-1].second - m_t_array[k-1].first + 1){
+							a[i] = st_t;
 							length[i] = j+1;
-						}
+					}else{
+						a[i] = 0;
+						length[i] = 0;
 					}
 				}
 				else{
