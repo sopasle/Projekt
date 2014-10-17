@@ -16,19 +16,14 @@ float elapsed;
 /*Konstruktor*/
 FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	cout << "construct sa" << endl;
-<<<<<<< HEAD
 	start = clock();
-	construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren	
-	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-		cout << "m_sa erstellt, Laufzeit: " << elapsed << "\n";
-=======
 	string filename = "sa";
 	store_to_file(r.c_str(),filename);
 	construct(m_sa,filename, 1); // 0=Serialisierter int_vector<>
 	remove("sa");
 	//construct_im(m_sa, r.c_str(), 1);	//m_sa initialisieren
-		cout << "construct sa Ende" << endl;
->>>>>>> 31944dd4589d9c7df9fe402e1ad03b99db574220
+		elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+		cout << "m_sa erstellt, Laufzeit: " << elapsed << "\n";
 	/*cout << "m_sa: " << endl;
 	for(int i = 1; i< m_sa.size(); i++){
 		cout << i << "\t" << m_sa[i] << "\t" << extract(m_sa, m_sa[i], m_sa.size()-1) << endl;
@@ -36,32 +31,21 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	
 	string R_r(r.rbegin(), r.rend());	//R reverse
 		cout << "construct m_csa_bws" << endl;
-<<<<<<< HEAD
 		start = clock();
-
-	construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
-	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
-
-=======
 	string filename1 = "csa";
 	store_to_file(R_r.c_str(),filename1);
 	construct(m_csa_bwd,filename1, 1); // 0=Serialisierter int_vector<>
 	remove("csa");
 	//construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
-	cout << "construct m_csa_bws Ende" << endl;
->>>>>>> 31944dd4589d9c7df9fe402e1ad03b99db574220
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
 		cout << "m_t: Start" << endl;
-			start = clock();
-	
+			start = clock();	
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
-<<<<<<< HEAD
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 		cout << "m_t erstellt, Laufzeit: " << elapsed << "\n";
 		/*
-=======
 	cout << "m_t: Ende" << endl;
->>>>>>> 31944dd4589d9c7df9fe402e1ad03b99db574220
 	for(int i = 0; i< m_t_array.size(); i++){
 		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
 	}
@@ -276,13 +260,11 @@ elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 		}
 		i++;
 	}
-<<<<<<< HEAD
+
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 		cout << "gamma_t erstellt, Laufzeit: " << elapsed << "\n";
-=======
+
 	gamma_t.clear();
-	cout << "gamma_t: Ende" << endl;
->>>>>>> 31944dd4589d9c7df9fe402e1ad03b99db574220
 	cout << "gamma_tq: Start" << endl;
 	start = clock();
 	i= 0;
@@ -301,14 +283,13 @@ elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 	
 		i++;
 	}
-<<<<<<< HEAD
+
 				
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 		cout << "gamma_tq erstellt, Laufzeit: " << elapsed << "\n";
-=======
+
 	gamma_tq.clear();
-	cout << "gamma_tq: Ende" << endl;
->>>>>>> 31944dd4589d9c7df9fe402e1ad03b99db574220
+
 	cout << "m_c: Start" << endl;
 				start = clock();
 
