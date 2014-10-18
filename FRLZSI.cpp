@@ -788,7 +788,8 @@ int_vector<> FRLZSI::LZ_factorization(string &R, vector<string> &S){
 	m_t_reverse_array.erase(unique(m_t_reverse_array.begin(), m_t_reverse_array.end()), m_t_reverse_array.end());
 
 	vector<tuple<int,pair<int,int>,int,int,int>>::iterator iter = factors.begin();
-	int_vector<> t_to_t_reverse(m_t_array.size());
+	uint64_t vector_entry_size = (int) (log(m_t_array.size())/log(2)) + 1;
+	int_vector<> t_to_t_reverse(m_t_array.size(),0,vector_entry_size);
 	for(int i=0; i<t_to_t_reverse.size(); i++){
 		t_to_t_reverse[i]= get<4>(*iter);
 		while(get<4>(*iter)==t_to_t_reverse[i]){
@@ -858,18 +859,19 @@ void FRLZSI::f_array(uint64_t max){
 
 /*Erzeugt den M-Vektor*/
 void FRLZSI::initialize_m(int_vector<> &t_to_t_reverse){
-	m_m_array.resize(m_v_array.size());
-	cout << "m_m_array: " << m_m_array.size() << endl;
-	for(int i=0; i<m_m_array.size(); i++){
+	uint64_t vector_entry_size = (int) (log(m_t_array.size())/log(2)) + 1;
+	int_vector<> m_array(m_v_array.size(),0,vector_entry_size);
+	cout << "m_array: " << m_array.size() << endl;
+	for(int i=0; i<m_array.size(); i++){
 		int t = m_f.bwt[i+1];
 		if(t == m_t_array.size()+1 || t == 0){	//$
-			m_m_array[i] = 0;
+			m_array[i] = 0;
 		}else{
-			m_m_array[i] = t_to_t_reverse[t-1]+1;
+			m_array[i] = t_to_t_reverse[t-1]+1;
 		}
 	}
 	string filename = "int_vector";
-	store_to_file(m_m_array,filename);
+	store_to_file(m_array,filename);
 	construct(m_m,filename, 0); // 0=Serialisierter int_vector<>
 	remove("int_vector");
 }
