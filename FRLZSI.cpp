@@ -36,12 +36,22 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	store_to_file(R_r.c_str(),filename1);
 	construct(m_csa_bwd,filename1, 1); // 0=Serialisierter int_vector<>
 	remove("csa");
+	R_r.clear();	//R_r loeschen
 	//construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
 		cout << "m_t: Start" << endl;
 			start = clock();	
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
+	r.clear();	// r loeschen
+	uint64_t max = 0;			// maximale Größe für int_vector in m_l herausfinden, um Speicherplatz zu sparen und s loeschen
+	for(int i = 0; i<s.size()-1;i++){
+		if(max < s[i].size()){
+			max = s[i].size();
+		}
+		s[i].clear();
+	}
+	max = (int)(log(max)/log(2))+1;	
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
 		cout << "m_t erstellt, Laufzeit: " << elapsed << "\n";
 		/*
@@ -83,23 +93,6 @@ cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
 	}*/
 	cout << "m_f: Start" << endl;
 				start = clock();
-	
-	uint64_t max = s[0].size();			// maximale Größe für int_vector in m_l herausfinden, um Speicherplatz zu sparen
-	for(int i = 1; i<s.size()-1;i++){
-		if(max < s[i].size()){
-			max = s[i].size();
-		}
-	}
-	max = log(max)/log(2);	
-	if(max < 8){
-		max = 8;
-	}else if(max < 16){
-		max = 16;
-	}else if(max < 32){
-		max = 32;
-	}else{
-		max = 64;
-	}
 	 
 	f_array(max);				//m_f und m_v initialisieren
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
