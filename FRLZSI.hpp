@@ -157,7 +157,7 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 		vector<pair<int,int>> m_t_reverse_array; //T-quer-Array (Faktoranfang,Faktorende)			*
 		csa_wt<> m_sa;				// Suffix-Array							*
 		csa_wt<wt_hutu<>> m_csa_bwd;	// Suffix-Array von R reverse						*
-		vector<int_vector<>> m_s;		// Faktorzerlegung der einzelnen S				*
+		//vector<int_vector<>> m_s;		// Faktorzerlegung der einzelnen S				*
 		/* I(T) Datenstruktur */
 		int_vector<> m_g;			// G-Array							*
 		int_vector<> m_is;			// IS-Array = Faktoranfang im Referenzstring			*
@@ -207,8 +207,8 @@ void load_vintv(vector<int_vector<>>& viv, std::istream& in) {
 		void getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex);
 		uint64_t a_array(string &pattern, uint64_t pos, uint64_t &length);
 
-		int_vector<> LZ_factorization(string &R, vector<string> &S); // Faktoren herausfinden
-		void f_array(uint64_t max);	//F-Array erzeugen
+		int_vector<> LZ_factorization(string &R, vector<string> &S, vector<int_vector<>> &m_s); // Faktoren herausfinden
+		void f_array(uint64_t max, vector<int_vector<>> &m_s);	//F-Array erzeugen
 		void initialize_m(int_vector<> &t_to_t_reverse);	//M-Vektor erzeugen
 	
 };

@@ -14,7 +14,7 @@ clock_t start;
 float elapsed;
 
 /*Konstruktor*/
-FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
+FRLZSI::FRLZSI(string &r, vector<string> &s){
 	cout << "construct sa" << endl;
 	start = clock();
 	string filename = "sa";
@@ -39,10 +39,12 @@ FRLZSI::FRLZSI(string &r, vector<string> &s) : m_s(s.size()){
 	R_r.clear();	//R_r loeschen
 	//construct_im(m_csa_bwd, R_r.c_str(), 1);	//m_csa_bwd initialisieren
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
-		cout << "m_t: Start" << endl;
-			start = clock();	
-	int_vector<> t_to_t_reverse = LZ_factorization(r, s);		//m_t_array, m_s initialisieren
+	cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
+
+	vector<int_vector<>> m_s(s.size());
+	cout << "m_t: Start" << endl;
+	start = clock();	
+	int_vector<> t_to_t_reverse = LZ_factorization(r, s, m_s);		//m_t_array, m_s initialisieren
 	r.clear();	// r loeschen
 	uint64_t max = 0;			// maximale Größe für int_vector in m_l herausfinden, um Speicherplatz zu sparen und s loeschen
 	for(int i = 0; i<s.size()-1;i++){
@@ -53,20 +55,21 @@ cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
 	}
 	max = (int)(log(max)/log(2))+1;	
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-		cout << "m_t erstellt, Laufzeit: " << elapsed << "\n";
-		/*
-	cout << "m_t: Ende" << endl;
-	for(int i = 0; i< m_t_array.size(); i++){
-		cout << i+1 << "\t" << m_t_array[i].first << " " << m_t_array[i].second << "\t" << extract(m_sa, m_t_array[i].first, m_t_array[i].second) << endl;
-	}
-	/*cout << "m_t_reverse: " << endl;
-	for(int i = 0; i< m_t_reverse_array.size(); i++){
-		cout << i+1 << "\t" << m_t_reverse_array[i].first << " " << m_t_reverse_array[i].second << "\t" << extract(m_csa_bwd, m_t_reverse_array[i].first, m_t_reverse_array[i].second) << endl;
-	}*/
-	/*cout << "m_s: " << endl;
-	for(int i = 0; i< m_s.size(); i++){
-		cout << m_s[i] << endl;
-	}*/
+	cout << "m_t erstellt, Laufzeit: " << elapsed << "\n";
+	
+	cout << "m_f: Start" << endl;
+	start = clock();
+	f_array(max, m_s);				//m_f und m_v initialisieren
+	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
+	cout << "m_f erstellt, Laufzeit: " << elapsed << "\n";
+	m_s.clear();	//m_s leeren
+
+	cout << "m_m: Start" << endl;
+	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
+	cout << "m_m erstellt \n";
+	/*evtl. t_to_t_reverse leeren*/
+
+
 	cout << "m_g: Start" << endl;
 				start = clock();
 	
@@ -85,37 +88,7 @@ cout << "construct m_csa_bws erstellt, Laufzeit: " << elapsed << "\n";
 	
 	bcl_erzeugen();			// Datenstruktur X(T) füllen
 	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-		cout << "bcl erstellt, Laufzeit: " << elapsed << "\n";
-	
-	/*cout << "m_gammaq: " << endl;
-	for(int i = 0; i<m_gamma_tq.size(); i++){
-		cout << m_gamma_tq[i] << endl;
-	}*/
-	cout << "m_f: Start" << endl;
-				start = clock();
-	 
-	f_array(max);				//m_f und m_v initialisieren
-	elapsed = (float)(clock() - start) / CLOCKS_PER_SEC;
-		cout << "m_f erstellt, Laufzeit: " << elapsed << "\n";
-
-	/*for(int i= 1; i< m_f.size(); i++){
-		cout << i << "\t" << m_f.bwt[i] << "\t" << m_f[i] << "\t" << extract(m_f, m_f[i], m_f.size()-1) << endl;
-	}*/
-	initialize_m(t_to_t_reverse);	//m_m_array initialisieren
-	/*for(int i = 0; i<m_l.size(); i++){
-		cout << i << "-" << m_l[i] << endl;
-	}*/
-	/*cout << "s0: " << s[0].size() << endl;
-	cout << "s1: " << s[1].size() << endl;
-	cout << "s2: " << s[2].size() << endl;
-	cout << "s3: " << s[3].size() << endl;
-	cout << "m_t: " << m_t_array.size() << endl;
-	cout << "m_s: " << m_s.size() << endl;
-	cout << "m_s0: " << m_s[0].size() << endl;
-	cout << "m_s1: " << m_s[1].size() << endl;
-	cout << "m_s2: " << m_s[2].size() << endl;
-	cout << "m_s3: " << m_s[3].size() << endl;
-	cout << "m_l: " << m_l.size() << endl;*/
+	cout << "bcl erstellt, Laufzeit: " << elapsed << "\n";
 }
 
 /*Destruktor*/
@@ -668,7 +641,7 @@ uint64_t FRLZSI::a_array(string &pattern, uint64_t pos, uint64_t &length){
 
 
 /*Zerlegt die einzelnen Strings in Faktoren relativ zum Referenzstring R*/
-int_vector<> FRLZSI::LZ_factorization(string &R, vector<string> &S){
+int_vector<> FRLZSI::LZ_factorization(string &R, vector<string> &S, vector<int_vector<>> &m_s){
 	vector<tuple<int,pair<int,int>,int,int,int>> factors;	//tuple(ISA,is,ie,Si,faktornummer,T~)
 	vector<tuple<int,int,pair<int,int>,int>> factors_reverse;		//tuple(ISA_reverse,faktorlaenge,pair(is,ie),pos)
 	
@@ -794,7 +767,7 @@ int_vector<> FRLZSI::LZ_factorization(string &R, vector<string> &S){
 }
 
 /*Erzeugt das F-Array*/
-void FRLZSI::f_array(uint64_t max){
+void FRLZSI::f_array(uint64_t max, vector<int_vector<>> &m_s){
 	uint64_t eos = m_t_array.size()+1;
 	uint64_t length = 0;
 	//csa der einzelnen S-Zerlegungen -> int_vectoren zusammenfassen
@@ -826,8 +799,8 @@ void FRLZSI::f_array(uint64_t max){
 			counter++;
 	}	
 	cout << "m_v" << endl;
-	rank_support_v<1> c_rank(&m_c);
-	m_c_rank = std::move(c_rank);
+	//rank_support_v<1> c_rank(&m_c);
+	//m_c_rank = std::move(c_rank);
 	string filename = "m_f";
 	store_to_file(seg,filename);
 	construct(m_f,filename, 0); // 0=Serialisierter int_vector<>
@@ -846,8 +819,8 @@ void FRLZSI::f_array(uint64_t max){
 		}
 	}
 	m_v_array = std::move(v);
-	select_support_mcl<1> v_select(&m_v_array);
-	m_v = std::move(v_select);
+	//select_support_mcl<1> v_select(&m_v_array);
+	//m_v = std::move(v_select);
 }
 
 /*Erzeugt den M-Vektor*/
