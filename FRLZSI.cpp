@@ -47,7 +47,7 @@ FRLZSI::FRLZSI(string &r, vector<string> &s){
 	int_vector<> t_to_t_reverse = LZ_factorization(r, s, m_s);		//m_t_array, m_s initialisieren
 	r.clear();	// r loeschen
 	uint64_t max = 0;			// maximale Größe für int_vector in m_l herausfinden, um Speicherplatz zu sparen und s loeschen
-	for(int i = 0; i<s.size()-1;i++){
+	for(int i = 0; i<s.size();i++){
 		if(max < s[i].size()){
 			max = s[i].size();
 		}
@@ -797,7 +797,8 @@ void FRLZSI::f_array(uint64_t max, vector<int_vector<>> &m_s){
 			m_c[counter] = 0;
 			m_l[counter] = 0;
 			counter++;
-	}	
+	}
+	cout << "m_l: " << m_l << endl;	
 	cout << "m_v" << endl;
 	//rank_support_v<1> c_rank(&m_c);
 	//m_c_rank = std::move(c_rank);
