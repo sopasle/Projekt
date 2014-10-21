@@ -477,7 +477,9 @@ void FRLZSI::m_array(string &pattern){
 				if(st_t <= ed_t && st_t != 0){	//T~ exitstiert
 					if(q_first[j] > 0){
 						auto res = m_m.range_search_2d(q_first[j]-1,q_second[j]-1,st_t,ed_t); // 2d Suche um m_t_array und m_f zu verknüpfen und Treffer zu finden
+						cout << res.first << " Werte zwischen " << q_first[j]-1 << " und " << q_second[j]-1 << " die zwischen " << st_t << " und " << ed_t << " liegen: " << endl;
 						for(auto point : res.second){
+							cout << "(" << point.first << "," << point.second << ") \n";
 							phase_2(point.first+1,(-j));
 						}
 					}
@@ -498,7 +500,11 @@ void FRLZSI::phase_1(uint64_t factor,uint64_t st_pos){
 	*/
 	uint64_t st,ed;
 	st = m_v(factor)+1;
-	ed = m_v(factor+1)+1;
+	if(factor != m_t_array.size()){
+		ed = m_v(factor+1)+1;
+	}else{
+		ed = m_v_array.size()+1;
+	}
 	for(int i = 0; i< ed-st; i++){
 		phase_2(st+i,st_pos);
 	}
@@ -538,7 +544,7 @@ void FRLZSI::return_treffer(vector<pair<int,int>> &treffer){
 /*oeffentlich aufrufbare Methode zum auffinden eines Patterns in S*/
 void FRLZSI::search_pattern(string &pattern){
 
-select_support_mcl<1> v_select(&m_v_array);
+	select_support_mcl<1> v_select(&m_v_array);
 
 	m_v = std::move(v_select);
 
@@ -565,7 +571,7 @@ void FRLZSI::searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength){
 	//Berechnung des Wertes d_Strich[maxPosition]
 	int_vector<>::iterator up;
 	up = upper_bound(m_is.begin(), m_is.end(), m_sa[maxPosition+1]);	//endIndex für rmaxq in ie (binaere Suche)
-
+	//cout << "up-m_is.begin()-1: " << up-m_is.begin()-1 << endl;
 	if(up-m_is.begin()-1 >= 0){	//Abbruch, wenn kein Pattern an der Stelle beginnt
 
 		uint64_t gIndex = m_ie_rmaxq(0,up-m_is.begin()-1);
@@ -588,10 +594,8 @@ void FRLZSI::searchPattern(uint64_t st,uint64_t ed, uint64_t patternLength){
 
 /*sucht das Maximum in ie und gibt den Faktor aus, falls ie-Wert >= startIndex+Patternlaenge-1*/
 void FRLZSI::getFactors(uint64_t startIndex, uint64_t patternLength, uint64_t ieStartIndex, uint64_t ieEndIndex){
-
 	uint64_t factorPosition = m_ie_rmaxq(ieStartIndex,ieEndIndex);	//naechster moeglicher Faktor beim Maximum von ie
 	if(m_t_array[m_g[factorPosition]-1].second >= startIndex+patternLength-1){	//Abbruch falls Pattern nicht mehr im Faktor liegt
-
 		phase_1(m_g[factorPosition],startIndex-m_is[factorPosition]);
 	
 		if(factorPosition < ieEndIndex){
@@ -810,7 +814,7 @@ void FRLZSI::f_array(uint64_t max, vector<int_vector<>> &m_s){
 	//m_v initialisieren
 	bit_vector v(length);
 	v[0] = 1;
-	for(int i=2; i<m_f.size(); i++){
+	for(int i=2; i<length+2; i++){
 		if(seg[m_f[i]] != seg[m_f[i-1]]){
 			v[i-1] = 1;
 		}
