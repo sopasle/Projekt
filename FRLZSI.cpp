@@ -797,8 +797,7 @@ void FRLZSI::f_array(uint64_t max, vector<int_vector<>> &m_s){
 			m_c[counter] = 0;
 			m_l[counter] = 0;
 			counter++;
-	}
-	cout << "m_l: " << m_l << endl;	
+	}	
 	cout << "m_v" << endl;
 	//rank_support_v<1> c_rank(&m_c);
 	//m_c_rank = std::move(c_rank);
