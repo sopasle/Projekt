@@ -16,7 +16,7 @@ using namespace std;
 
 class FRLZSI{
 	public: 
-		FRLZSI(string &r);				// Konstruktor
+		FRLZSI(string &r);			// Konstruktor
 		FRLZSI(string &r, vector<string> &s);	// Konstruktor mit Aufruf Referenzstring, Vektor mit Eingabestrings
 		~FRLZSI();				// Destruktor
 		void search_pattern(string &pattern);	// Patternsuche

@@ -12,17 +12,17 @@ int main(int c, char *v[]){
 	string pattern;
 	vector<string> s;
 	
-    int len;
-    struct dirent *pDirent;
-    DIR *pDir;
+	int len;
+	struct dirent *pDirent;
+	DIR *pDir;
 
-    if (c < 3) {
-        printf ("Usage: testprog <filename> <dirname>\n");
-        return 1;
-    }
+	if (c < 3) {
+		printf ("Usage: testprog <filename> <dirname>\n");
+		return 1;
+	}
     
-    //R einlesen
-    fstream datei(v[1], ios::in);
+	//R einlesen
+	fstream datei(v[1], ios::in);
 	stringstream content;
 	string zeile;
 	while(!datei.eof()){
@@ -33,15 +33,15 @@ int main(int c, char *v[]){
 	datei.close();
     
     
-    // S einlesen
-    pDir = opendir (v[2]);
-    if (pDir == NULL) {
-        printf ("Cannot open directory '%s'\n", v[2]);
-        return 1;
-    }
+	// S einlesen
+	pDir = opendir (v[2]);
+	if (pDir == NULL) {
+		printf ("Cannot open directory '%s'\n", v[2]);
+		return 1;
+	}
 
-    while ((pDirent = readdir(pDir)) != NULL) {
-        if((string)pDirent->d_name != "." && (string)pDirent->d_name != ".."){
+	while ((pDirent = readdir(pDir)) != NULL) {
+		if((string)pDirent->d_name != "." && (string)pDirent->d_name != ".."){
 			cout << "Datei " << pDirent->d_name << " einlesen" << endl;
 			stringstream ss;
 			ss << v[2] << "/" << pDirent->d_name;
@@ -55,8 +55,8 @@ int main(int c, char *v[]){
 			s.push_back(content.str());
 			datei.close();
 		}
-    }
-    closedir (pDir);
+	}
+	closedir (pDir);
     
 	
    
@@ -68,5 +68,6 @@ int main(int c, char *v[]){
 	store_to_file(t1,"test");
 	fstream f("speicher.html", ios::out);
 	write_structure<HTML_FORMAT>(t1,f);
-return EXIT_SUCCESS;
+
+	return EXIT_SUCCESS;
 }
