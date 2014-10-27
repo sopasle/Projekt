@@ -1,4 +1,4 @@
-prog: main.o foo.o bar.o
+prog: construct_frlzsi.o	find_frlzsi.o
 	gcc -o prog main.o foo.o bar.o
 
 construct_frlzsi.o: FRLZSI.cpp	construct_FRLZSI.cpp
