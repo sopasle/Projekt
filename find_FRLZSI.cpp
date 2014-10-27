@@ -8,17 +8,16 @@
 
 
 int main(int c, char *v[]){
-	
+
 	string pattern;
 
 	if (c < 2) {
 		printf ("Usage: testprog <pattern>\n");
 		return 1;
 	}
-    
+
 	FRLZSI t2(pattern);
 	load_from_file(t2,"test");
-	//t2.projekt_load();
 	//Pattern einlesen + suchen
 	fstream dat(v[1], ios::in);
 	while(!dat.eof()){
